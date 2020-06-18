@@ -21,9 +21,10 @@ const QuoteButtonWrapper = styled.div`
 	.heading {
 		display: flex;
 		align-items: center;
-		height: 15vh;
+		height: 20vh;
 		font-family: 'Spartan', Roboto, sans-serif;
-		margin: 10px;
+		margin: 15px;
+		line-height: 30px;
 	}
 
 	.button {

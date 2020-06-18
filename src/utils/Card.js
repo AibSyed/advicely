@@ -19,7 +19,7 @@ const CardWrapper = styled.div`
 
 	@media only screen and (max-width: 960px) {
 		width: 60%;
-		height: 35%;
+		height: 40%;
 	}
 
 	@media only screen and (max-width: 768px) {
