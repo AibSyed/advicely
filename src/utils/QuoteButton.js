@@ -4,7 +4,7 @@ import styled from 'styled-components';
 export default function QuoteButton({ advice, fetchAdvice }) {
 	return (
 		<QuoteButtonWrapper>
-			<h1 className="heading">{advice}</h1>
+			<h1 className="advice">{advice}</h1>
 			<button onClick={fetchAdvice} className="button">
 				<span>GIVE ME AIMLESS ADVICE</span>
 			</button>
@@ -17,14 +17,13 @@ const QuoteButtonWrapper = styled.div`
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
-
-	.heading {
+	.advice {
 		display: flex;
 		align-items: center;
 		height: 20vh;
 		font-family: 'Spartan', Roboto, sans-serif;
 		margin: 15px;
-		line-height: 30px;
+		line-height: 35px;
 	}
 
 	.button {
@@ -32,14 +31,13 @@ const QuoteButtonWrapper = styled.div`
 		text-transform: uppercase;
 		text-decoration: none;
 		padding: 20px;
-		background: transparent;
+		background: #164ca7;
 		border-radius: 10px;
 		cursor: pointer;
-		border: 3px solid #164ca7;
 	}
 
 	.button span {
-		color: #000000;
+		color: #ffffff;
 		font-size: 20px;
 		font-weight: 500;
 		letter-spacing: 0.7px;
@@ -57,13 +55,15 @@ const QuoteButtonWrapper = styled.div`
 	}
 
 	.button:hover span {
-		color: #ffffff;
+		color: yellow;
 		text-align: center;
+		font-style: italic;
 	}
 
 	@media only screen and (max-width: 960px) {
-		.heading {
+		.advice {
 			font-size: 24px;
+			height: 30vh;
 		}
 
 		.button {
@@ -77,8 +77,9 @@ const QuoteButtonWrapper = styled.div`
 	}
 
 	@media only screen and (max-width: 768px) {
-		.heading {
+		.advice {
 			font-size: 20px;
+			height: 35vh;
 		}
 
 		.button {
@@ -92,7 +93,7 @@ const QuoteButtonWrapper = styled.div`
 	}
 
 	@media only screen and (max-width: 320px) {
-		.heading {
+		.advice {
 			font-size: 18px;
 		}
 
@@ -108,5 +109,5 @@ const QuoteButtonWrapper = styled.div`
 `;
 
 QuoteButton.defaultProps = {
-	title: 'default title',
+	advice: 'Be Good. Do Good.',
 };

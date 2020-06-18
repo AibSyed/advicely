@@ -19,12 +19,12 @@ const CardWrapper = styled.div`
 
 	@media only screen and (max-width: 960px) {
 		width: 60%;
-		height: 40%;
+		height: 45%;
 	}
 
 	@media only screen and (max-width: 768px) {
 		width: 60%;
-		height: 45%;
+		height: 55%;
 	}
 
 	@media only screen and (max-width: 320px) {
@@ -32,7 +32,3 @@ const CardWrapper = styled.div`
 		height: 50%;
 	}
 `;
-
-Card.defaultProps = {
-	title: 'default title',
-};

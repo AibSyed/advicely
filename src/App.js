@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { QuoteButton, QuoteLoader, Card } from './utils';
+import { QuoteButton, QuoteLoader, Card, TitleHead, Footer } from './utils';
 
 import './App.css';
 
@@ -21,8 +21,8 @@ class App extends React.Component {
 			const { advice } = response.data.slip;
 			//set state of advice with data from slip
 			this.setState({ advice });
-			//once state is set, then set loading to true after 1.5 second timeout so data can fully render
-			setTimeout(() => this.setState({ isLoading: false }), 1500);
+			//once state is set, then set loading to false after 2.5 second timeout so data can fully render
+			setTimeout(() => this.setState({ isLoading: false }), 2500);
 		} catch (error) {
 			alert(error);
 		}
@@ -32,6 +32,7 @@ class App extends React.Component {
 		const { advice, isLoading } = this.state;
 		return (
 			<div className="app">
+				<TitleHead />
 				<Card>
 					{/*if loading is true then show spinner else show button and advice */}
 					{isLoading ? (
@@ -40,6 +41,7 @@ class App extends React.Component {
 						<QuoteButton advice={advice} fetchAdvice={this.fetchAdvice} />
 					)}
 				</Card>
+				<Footer />
 			</div>
 		);
 	}
