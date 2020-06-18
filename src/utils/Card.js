@@ -17,8 +17,8 @@ const CardWrapper = styled.div`
 	padding: 20px;
 	box-shadow: 10px 10px;
 	@media only screen and (max-width: 960px) {
-		width: 55%;
-		height: 30%;
+		width: 60%;
+		height: 35%;
 	}
 `;
 

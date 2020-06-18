@@ -74,6 +74,36 @@ const QuoteButtonWrapper = styled.div`
 			font-size: 17px;
 		}
 	}
+
+	@media only screen and (max-width: 768px) {
+		.heading {
+			font-size: 24px;
+		}
+
+		.button {
+			width: 200px;
+			padding: 10px;
+		}
+
+		.button span {
+			font-size: 17px;
+		}
+	}
+
+	@media only screen and (max-width: 320px) {
+		.heading {
+			font-size: 20px;
+		}
+
+		.button {
+			width: 150px;
+			padding: 10px;
+		}
+
+		.button span {
+			font-size: 14px;
+		}
+	}
 `;
 
 QuoteButton.defaultProps = {
