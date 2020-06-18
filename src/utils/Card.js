@@ -8,7 +8,7 @@ export default function Card({ children }) {
 const CardWrapper = styled.div`
 	background-color: whitesmoke;
 	width: 60%;
-	height: 25%;
+	height: 30%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -16,9 +16,20 @@ const CardWrapper = styled.div`
 	padding: 2%;
 	padding: 20px;
 	box-shadow: 10px 10px;
+
 	@media only screen and (max-width: 960px) {
 		width: 60%;
 		height: 35%;
+	}
+
+	@media only screen and (max-width: 768px) {
+		width: 60%;
+		height: 35%;
+	}
+
+	@media only screen and (max-width: 320px) {
+		width: 60%;
+		height: 45%;
 	}
 `;
 
