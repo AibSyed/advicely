@@ -9,9 +9,7 @@ const CardWrapper = styled.div`
 	background-color: whitesmoke;
 	width: 60%;
 	height: 35%;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
+
 	align-items: center;
 	border-radius: 20px;
 	padding: 20px;
@@ -22,7 +20,7 @@ const CardWrapper = styled.div`
 	}
 	@media only screen and (max-width: 768px) {
 		width: 60%;
-		height: 55%;
+		height: 45%;
 	}
 	@media only screen and (max-width: 320px) {
 		width: 60%;
