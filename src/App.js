@@ -35,6 +35,7 @@ class App extends React.Component {
 				<header>
 					<TitleHead />
 				</header>
+				<div className="clear"></div>
 				<content>
 					<Card>
 						{/*if loading is true then show spinner else show button and advice */}
@@ -45,7 +46,7 @@ class App extends React.Component {
 						)}
 					</Card>
 				</content>
-
+				<div className="clear"></div>
 				<footer>
 					<Footer />
 				</footer>
