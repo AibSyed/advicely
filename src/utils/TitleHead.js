@@ -23,8 +23,7 @@ export default function TitleHead() {
 }
 
 const TitleHeadWrapper = styled.div`
-	flex: 1;
-	position: fixed;
+	position: absolute;
 	top: 0;
 	justify-content: center;
 	align-items: center;

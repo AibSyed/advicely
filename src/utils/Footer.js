@@ -23,8 +23,7 @@ export default function Footer() {
 }
 
 const FooterWrapper = styled.div`
-	flex: 1;
-	position: fixed;
+	position: absolute;
 	bottom: 0;
 	justify-content: center;
 	align-items: center;

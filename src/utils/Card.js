@@ -6,10 +6,11 @@ export default function Card({ children }) {
 }
 
 const CardWrapper = styled.div`
+	margin: 0 auto;
 	background-color: whitesmoke;
 	width: 60%;
 	height: 35%;
-	display: flex;
+	display: grid;
 	justify-content: center;
 	align-items: center;
 	border-radius: 20px;
