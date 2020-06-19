@@ -7,7 +7,7 @@ export default function Footer() {
 			<div className="disclaimer">
 				<h5>
 					Advice data is fetched from{' '}
-					<a href="https://api.adviceslip.com/i">https://api.adviceslip.com/</a>{' '}
+					<a href="https://api.adviceslip.com/">https://api.adviceslip.com/</a>{' '}
 					as JSON.
 				</h5>
 				<h6>

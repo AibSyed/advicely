@@ -22,7 +22,7 @@ class App extends React.Component {
 			//set state of advice with data from slip
 			this.setState({ advice });
 			//once state is set, then set loading to false after 2.5 second timeout so data can fully render
-			setTimeout(() => this.setState({ isLoading: false }), 2500);
+			setTimeout(() => this.setState({ isLoading: false }), 2700);
 		} catch (error) {
 			alert(error);
 		}
