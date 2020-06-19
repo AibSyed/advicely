@@ -33,7 +33,16 @@ const TitleHeadWrapper = styled.div`
 	color: #ffffff;
 	font-family: 'Spartan', Roboto, sans-serif;
 	font-weight: bolder;
+	height: 8vh;
+	@media only screen and (max-width: 960px) {
+		height: 8vh;
+	}
+	@media only screen and (max-width: 768px) {
+		height: 6vh;
+		font-size: 14px;
+	}
 	@media only screen and (max-width: 400px) {
+		height: 3vh;
 		font-size: 12px;
 	}
 `;

@@ -23,6 +23,7 @@ export default function Footer() {
 }
 
 const FooterWrapper = styled.div`
+	height: 13vh;
 	position: fixed;
 	bottom: 0;
 	justify-content: center;
@@ -34,5 +35,25 @@ const FooterWrapper = styled.div`
 	text-align: left;
 	.disclaimer {
 		margin: 30px;
+	}
+
+	@media only screen and (max-width: 960px) {
+		height: 11vh;
+		.disclaimer {
+			font-size: 12px;
+		}
+	}
+	@media only screen and (max-width: 768px) {
+		height: 10vh;
+		.disclaimer {
+			font-size: 12px;
+			margin: 20px;
+		}
+	}
+	@media only screen and (max-width: 320px) {
+		height: 8vh;
+		.disclaimer {
+			font-size: 10px;
+		}
 	}
 `;
