@@ -4,52 +4,20 @@ body {
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
+	height: 100%;
 }
 
 .app {
-	height: 100vh;
-	overflow: hidden;
+	position: relative;
+	min-height: 100vh;
+	padding-top: 50%;
 	background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
 		url('./images/library.jpg');
 	background-size: cover;
 	background-position: center;
 	align-items: center;
 	text-align: center;
-	display: grid;
-	grid-gap: 20px;
-	grid-template-areas:
-		'header'
-		'content'
-		'footer';
-	grid-template-columns: 1fr;
-}
-
-.main-head {
-	grid-area: header;
-}
-.content {
-	grid-area: content;
-}
-.main-footer {
-	grid-area: footer;
-}
-
-@media (min-width: 500px) {
-	.app {
-		grid-template-columns: 1fr;
-		grid-template-areas:
-			'header'
-			'content'
-			'footer';
-	}
-}
-
-@media (min-width: 500px) {
-	.app {
-		grid-template-columns: 1fr;
-		grid-template-areas:
-			'header'
-			'content'
-			'footer';
-	}
+	display: flex;
+	flex-direction: column;
+	align-content: center;
 }
