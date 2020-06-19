@@ -6,11 +6,15 @@ export default function Card({ children }) {
 }
 
 const CardWrapper = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  /* bring your own prefixes */
+  transform: translate(-50%, -50%);
 	background-color: whitesmoke;
 	width: 60%;
 	height: 35%;
-	display: flex;
-	flex-direction: column;
+	display: inline-block
 	justify-content: center;
 	align-items: center;
 	border-radius: 20px;

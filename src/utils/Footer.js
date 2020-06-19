@@ -33,6 +33,7 @@ const FooterWrapper = styled.div`
 	color: #ffffff;
 	font-family: 'Spartan', Roboto, sans-serif;
 	text-align: left;
+	height: 15vh;
 	.disclaimer {
 		margin: 30px;
 	}
