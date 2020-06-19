@@ -13,13 +13,15 @@ export default function QuoteButton({ advice, fetchAdvice }) {
 }
 
 const QuoteButtonWrapper = styled.div`
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 	.advice {
 		font-family: 'Spartan', Roboto, sans-serif;
 		margin: 15px;
-		line-height: 35px;
 	}
 	.button {
-		position: relative;
+		max-width: 300px;
 		text-transform: uppercase;
 		text-decoration: none;
 		padding: 20px;
@@ -29,7 +31,7 @@ const QuoteButtonWrapper = styled.div`
 	}
 	.button span {
 		color: #ffffff;
-		font-size: 20px;
+		font-size: 16px;
 		font-weight: 500;
 		letter-spacing: 0.7px;
 		text-align: center;
@@ -46,44 +48,6 @@ const QuoteButtonWrapper = styled.div`
 		color: yellow;
 		text-align: center;
 		font-style: italic;
-	}
-	@media only screen and (max-width: 960px) {
-		.advice {
-			font-size: 24px;
-			height: 30vh;
-		}
-		.button {
-			width: 270px;
-			padding: 10px;
-		}
-		.button span {
-			font-size: 17px;
-		}
-	}
-	@media only screen and (max-width: 768px) {
-		.advice {
-			font-size: 20px;
-			height: 35vh;
-		}
-		.button {
-			width: 230px;
-			padding: 10px;
-		}
-		.button span {
-			font-size: 14px;
-		}
-	}
-	@media only screen and (max-width: 320px) {
-		.advice {
-			font-size: 18px;
-		}
-		.button {
-			width: 180px;
-			padding: 10px;
-		}
-		.button span {
-			font-size: 12px;
-		}
 	}
 `;
 

@@ -23,6 +23,10 @@ export default function Footer() {
 }
 
 const FooterWrapper = styled.div`
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-evenly;
 	padding: 10px;
 	background-color: #000000;
 	color: #ffffff;

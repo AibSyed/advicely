@@ -6,23 +6,14 @@ export default function Card({ children }) {
 }
 
 const CardWrapper = styled.div`
+	display: flex;
+	flex-direction: column;
 	background-color: whitesmoke;
 	width: 60%;
+	max-width: 500px;
 	height: 35%;
-
 	align-items: center;
 	border-radius: 20px;
 	padding: 20px;
 	box-shadow: 10px 10px;
-	@media only screen and (max-width: 960px) {
-		width: 60%;
-		height: 45%;
-	}
-	@media only screen and (max-width: 768px) {
-		width: 60%;
-		height: 45%;
-	}
-	@media only screen and (max-width: 320px) {
-		width: 60%;
-		height: 50%;
 `;
