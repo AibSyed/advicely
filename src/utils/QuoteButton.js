@@ -7,7 +7,7 @@ export default function QuoteButton({ advice, fetchAdvice }) {
 			<h1 className="advice">{advice}</h1>
 			<br />
 			<button onClick={fetchAdvice} className="button">
-				<span>GIVE ME AIMLESS ADVICE</span>
+				<span>GENERATE ADVICE</span>
 			</button>
 		</QuoteButtonWrapper>
 	);

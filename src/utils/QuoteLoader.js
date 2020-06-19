@@ -9,7 +9,7 @@ export default function QuoteLoader() {
 			color="#164ca7"
 			height={80}
 			width={80}
-			timeout={4000} //3 secs
+			timeout={4300} //3 secs
 		/>
 	);
 }
