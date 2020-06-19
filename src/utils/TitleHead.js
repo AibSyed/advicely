@@ -9,9 +9,9 @@ export default function TitleHead() {
 			{' '}
 			<div>
 				{' '}
-				<IconContext.Provider value={{ size: '1.5em' }}>
+				<IconContext.Provider value={{ size: '1em' }}>
 					<h1>
-						Aimless Advice{' '}
+						Advicely{' '}
 						<sup>
 							<FcIdea />
 						</sup>

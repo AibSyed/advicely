@@ -26,13 +26,12 @@ const FooterWrapper = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	justify-content: space-evenly;
-	padding: 10px;
+	justify-content: center;
 	background-color: #000000;
 	color: #ffffff;
 	font-family: 'Spartan', Roboto, sans-serif;
 	text-align: left;
 	.disclaimer {
-		margin: 30px;
+		margin: 20px;
 	}
 `;
