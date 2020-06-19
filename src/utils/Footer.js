@@ -16,7 +16,7 @@ export default function Footer() {
 					common sense when taking any action from any application that could
 					jeopordize, yours or anyone elses life, health, or well being.
 				</h6>
-				<h7>&copy;2020 Created By Shoaib (Aib) Syed</h7>
+				<h6>&copy;2020 Created By Shoaib (Aib) Syed</h6>
 			</div>
 		</FooterWrapper>
 	);
@@ -34,21 +34,5 @@ const FooterWrapper = styled.div`
 	text-align: left;
 	.disclaimer {
 		margin: 30px;
-	}
-	@media only screen and (max-width: 960px) {
-		.disclaimer {
-			font-size: 12px;
-		}
-	}
-	@media only screen and (max-width: 768px) {
-		.disclaimer {
-			font-size: 12px;
-			margin: 20px;
-		}
-	}
-	@media only screen and (max-width: 320px) {
-		.disclaimer {
-			font-size: 10px;
-		}
 	}
 `;

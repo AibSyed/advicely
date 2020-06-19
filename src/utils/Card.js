@@ -8,10 +8,10 @@ export default function Card({ children }) {
 const CardWrapper = styled.div`
 	display: flex;
 	flex-direction: column;
+	justify-content: space-between;
 	background-color: whitesmoke;
 	width: 60%;
 	max-width: 500px;
-	height: 35%;
 	align-items: center;
 	border-radius: 20px;
 	padding: 20px;

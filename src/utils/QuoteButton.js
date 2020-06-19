@@ -5,6 +5,7 @@ export default function QuoteButton({ advice, fetchAdvice }) {
 	return (
 		<QuoteButtonWrapper>
 			<h1 className="advice">{advice}</h1>
+			<br />
 			<button onClick={fetchAdvice} className="button">
 				<span>GIVE ME AIMLESS ADVICE</span>
 			</button>
@@ -24,10 +25,11 @@ const QuoteButtonWrapper = styled.div`
 		max-width: 300px;
 		text-transform: uppercase;
 		text-decoration: none;
-		padding: 20px;
+		padding: 15px;
 		background: #164ca7;
 		border-radius: 10px;
 		cursor: pointer;
+		border: none;
 	}
 	.button span {
 		color: #ffffff;
@@ -36,18 +38,14 @@ const QuoteButtonWrapper = styled.div`
 		letter-spacing: 0.7px;
 		text-align: center;
 	}
-	.button:hover {
-		background: #164ca7;
-	}
-	.button:active {
-		background-color: #164ca7;
-		box-shadow: 0 3px #333;
-		transform: translateY(4px);
-	}
 	.button:hover span {
-		color: yellow;
 		text-align: center;
 		font-style: italic;
+	}
+	@media only screen and (max-width: 450px) {
+		.button span {
+			font-size: 13px;
+		}
 	}
 `;
 
