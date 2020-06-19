@@ -32,18 +32,23 @@ class App extends React.Component {
 		const { advice, isLoading } = this.state;
 		return (
 			<div className="app">
-				<TitleHead />
+				<header>
+					<TitleHead />
+				</header>
+				<content>
+					<Card>
+						{/*if loading is true then show spinner else show button and advice */}
+						{isLoading ? (
+							<QuoteLoader />
+						) : (
+							<QuoteButton advice={advice} fetchAdvice={this.fetchAdvice} />
+						)}
+					</Card>
+				</content>
 
-				<Card>
-					{/*if loading is true then show spinner else show button and advice */}
-					{isLoading ? (
-						<QuoteLoader />
-					) : (
-						<QuoteButton advice={advice} fetchAdvice={this.fetchAdvice} />
-					)}
-				</Card>
-
-				<Footer />
+				<footer>
+					<Footer />
+				</footer>
 			</div>
 		);
 	}

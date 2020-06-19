@@ -6,8 +6,6 @@ export default function Card({ children }) {
 }
 
 const CardWrapper = styled.div`
-	position: absolute;
-	top: 20%;
 	background-color: whitesmoke;
 	width: 60%;
 	height: 35%;
@@ -18,4 +16,15 @@ const CardWrapper = styled.div`
 	border-radius: 20px;
 	padding: 20px;
 	box-shadow: 10px 10px;
+	@media only screen and (max-width: 960px) {
+		width: 60%;
+		height: 45%;
+	}
+	@media only screen and (max-width: 768px) {
+		width: 60%;
+		height: 55%;
+	}
+	@media only screen and (max-width: 320px) {
+		width: 60%;
+		height: 50%;
 `;

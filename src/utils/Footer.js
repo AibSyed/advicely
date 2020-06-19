@@ -23,18 +23,28 @@ export default function Footer() {
 }
 
 const FooterWrapper = styled.div`
-	position: absolute;
-	bottom: 0;
 	padding: 10px;
-	justify-content: center;
-	align-items: center;
-	width: 100%;
 	background-color: #000000;
 	color: #ffffff;
 	font-family: 'Spartan', Roboto, sans-serif;
 	text-align: left;
-	height: 15vh;
 	.disclaimer {
 		margin: 30px;
+	}
+	@media only screen and (max-width: 960px) {
+		.disclaimer {
+			font-size: 12px;
+		}
+	}
+	@media only screen and (max-width: 768px) {
+		.disclaimer {
+			font-size: 12px;
+			margin: 20px;
+		}
+	}
+	@media only screen and (max-width: 320px) {
+		.disclaimer {
+			font-size: 10px;
+		}
 	}
 `;

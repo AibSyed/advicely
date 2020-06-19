@@ -23,15 +23,18 @@ export default function TitleHead() {
 }
 
 const TitleHeadWrapper = styled.div`
-	position: absolute;
-	top: 0;
-	justify-content: center;
-	align-items: center;
-	width: 100%;
 	background-color: #000000;
 	color: #ffffff;
 	font-family: 'Spartan', Roboto, sans-serif;
 	font-weight: bolder;
+	@media only screen and (max-width: 960px) {
+	}
+	@media only screen and (max-width: 768px) {
+		font-size: 14px;
+	}
+	@media only screen and (max-width: 400px) {
+		font-size: 12px;
+	}
 `;
 
 TitleHead.defaultProps = {

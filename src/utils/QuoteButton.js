@@ -13,14 +13,7 @@ export default function QuoteButton({ advice, fetchAdvice }) {
 }
 
 const QuoteButtonWrapper = styled.div`
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-direction: column;
 	.advice {
-		display: flex;
-		align-items: center;
-		height: 20vh;
 		font-family: 'Spartan', Roboto, sans-serif;
 		margin: 15px;
 		line-height: 35px;

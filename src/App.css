@@ -8,16 +8,42 @@ body {
 }
 
 .app {
-	position: relative;
-	min-height: 100vh;
-	padding-bottom: 15vh;
+	height: 100%;
 	background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
 		url('./images/library.jpg');
 	background-size: cover;
 	background-position: center;
+	display: flex;
+	justify-content: center;
 	align-items: center;
 	text-align: center;
-	display: flex;
 	flex-direction: column;
-	align-content: center;
+}
+
+header {
+	flex: 1;
+	width: 100%;
+	position: absolute;
+	display: flex;
+	text-align: center;
+	flex-direction: column;
+	top: 0;
+}
+
+content {
+	flex: 1;
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	flex-direction: column;
+	overflow: auto;
+}
+
+footer {
+	flex: 1;
+	width: 100%;
+	position: absolute;
+	bottom: 0;
 }
