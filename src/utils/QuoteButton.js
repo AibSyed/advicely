@@ -43,9 +43,6 @@ const QuoteButtonWrapper = styled.div`
 		font-style: italic;
 	}
 	@media only screen and (max-width: 450px) {
-		.advice {
-			font-size: 20px;
-		}
 		.button span {
 			font-size: 13px;
 		}

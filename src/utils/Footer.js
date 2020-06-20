@@ -14,9 +14,9 @@ export default function Footer() {
 					DISCLAIMER: &nbsp;
 					<i>
 						I am not responsible for any advice you take from this application.
-						Some advice may be good, but I highly advise that you use common
-						sense when taking any action from any application that could
-						jeopordize, yours or anyone elses life, health, or well being.
+						I highly advise the use of common sense when taking any action from
+						any application that could jeopordize, yours or anyone elses life,
+						health, or well being.
 					</i>
 				</h6>
 				<h6>&copy;2020 Created By Shoaib (Aib) Syed</h6>
