@@ -1,7 +1,7 @@
-import QuoteLoader from './QuoteLoader';
-import QuoteButton from './QuoteButton';
+import AdviceLoader from './AdviceLoader';
+import AdviceButton from './AdviceButton';
+import AppHeader from './AppHeader';
 import Card from './Card';
-import TitleHead from './TitleHead';
 import Footer from './Footer';
 
-export { QuoteLoader, QuoteButton, Card, TitleHead, Footer };
+export { AppHeader, AdviceLoader, AdviceButton, Card, Footer };

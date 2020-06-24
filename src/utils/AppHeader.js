@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import { FcIdea } from 'react-icons/fc';
 import { IconContext } from 'react-icons';
 
-export default function TitleHead() {
+export default function AppHeader() {
 	return (
-		<TitleHeadWrapper>
+		<AppHeaderWrapper>
 			{' '}
 			<div>
 				{' '}
@@ -18,11 +18,11 @@ export default function TitleHead() {
 					</h1>
 				</IconContext.Provider>
 			</div>
-		</TitleHeadWrapper>
+		</AppHeaderWrapper>
 	);
 }
 
-const TitleHeadWrapper = styled.div`
+const AppHeaderWrapper = styled.div`
 	background-color: #000000;
 	color: #ffffff;
 	font-family: 'Spartan', Roboto, sans-serif;
@@ -37,6 +37,6 @@ const TitleHeadWrapper = styled.div`
 	}
 `;
 
-TitleHead.defaultProps = {
+AppHeader.defaultProps = {
 	title: 'default title',
 };

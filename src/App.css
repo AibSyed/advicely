@@ -41,6 +41,11 @@ content {
 	overflow: auto;
 }
 
+.loadText {
+	font-family: 'Spartan', Roboto, sans-serif;
+	margin: 15px;
+}
+
 footer {
 	flex-grow: 1;
 	width: 100%;

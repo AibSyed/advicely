@@ -1,19 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
 
-export default function QuoteButton({ advice, fetchAdvice }) {
+export default function AdviceButton({ advice, fetchAdvice }) {
 	return (
-		<QuoteButtonWrapper>
+		<AdviceButtonWrapper>
 			<h1 className="advice">{advice}</h1>
 			<br />
 			<button onClick={fetchAdvice} className="button">
 				<span>GENERATE ADVICE</span>
 			</button>
-		</QuoteButtonWrapper>
+		</AdviceButtonWrapper>
 	);
 }
 
-const QuoteButtonWrapper = styled.div`
+const AdviceButtonWrapper = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -38,10 +38,6 @@ const QuoteButtonWrapper = styled.div`
 		letter-spacing: 0.7px;
 		text-align: center;
 	}
-	.button:hover span {
-		text-align: center;
-		font-style: italic;
-	}
 	@media only screen and (max-width: 450px) {
 		.button span {
 			font-size: 13px;
@@ -49,6 +45,6 @@ const QuoteButtonWrapper = styled.div`
 	}
 `;
 
-QuoteButton.defaultProps = {
+AdviceButton.defaultProps = {
 	advice: 'Be Good. Do Good.',
 };
