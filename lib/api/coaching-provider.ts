@@ -1,7 +1,6 @@
 import { fallbackCoachingCards } from "@/features/coaching/fallback";
 import { coachingPayloadSchema, type CoachingPayload } from "@/features/coaching/schema";
-
-const endpoint = "https://api.adviceslip.com/advice";
+import { env } from "@/lib/env";
 
 function themedCard(theme: CoachingPayload["card"]["theme"], adviceText: string): CoachingPayload {
   return {
@@ -20,7 +19,7 @@ function themedCard(theme: CoachingPayload["card"]["theme"], adviceText: string)
 
 export async function getCoachingCard(theme: CoachingPayload["card"]["theme"]): Promise<CoachingPayload> {
   try {
-    const response = await fetch(endpoint, { cache: "no-store" });
+    const response = await fetch(env.COACHING_PROVIDER_URL, { cache: "no-store" });
     if (!response.ok) {
       throw new Error("Advice API error");
     }
