@@ -1,23 +1,53 @@
-# Advicely &middot; [![Build Status](https://img.shields.io/travis/npm/npm/latest.svg?style=flat-square)](https://travis-ci.org/npm/npm) [![npm](https://img.shields.io/npm/v/npm.svg?style=flat-square)](https://www.npmjs.com/package/npm) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/AibSyed/advicely/pulls) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://github.com/AibSyed/advicely/blob/master/LICENSE)
+# Advicely Coach
 
-![Advicely Gif](https://media.giphy.com/media/ZZlqziQMRoPTtxMa7p/giphy.gif)(https://advicely.netlify.app/)
+Advicely Coach is a rebuilt behavior-change micro-experience: themed guidance streams, reflection loops, and fast action prompts designed for repeat daily use.
 
-> Advicely is a simple advice generator that fetches data from the [Advice Slip](https://api.adviceslip.com/) JSON API.
+## Highlights
+- Theme-driven coaching sessions (focus, confidence, resilience, clarity).
+- Reflection capture loop with lightweight session memory.
+- Safe provider fallback to curated cards when live generation fails.
+- Typed contracts from API route to UI rendering.
 
-## Usage example
+## Architecture
+```mermaid
+flowchart LR
+  P[Player] --> UI[Next.js App Router UI]
+  UI --> Q[TanStack Query Cache]
+  Q --> RH[/app/api/coaching Route Handler]
+  RH --> CP[Coaching Provider Adapter]
+  CP --> Z[Zod Contract Validation]
+  CP --> AS[(Advice Slip API)]
+  CP --> FC[(Curated Coaching Cards)]
+  Z --> UI
+```
 
-To use, just click the generate advice button. [Don't hurt youself](https://advicely.netlify.app/).
+## Tech Stack
+- Next.js 16 App Router
+- React 19 + TypeScript (strict)
+- TanStack Query v5
+- Zod v4
+- Tailwind CSS
+- Vitest + Playwright
 
-### Meta
+## Local Development
+```bash
+pnpm install
+pnpm dev
+```
 
-Shoaib (Aib) Syed – [@LinkedIn](https://www.linkedin.com/in/aib-syed/) – Asyed137@gmail.com
+## Verification Commands
+```bash
+pnpm run check
+pnpm run test:e2e
+pnpm run audit:high
+```
 
-[https://github.com/AibSyed](https://github.com/AibSyed/)
+## Environment
+Copy `.env.example` to `.env.local` when overriding provider URL.
 
-## Contributing
+- `COACHING_PROVIDER_URL` optional endpoint override.
 
-1. Fork it (<https://github.com/AibSyed/advicely/fork>)
-2. Create your feature branch (`git checkout -b feature/fooBar`)
-3. Commit your changes (`git commit -am 'Add some fooBar'`)
-4. Push to the branch (`git push origin feature/fooBar`)
-5. Create a new Pull Request
+## Product Reinvention Notes
+- Legacy random-advice spinner app removed.
+- New product flow is engineered for retention and meaningful follow-through.
+- Degraded mode preserves experience quality instead of failing hard.
