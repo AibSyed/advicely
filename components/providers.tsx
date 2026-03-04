@@ -1,21 +1,40 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactNode, useState } from "react";
+import {
+  ChakraProvider,
+  createSystem,
+  defaultConfig,
+} from "@chakra-ui/react";
+import { PropsWithChildren, useState } from "react";
 
-export function Providers({ children }: { children: ReactNode }) {
+const system = createSystem(defaultConfig, {
+  theme: {
+    tokens: {
+      fonts: {
+        heading: { value: "var(--font-display), sans-serif" },
+        body: { value: "var(--font-body), sans-serif" },
+      },
+    },
+  },
+});
+
+export function Providers({ children }: PropsWithChildren) {
   const [queryClient] = useState(
     () =>
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 45_000,
-            retry: 1,
-            retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10_000),
+            staleTime: 1000 * 60,
+            refetchOnWindowFocus: false,
           },
         },
-      }),
+      })
   );
 
-  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+  return (
+    <ChakraProvider value={system}>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </ChakraProvider>
+  );
 }

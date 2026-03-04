@@ -1,38 +1,50 @@
-# Advicely Coach
+# Advicely - Momentum Coaching Loop
 
-Advicely Coach is a behavior-change micro-experience with themed guidance, reflection loops, and resilient fallback coaching.
+Advicely is a gamified daily coaching product focused on repeat engagement: fetch a themed coaching card, commit to a reflection, earn XP, and build a streak over time.
 
-## Highlights
-- Theme-driven coaching tracks (focus, confidence, resilience, clarity).
-- Reflection memory loop for repeat engagement.
-- Live provider integration with curated fallback continuity.
-- Typed route contracts and strict server/client boundary.
+## Product Value
+- Fast daily loop with low friction and high repeatability.
+- Safety-filtered provider orchestration with curated fallback continuity.
+- Local progression economy: XP, streaks, sessions, and reflection history.
+- Share-safe reflection cards with no private context leakage.
+
+## Experience Map
+- `/` daily coaching loop and reward claim flow
+- `/progress` progression analytics and momentum diagnostics
+- `/library` reflection archive and replay starter tracks
+- `/share/[id]` sanitized share card experience
 
 ## Architecture
 ```mermaid
 flowchart LR
-  P["Player"] --> UI["Next.js App Router UI"]
+  U["Player"] --> UI["Chakra UI Coaching Experience"]
   UI --> Q["TanStack Query Cache"]
   Q --> RH["/app/api/coaching Route Handler"]
-  RH --> CP["Coaching Provider Adapter"]
-  CP --> VAL["Zod Contract Validation"]
-  CP --> AS["Advice Slip API"]
-  CP --> FC["Curated Coaching Cards"]
-  VAL --> UI
+  RH --> ORCH["Provider Orchestrator"]
+  ORCH --> AS["AdviceSlip Provider"]
+  ORCH --> QT["Quotable Provider"]
+  ORCH --> SF["Safety Filter Layer"]
+  ORCH --> FB["Curated Fallback Generator"]
+  ORCH --> Z["Zod Response Contracts"]
+  Z --> UI
+  UI --> LS["Local Progression Store v2"]
 ```
 
 ## Deployment Model
-- Platform: Vercel (production)
-- Branch strategy: `master` auto-promotes to production
-- Previews: feature branch and PR previews when Git integration is active
+- Platform: Vercel
+- Production branch: `master`
+- Branches/PRs: preview deployments when Git integration is connected
 
-## Tech Stack
-- Next.js 16 App Router
-- React 19 + TypeScript strict mode
-- TanStack Query v5
-- Zod v4
-- Tailwind CSS v4
-- Vitest + Playwright
+## Security Posture
+- Sensitive provider values remain server-only environment variables.
+- No `NEXT_PUBLIC_` secrets.
+- CSP and security headers enforced in [`next.config.ts`](/Users/aib/Desktop/Development/Projects/_rewrites/advicely/next.config.ts).
+- Share routes expose only sanitized reflection text and XP metadata.
+
+## Environment
+Copy `.env.example` to `.env.local`.
+
+- `COACHING_PROVIDER_URL`: optional override for the primary advice provider endpoint.
 
 ## Local Development
 ```bash
@@ -48,12 +60,7 @@ pnpm run audit:high
 pnpm run docs:check
 ```
 
-## Environment
-Copy `.env.example` to `.env.local`.
-
-- `COACHING_PROVIDER_URL` optional live provider URL override.
-
 ## Troubleshooting
-- If live coaching fails, fallback cards should still render.
-- If copy-to-clipboard fails, browser permissions may be blocking clipboard API.
-- If docs CI fails, run `pnpm run docs:check` and fix markdown/mermaid syntax.
+- If provider responses degrade, fallback cards should continue rendering.
+- If reflections do not persist, clear local storage and restart the loop.
+- If docs checks fail, run `pnpm run docs:check` and fix markdown or Mermaid syntax issues.

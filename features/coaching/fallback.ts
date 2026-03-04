@@ -1,28 +1,12 @@
-import type { CoachingPayload } from "./schema";
+import type { Theme } from "@/features/coaching/schema";
 
-export const fallbackCoachingCards: CoachingPayload[] = [
-  {
-    card: {
-      id: "focus-01",
-      theme: "focus",
-      headline: "Protect your deep-work window",
-      prompt: "What one task would make today feel complete if finished before noon?",
-      reflection: "Notice how distractions show up right before meaningful progress.",
-      microAction: "Silence notifications for 45 minutes and complete one high-value block."
-    },
-    source: "curated",
-    generatedAt: "2026-03-01T00:00:00Z"
-  },
-  {
-    card: {
-      id: "confidence-01",
-      theme: "confidence",
-      headline: "Borrow confidence from evidence",
-      prompt: "What difficult thing did you handle this quarter that your past self could not?",
-      reflection: "Confidence compounds when you log evidence, not vibes.",
-      microAction: "Write 3 proof points of competence in your notes right now."
-    },
-    source: "curated",
-    generatedAt: "2026-03-01T00:00:00Z"
-  }
-];
+const fallbackPrompts: Record<Theme, string> = {
+  focus: "Choose one meaningful task and remove every non-essential step between now and completion.",
+  confidence: "Act as if your current uncertainty is temporary evidence-gathering, not identity.",
+  resilience: "Treat today’s friction as training load, then capture one capability it strengthened.",
+  clarity: "Rewrite your current goal in one sentence that can be tested by tonight.",
+};
+
+export function getFallbackPrompt(theme: Theme) {
+  return fallbackPrompts[theme];
+}

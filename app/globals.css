@@ -1,53 +1,44 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-:root {
-  color-scheme: dark;
-  --surface-1: #09090b;
-  --surface-2: #18181b;
-  --text-main: #fafafa;
-  --focus-ring: #fb7185;
-}
-
 * {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  background: radial-gradient(circle at 20% 20%, #4c0519, var(--surface-1));
-  color: var(--text-main);
-  font-family: var(--font-body), sans-serif;
-}
-
-.font-heading {
-  font-family: var(--font-heading), serif;
-}
-
-:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 10% 12%, rgba(255, 122, 26, 0.22), transparent 25%),
+    radial-gradient(circle at 88% 10%, rgba(34, 211, 238, 0.16), transparent 22%),
+    linear-gradient(165deg, #fffaf4, #f3f9ff 62%, #edf7ff);
+  color: #0f172a;
 }
 
 .skip-link {
   position: absolute;
   left: 1rem;
   top: -40px;
-  z-index: 50;
+  z-index: 100;
   border-radius: 9999px;
-  background: #fff1f2;
-  color: #111827;
-  padding: 0.4rem 0.8rem;
-  font-size: 0.875rem;
+  background: #ecfeff;
+  color: #0f172a;
+  padding: 0.45rem 0.8rem;
 }
 
 .skip-link:focus {
   top: 1rem;
 }
 
+.route-shell {
+  margin: 0 auto;
+  min-height: 100vh;
+  max-width: 1120px;
+  padding: 4rem 1.5rem;
+  color: #0f172a;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation: none !important;
     transition: none !important;
     scroll-behavior: auto !important;
