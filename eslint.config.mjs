@@ -1,5 +1,5 @@
-import nextVitals from "eslint-config-next/core-web-vitals";
+import next from "eslint-config-next";
 
-const config = [...nextVitals, { ignores: [".next/**", "node_modules/**", "playwright-report/**", "test-results/**"] }];
+const config = [...next];
 
 export default config;

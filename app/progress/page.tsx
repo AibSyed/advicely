@@ -1,11 +1,11 @@
 import { Container } from "@chakra-ui/react";
-import { MomentumArena } from "@/components/coach/momentum-arena";
+import { ProgressBoard } from "@/components/coach/progress-board";
 
-export default function HomePage() {
+export default function ProgressPage() {
   return (
     <main id="main-content">
       <Container maxW="7xl" py={{ base: 8, md: 10 }}>
-        <MomentumArena />
+        <ProgressBoard />
       </Container>
     </main>
   );
