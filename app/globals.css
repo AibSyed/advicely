@@ -4,13 +4,52 @@
 
 :root {
   color-scheme: dark;
+  --surface-1: #09090b;
+  --surface-2: #18181b;
+  --text-main: #fafafa;
+  --focus-ring: #fb7185;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
+  background: radial-gradient(circle at 20% 20%, #4c0519, var(--surface-1));
+  color: var(--text-main);
   font-family: var(--font-body), sans-serif;
 }
 
 .font-heading {
   font-family: var(--font-heading), serif;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -40px;
+  z-index: 50;
+  border-radius: 9999px;
+  background: #fff1f2;
+  color: #111827;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.875rem;
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
 }
