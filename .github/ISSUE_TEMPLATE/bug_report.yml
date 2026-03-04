@@ -1,0 +1,17 @@
+name: Bug Report
+description: Report an issue in coaching generation or UX.
+title: "[bug]: "
+labels: [bug]
+body:
+  - type: textarea
+    id: issue
+    attributes:
+      label: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction
+    validations:
+      required: true
