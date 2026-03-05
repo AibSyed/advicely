@@ -14,3 +14,8 @@
 - What went wrong: Verification briefly showed a false lint failure.
 - Root cause: Lint and Playwright were run in parallel, and Playwright rotated `test-results` during ESLint file walking.
 - Prevention rule: Run lint/typecheck/test/e2e/build sequentially for final evidence to avoid filesystem race conditions.
+
+## 2026-03-04
+- What went wrong: Dev runtime produced a Chakra hydration mismatch after switching to Turbopack mode.
+- Root cause: Emotion style injection order in this stack can diverge under Turbopack dev hydration.
+- Prevention rule: Keep `next dev --webpack` for this repo and verify browser console is clean via DevTools before finalizing UI work.

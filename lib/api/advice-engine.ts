@@ -2,12 +2,12 @@ import { randomUUID } from "node:crypto";
 import {
   adviceResponseSchema,
   type AdviceErrorState,
-  type AdviceResponse,
+  type AdviceRequestVM,
+  type AdviceResponseVM,
   type ProviderHealthState,
-  type ToneProfile,
 } from "@/features/advice/contracts";
 import { fallbackAdviceCatalog } from "@/features/advice/catalog";
-import { applyToneProfile } from "@/features/advice/tone";
+import { buildAdaptiveAdvice } from "@/features/advice/shaping";
 import { computeQualityScore, isLowQualityAdvice, normalizeAdviceText } from "@/features/advice/quality";
 import { env } from "@/lib/env";
 import { sha256Hex } from "@/lib/utils/hash";
@@ -17,8 +17,7 @@ import { requestZenQuote } from "@/lib/api/providers/zen-quotes";
 import type { ProviderCandidate, ProviderResult } from "@/lib/api/types";
 
 interface AdviceEngineInput {
-  toneProfile: ToneProfile;
-  recentHashes: Set<string>;
+  request: AdviceRequestVM;
 }
 
 function deriveHealthFromError(errorState: AdviceErrorState): ProviderHealthState {
@@ -28,7 +27,10 @@ function deriveHealthFromError(errorState: AdviceErrorState): ProviderHealthStat
   return "down";
 }
 
-function evaluateCandidate(candidate: ProviderCandidate, recentHashes: Set<string>): { candidate?: ProviderCandidate; textHash?: string } {
+function evaluateCandidate(
+  candidate: ProviderCandidate,
+  recentHashes: Set<string>,
+): { candidate?: ProviderCandidate; textHash?: string } {
   const normalized = normalizeAdviceText(candidate.text);
   const textHash = sha256Hex(normalized);
 
@@ -49,9 +51,9 @@ function evaluateCandidate(candidate: ProviderCandidate, recentHashes: Set<strin
   };
 }
 
-function selectFallback(toneProfile: ToneProfile, recentHashes: Set<string>): { fallback: ProviderCandidate; textHash: string } {
-  const tonePool = fallbackAdviceCatalog.filter((entry) => entry.toneProfile === toneProfile);
-  const fallbackPool = tonePool.length > 0 ? tonePool : fallbackAdviceCatalog;
+function selectFallback(request: AdviceRequestVM, recentHashes: Set<string>): { fallback: ProviderCandidate; textHash: string } {
+  const intentPool = fallbackAdviceCatalog.filter((entry) => entry.intents.includes(request.intent));
+  const fallbackPool = intentPool.length > 0 ? intentPool : fallbackAdviceCatalog;
 
   for (const entry of fallbackPool) {
     const textHash = sha256Hex(entry.advice);
@@ -62,7 +64,6 @@ function selectFallback(toneProfile: ToneProfile, recentHashes: Set<string>): { 
           source: "local_fallback",
           sourceAttribution: "Advicely Curated Catalog",
           confidence: 0.7,
-          freshnessMinutes: 0,
           fallbackUsed: true,
           errorState: "partial",
         },
@@ -72,13 +73,13 @@ function selectFallback(toneProfile: ToneProfile, recentHashes: Set<string>): { 
   }
 
   const first = fallbackPool[0];
+
   return {
     fallback: {
       text: first.advice,
       source: "local_fallback",
       sourceAttribution: "Advicely Curated Catalog",
       confidence: 0.66,
-      freshnessMinutes: 0,
       fallbackUsed: true,
       errorState: "partial",
     },
@@ -102,9 +103,14 @@ function buildProviderResultError(providerName: string, error: unknown): Provide
   };
 }
 
-export async function generateAdvice({ toneProfile, recentHashes }: AdviceEngineInput): Promise<AdviceResponse> {
+function toRecentHashSet(values: string[]): Set<string> {
+  return new Set(values.slice(0, 20));
+}
+
+export async function generateAdvice({ request }: AdviceEngineInput): Promise<AdviceResponseVM> {
   const diagnostics: string[] = [];
   const startedAt = new Date().toISOString();
+  const recentHashes = toRecentHashSet(request.avoidRecentHashes);
 
   let primaryResult: ProviderResult = { health: "down" };
   let secondaryResult: ProviderResult = { health: "down" };
@@ -166,30 +172,32 @@ export async function generateAdvice({ toneProfile, recentHashes }: AdviceEngine
   }
 
   if (!selectedCandidate || !selectedHash) {
-    const fallback = selectFallback(toneProfile, recentHashes);
+    const fallback = selectFallback(request, recentHashes);
     selectedCandidate = fallback.fallback;
     selectedHash = fallback.textHash;
     diagnostics.push("fallback: catalog_selected");
   }
 
   const qualityScore = computeQualityScore(selectedCandidate.text);
-  const toneOutput = applyToneProfile(selectedCandidate.text, toneProfile);
 
   const effectiveConfidence = Number(
     Math.min(0.99, Math.max(0.45, selectedCandidate.confidence * 0.75 + qualityScore * 0.25)).toFixed(2),
   );
 
-  const response: AdviceResponse = {
+  const shaped = buildAdaptiveAdvice(selectedCandidate.text, request);
+
+  const response: AdviceResponseVM = {
     card: {
       id: randomUUID(),
-      headline: toneOutput.headline,
-      advice: toneOutput.advice,
-      microAction: toneOutput.microAction,
-      reflectionPrompt: toneOutput.reflectionPrompt,
-      toneProfile,
+      headline: shaped.headline,
+      summary: shaped.summary,
+      blocks: shaped.blocks,
+      intent: request.intent,
+      style: request.style,
+      detail: request.detail,
+      context: request.context,
       source: selectedCandidate.source,
       sourceAttribution: selectedCandidate.sourceAttribution,
-      freshnessMinutes: selectedCandidate.freshnessMinutes,
       confidence: effectiveConfidence,
       fallbackUsed: selectedCandidate.fallbackUsed,
       errorState: selectedCandidate.errorState,

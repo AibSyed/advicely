@@ -1,8 +1,8 @@
 :root {
-  color-scheme: dark;
-  --bg-top: #081327;
-  --bg-bottom: #0d0a22;
-  --text-main: #f5f9ff;
+  color-scheme: light;
+  --bg-soft: #f4f7ff;
+  --bg-warm: #fff8ee;
+  --text-main: #0f172a;
 }
 
 * {
@@ -14,21 +14,21 @@ body {
   margin: 0;
   min-height: 100%;
   background:
-    radial-gradient(circle at 20% 10%, rgba(26, 114, 255, 0.25), transparent 40%),
-    radial-gradient(circle at 80% 10%, rgba(249, 115, 22, 0.2), transparent 35%),
-    linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+    radial-gradient(circle at 8% 12%, rgba(58, 124, 255, 0.14), transparent 36%),
+    radial-gradient(circle at 88% 4%, rgba(251, 146, 60, 0.16), transparent 32%),
+    linear-gradient(180deg, var(--bg-soft), var(--bg-warm));
   color: var(--text-main);
 }
 
 body {
-  font-family: var(--font-body), "Segoe UI", sans-serif;
+  font-family: var(--font-body), "Avenir Next", sans-serif;
 }
 
 h1,
 h2,
 h3,
 h4 {
-  font-family: var(--font-display), "Trebuchet MS", sans-serif;
+  font-family: var(--font-display), "Gill Sans", sans-serif;
   letter-spacing: 0.01em;
 }
 
@@ -40,10 +40,11 @@ h4 {
   transform: translateY(-200%);
   border-radius: 999px;
   background: #ffffff;
-  color: #050b16;
+  color: #0f172a;
   font-weight: 700;
   padding: 0.5rem 0.9rem;
   transition: transform 160ms ease;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.12);
 }
 
 .skip-link:focus-visible {
@@ -51,8 +52,8 @@ h4 {
 }
 
 ::selection {
-  background: rgba(255, 179, 106, 0.45);
-  color: #ffffff;
+  background: rgba(56, 189, 248, 0.28);
+  color: #0f172a;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,37 +1,48 @@
 import { createSystem, defaultConfig, defineConfig } from "@chakra-ui/react";
 
 const config = defineConfig({
+  globalCss: {
+    "*::placeholder": {
+      color: "gray.500",
+      opacity: 1,
+    },
+    "*:focus-visible": {
+      outline: "2px solid",
+      outlineColor: "utility.300",
+      outlineOffset: "2px",
+    },
+  },
   theme: {
     tokens: {
       fonts: {
-        heading: { value: "var(--font-display), 'Trebuchet MS', sans-serif" },
-        body: { value: "var(--font-body), 'Segoe UI', sans-serif" },
+        heading: { value: "var(--font-display), 'Gill Sans', sans-serif" },
+        body: { value: "var(--font-body), 'Avenir Next', sans-serif" },
       },
       colors: {
-        reactor: {
-          50: { value: "#eef8ff" },
-          100: { value: "#d8eeff" },
-          200: { value: "#afd9ff" },
-          300: { value: "#7dc1ff" },
-          400: { value: "#4da6ff" },
-          500: { value: "#1f88f6" },
-          600: { value: "#0f6cca" },
-          700: { value: "#0f5299" },
-          800: { value: "#133f73" },
-          900: { value: "#122f54" },
-          950: { value: "#080f1f" },
+        utility: {
+          50: { value: "#eff8ff" },
+          100: { value: "#d9efff" },
+          200: { value: "#b3defd" },
+          300: { value: "#7dc5fb" },
+          400: { value: "#46a9f4" },
+          500: { value: "#1889e1" },
+          600: { value: "#0e6fbc" },
+          700: { value: "#0f588f" },
+          800: { value: "#124d77" },
+          900: { value: "#154062" },
+          950: { value: "#10273e" },
         },
-        ember: {
-          50: { value: "#fff6ed" },
-          100: { value: "#ffe7cc" },
-          200: { value: "#ffd09e" },
-          300: { value: "#ffb36a" },
-          400: { value: "#ff9440" },
-          500: { value: "#f97316" },
-          600: { value: "#d95b0a" },
-          700: { value: "#b1450a" },
-          800: { value: "#8f370f" },
-          900: { value: "#742f10" },
+        signal: {
+          50: { value: "#fff7ec" },
+          100: { value: "#ffe8c9" },
+          200: { value: "#ffd39b" },
+          300: { value: "#ffb767" },
+          400: { value: "#ff9643" },
+          500: { value: "#f67a1d" },
+          600: { value: "#dc620f" },
+          700: { value: "#b3480f" },
+          800: { value: "#8f3b14" },
+          900: { value: "#743315" },
           950: { value: "#3f1908" },
         },
       },
@@ -42,8 +53,11 @@ const config = defineConfig({
         section: { value: "clamp(1.75rem, 1.2rem + 2vw, 3rem)" },
       },
       durations: {
-        energetic: { value: "180ms" },
-        smooth: { value: "320ms" },
+        brisk: { value: "140ms" },
+        smooth: { value: "260ms" },
+      },
+      shadows: {
+        float: { value: "0 14px 34px rgba(15, 23, 42, 0.08)" },
       },
     },
   },

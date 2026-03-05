@@ -8,7 +8,7 @@ export default async function SharePage({ params }: SharePageProps) {
   const { id } = await params;
 
   return (
-    <main>
+    <main id="main-content">
       <ShareExperience shareId={id} />
     </main>
   );

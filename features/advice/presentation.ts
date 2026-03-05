@@ -1,13 +1,41 @@
-import type { AdviceErrorState, ToneProfile } from "@/features/advice/contracts";
+import type {
+  AdviceBlockVM,
+  AdviceDetail,
+  AdviceErrorState,
+  AdviceIntent,
+  AdviceProvider,
+  AdviceStyle,
+} from "@/features/advice/contracts";
 
-const toneProfileLabels: Record<ToneProfile, string> = {
-  grounded: "Practical",
-  bold: "Direct",
-  calm: "Calm",
-  playful: "Light",
+const intentLabels: Record<AdviceIntent, string> = {
+  quick: "Quick",
+  decision: "Decision",
+  communication: "Communication",
+  planning: "Planning",
+  stress: "Stress",
+  general: "General",
 };
 
-const adviceErrorLabels: Record<AdviceErrorState, string> = {
+const styleLabels: Record<AdviceStyle, string> = {
+  balanced: "Balanced",
+  direct: "Direct",
+  supportive: "Supportive",
+  creative: "Creative",
+};
+
+const detailLabels: Record<AdviceDetail, string> = {
+  short: "Short",
+  standard: "Standard",
+  deep: "Deep",
+};
+
+const sourceLabels: Record<AdviceProvider, string> = {
+  advice_slip: "AdviceSlip",
+  zen_quotes: "ZenQuotes",
+  local_fallback: "Advicely Backup",
+};
+
+const errorLabels: Record<AdviceErrorState, string> = {
   unavailable: "Live sources unavailable",
   stale: "Using older source data",
   partial: "Using backup guidance",
@@ -15,8 +43,29 @@ const adviceErrorLabels: Record<AdviceErrorState, string> = {
   invalid_payload: "Source data had an issue",
 };
 
-export function getToneProfileLabel(toneProfile: ToneProfile): string {
-  return toneProfileLabels[toneProfile];
+const blockTitles: Record<AdviceBlockVM["type"], string> = {
+  core_advice: "Advice",
+  steps: "Steps",
+  script: "Suggested Script",
+  reframe: "Perspective",
+  caution: "Important",
+  checklist: "Checklist",
+};
+
+export function getIntentLabel(intent: AdviceIntent): string {
+  return intentLabels[intent];
+}
+
+export function getStyleLabel(style: AdviceStyle): string {
+  return styleLabels[style];
+}
+
+export function getDetailLabel(detail: AdviceDetail): string {
+  return detailLabels[detail];
+}
+
+export function getSourceLabel(source: AdviceProvider): string {
+  return sourceLabels[source];
 }
 
 export function getAdviceFitLabel(confidence: number): string {
@@ -35,9 +84,12 @@ export function getAdviceFitLabel(confidence: number): string {
   return "Try and adapt";
 }
 
-export function getAdviceSignalLabel(errorState: AdviceErrorState | null, fallbackUsed: boolean): string | null {
+export function getAdviceSignalLabel(
+  errorState: AdviceErrorState | null,
+  fallbackUsed: boolean,
+): string | null {
   if (errorState) {
-    return adviceErrorLabels[errorState];
+    return errorLabels[errorState];
   }
 
   if (fallbackUsed) {
@@ -45,4 +97,8 @@ export function getAdviceSignalLabel(errorState: AdviceErrorState | null, fallba
   }
 
   return null;
+}
+
+export function getAdviceBlockTitle(type: AdviceBlockVM["type"]): string {
+  return blockTitles[type];
 }

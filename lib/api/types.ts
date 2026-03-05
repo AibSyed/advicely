@@ -1,11 +1,14 @@
-import type { AdviceErrorState, AdviceProvider, ProviderHealthState } from "@/features/advice/contracts";
+import type {
+  AdviceErrorState,
+  AdviceProvider,
+  ProviderHealthState,
+} from "@/features/advice/contracts";
 
 export interface ProviderCandidate {
   text: string;
   source: AdviceProvider;
   sourceAttribution: string;
   confidence: number;
-  freshnessMinutes: number;
   fallbackUsed: boolean;
   errorState: AdviceErrorState | null;
 }

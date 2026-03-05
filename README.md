@@ -1,55 +1,58 @@
-# Advicely Reactor (v4)
+# Advicely v5 Utility Studio
 
-Advicely Reactor is a 2026-grade instant advice experience: one-click generation, adaptive tone shaping, and a momentum loop that keeps advice actionable instead of disposable.
+Advicely is a practical advice utility for everyday decisions.
+Use it in one tap, or add context for tailored guidance. Save what helps, find it later, and share cleanly.
 
-## Product Story
-- Primary loop: generate a fresh advice card instantly.
-- Differentiator: hybrid provider engine with quality scoring, dedupe, and curated fallback when providers fail.
-- Retention layer: save, reflect, streak tracking, and share cards.
+## Product Value
+- Fast generation: useful advice in seconds.
+- Context-aware output: advice shape adapts by intent instead of fixed labels on every card.
+- Local-first control: saved/history/share are browser-local in this phase.
 
 ## Architecture
 ```mermaid
 flowchart LR
-  U["Player"] --> UI["Advice Reactor UI"]
-  UI --> Q["TanStack Query Cache"]
+  U["User"] --> UI["Advice Studio UI"]
+  UI --> Q["TanStack Query"]
   Q --> RH["/app/api/advice Route Handler"]
   RH --> EN["Advice Engine"]
-  EN --> P1["Primary Provider: AdviceSlip"]
-  EN --> P2["Secondary Provider: ZenQuotes"]
+  EN --> P1["AdviceSlip Provider"]
+  EN --> P2["ZenQuotes Provider"]
   EN --> FB["Curated Fallback Catalog"]
-  EN --> VD["Zod Contract Validation"]
-  VD --> UI
-  UI --> LS["Local Momentum Storage"]
-  LS --> MW["Momentum and Library Routes"]
+  EN --> SH["Adaptive Shaping Layer"]
+  SH --> ZD["Zod Contract Validation"]
+  ZD --> UI
+  UI --> LS["Local Storage: advicely:v5:workspace"]
+  LS --> SV["Saved Route"]
+  LS --> HS["History Route"]
+  LS --> SR["Share Route"]
 ```
 
-Detailed architecture contract: [docs/architecture.md](docs/architecture.md)
+Detailed system design: [docs/architecture.md](docs/architecture.md)
 
 ## Route Map
-- `/` Advice Reactor (instant generation and tone control)
-- `/momentum` streaks, reflection capture, and session trail
-- `/library` saved card catalog with filter and cleanup
-- `/share/[id]` local share card rendering
-- `/api/advice` normalized advice generation endpoint
+- `/` Advice Studio
+- `/saved` Saved advice with search and filters
+- `/history` Generated advice history
+- `/share/[id]` Local share card view
+- `/api/advice` POST-only normalized advice endpoint
 
-## Runtime and Stack
-- Next.js App Router + TypeScript strict mode
-- React 19
-- Chakra UI v3 theming system
+## Runtime Stack
+- Next.js App Router (typed routes enabled)
+- React 19 + TypeScript strict mode
+- Chakra UI v3 system theming
 - TanStack Query v5
-- Zod contracts for API boundaries
-- React Hook Form + Zod resolver for reflection capture
-- Playwright + Vitest for e2e/unit coverage
+- Zod contracts at API and view-model boundaries
+- Vitest + Playwright
 
 ## Environment Contract
-Copy `.env.example` into `.env.local`.
+Copy `.env.example` to `.env.local`.
 
-Server-only keys:
+Server-only environment variables:
 - `ADVICE_PROVIDER_PRIMARY_URL`
 - `ADVICE_PROVIDER_SECONDARY_URL`
 - `ADVICE_REQUEST_TIMEOUT_MS`
 
-No sensitive values should be exposed via `NEXT_PUBLIC_*`.
+No sensitive values should be exposed through `NEXT_PUBLIC_*`.
 
 ## Local Development
 ```bash
@@ -68,17 +71,18 @@ pnpm run audit:high
 ## Deployment Model
 - Platform: Vercel
 - Production branch: `master`
-- Preview deploys: feature branches and pull requests
-- Required checks: CI + CodeQL + audit/docs gates
+- Preview deployments: pull requests and feature branches
+- Auto deploy: GitHub connected Vercel project
 
 ## Security Posture
-- Strict response headers with CSP in `next.config.ts`
-- Server-side provider integration only
-- Typed env parsing in `lib/env.ts`
-- High severity vulnerability gate in CI
+- CSP and hardened security headers in `next.config.ts`
+- Server-only env parsing in `lib/env.ts`
+- Provider calls restricted to server route handlers
+- CI gate includes `audit:high` and CodeQL
 
 ## Troubleshooting
-- Provider outages: engine falls back to curated catalog; UI remains interactive.
-- Duplicate feeling advice: recent hash dedupe prevents immediate repeats.
-- Chakra plus Next App Router hydration: this repo uses `next dev --webpack` and `next build --webpack` per Chakra guidance for stable Emotion hydration.
-- Docs CI failures: run `pnpm run docs:check` and fix markdown or Mermaid syntax.
+- Provider outage: app returns fallback guidance with retry path.
+- Duplicate-feeling advice: recent hash dedupe avoids immediate repeats.
+- Hydration mismatch in development: this repo uses `next dev --webpack` for stable Chakra Emotion hydration.
+- Local state reset: clear browser storage key `advicely:v5:workspace`.
+- Docs check failure: run `pnpm run docs:check` and fix markdown/diagram issues.

@@ -2,12 +2,14 @@ import { z } from "zod";
 import { AdviceProviderError, mapStatusToErrorState } from "@/lib/api/provider-error";
 import type { ProviderCandidate } from "@/lib/api/types";
 
-const zenQuoteSchema = z.array(
-  z.object({
-    q: z.string().min(1),
-    a: z.string().min(1),
-  }),
-).min(1);
+const zenQuoteSchema = z
+  .array(
+    z.object({
+      q: z.string().min(1),
+      a: z.string().min(1),
+    }),
+  )
+  .min(1);
 
 export async function requestZenQuote(url: string, timeoutMs: number): Promise<ProviderCandidate> {
   const controller = new AbortController();
@@ -23,7 +25,10 @@ export async function requestZenQuote(url: string, timeoutMs: number): Promise<P
     });
 
     if (!response.ok) {
-      throw new AdviceProviderError(`ZenQuotes request failed (${response.status})`, mapStatusToErrorState(response.status));
+      throw new AdviceProviderError(
+        `ZenQuotes request failed (${response.status})`,
+        mapStatusToErrorState(response.status),
+      );
     }
 
     const payload = zenQuoteSchema.safeParse(await response.json());
@@ -32,12 +37,12 @@ export async function requestZenQuote(url: string, timeoutMs: number): Promise<P
     }
 
     const quote = payload.data[0];
+
     return {
       text: `${quote.q} — ${quote.a}`,
       source: "zen_quotes",
       sourceAttribution: "ZenQuotes API",
       confidence: 0.76,
-      freshnessMinutes: 0,
       fallbackUsed: false,
       errorState: null,
     };
