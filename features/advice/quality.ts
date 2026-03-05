@@ -1,4 +1,15 @@
 const blockedFragments = ["buy now", "click here", "http://", "https://"];
+const practicalVerbPattern =
+  /\b(start|choose|write|ask|set|plan|break|call|send|schedule|draft|list|pause|breathe|review|decide|test|clarify|define|focus|limit|prioritize|explain|communicate|commit|simplify|track|compare)\b/i;
+const secondPersonPattern = /\b(you|your)\b/i;
+const firstPersonPattern = /\b(i|me|my|mine)\b/i;
+const nonPracticalPatterns = [
+  /\bplot twist\b/i,
+  /\beverybody makes mistakes\b/i,
+  /\blook up at the stars\b/i,
+  /\bcarry on\b/i,
+  /\bit is what it is\b/i,
+];
 
 function repairMojibake(text: string): string {
   if (!/[ÃÂ][\u0080-\u00ff]/.test(text)) {
@@ -52,9 +63,28 @@ export function containsBlockedFragment(text: string): boolean {
   return blockedFragments.some((fragment) => lower.includes(fragment));
 }
 
+export function looksNonPractical(text: string): boolean {
+  return nonPracticalPatterns.some((pattern) => pattern.test(text));
+}
+
+export function hasPracticalVerb(text: string): boolean {
+  return practicalVerbPattern.test(text);
+}
+
 export function isLowQualityAdvice(text: string): boolean {
   const normalized = normalizeAdviceText(text);
-  return normalized.length < 18 || containsBlockedFragment(normalized) || computeQualityScore(normalized) < 0.45;
+  const isSelfReflective = firstPersonPattern.test(normalized) && !secondPersonPattern.test(normalized);
+  const hasAttribution = /\s[-—]\s[A-Za-z]/.test(normalized);
+
+  return (
+    normalized.length < 18 ||
+    containsBlockedFragment(normalized) ||
+    looksNonPractical(normalized) ||
+    isSelfReflective ||
+    hasAttribution ||
+    !hasPracticalVerb(normalized) ||
+    computeQualityScore(normalized) < 0.45
+  );
 }
 
 export function summarizeAdvice(text: string, max = 88): string {

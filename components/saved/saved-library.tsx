@@ -21,7 +21,6 @@ import {
 import { FiArrowLeft, FiSearch, FiShare2, FiTrash2 } from "react-icons/fi";
 import type { AdviceIntent, AdviceProvider, AdviceStyle } from "@/features/advice/contracts";
 import {
-  getAdviceFitLabel,
   getDetailLabel,
   getIntentLabel,
   getSourceLabel,
@@ -251,7 +250,6 @@ export function SavedLibrary() {
                   <HStack wrap="wrap" gap={2}>
                     <Badge bg="utility.600" color="white">{getIntentLabel(card.intent)}</Badge>
                     <Badge bg="gray.100" color="gray.700">{getStyleLabel(card.style)}</Badge>
-                    <Badge bg="gray.100" color="gray.700">{getAdviceFitLabel(card.confidence)}</Badge>
                   </HStack>
                   <Heading as="h2" size="md" color="gray.900">
                     {card.headline}

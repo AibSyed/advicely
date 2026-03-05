@@ -20,7 +20,6 @@ import {
 import { FiArrowLeft, FiBookmark, FiCornerUpLeft, FiSearch, FiShare2 } from "react-icons/fi";
 import type { AdviceCardVM } from "@/features/advice/contracts";
 import {
-  getAdviceFitLabel,
   getDetailLabel,
   getIntentLabel,
   getSourceLabel,
@@ -146,7 +145,6 @@ export function HistoryTimeline() {
                       <Badge bg="utility.600" color="white">{getIntentLabel(card.intent)}</Badge>
                       <Badge bg="gray.100" color="gray.700">{getStyleLabel(card.style)}</Badge>
                       <Badge bg="gray.100" color="gray.700">{getDetailLabel(card.detail)}</Badge>
-                      <Badge bg="gray.100" color="gray.700">{getAdviceFitLabel(card.confidence)}</Badge>
                       <Badge bg="gray.100" color="gray.700">{getSourceLabel(card.source)}</Badge>
                     </HStack>
                     <Heading as="h2" size="md" color="gray.900">

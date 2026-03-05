@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { normalizeAdviceText, summarizeAdvice } from "@/features/advice/quality";
+import {
+  hasPracticalVerb,
+  isLowQualityAdvice,
+  normalizeAdviceText,
+  summarizeAdvice,
+} from "@/features/advice/quality";
 import { buildAdaptiveAdvice } from "@/features/advice/shaping";
 
 describe("quality utilities", () => {
@@ -12,6 +17,11 @@ describe("quality utilities", () => {
     const summarized = summarizeAdvice("A".repeat(200), 80);
     expect(summarized.length).toBeLessThanOrEqual(80);
     expect(summarized.endsWith("…")).toBe(true);
+  });
+
+  it("rejects non-practical platitudes", () => {
+    expect(isLowQualityAdvice('When something goes wrong in life, just shout "plot twist!" and carry on.')).toBe(true);
+    expect(hasPracticalVerb("Write one sentence and send the update now.")).toBe(true);
   });
 });
 
@@ -45,5 +55,21 @@ describe("adaptive advice shaping", () => {
     );
 
     expect(shaped.blocks.length).toBeLessThanOrEqual(2);
+  });
+
+  it("keeps quick deep responses actionable", () => {
+    const shaped = buildAdaptiveAdvice(
+      "Everybody makes mistakes.",
+      {
+        context: undefined,
+        intent: "quick",
+        style: "balanced",
+        detail: "deep",
+        avoidRecentHashes: [],
+      },
+    );
+
+    expect(shaped.blocks.some((block) => block.type === "steps")).toBe(true);
+    expect(shaped.blocks.some((block) => block.type === "caution")).toBe(false);
   });
 });

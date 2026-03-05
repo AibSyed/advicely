@@ -39,9 +39,9 @@ export async function requestZenQuote(url: string, timeoutMs: number): Promise<P
     const quote = payload.data[0];
 
     return {
-      text: `${quote.q} — ${quote.a}`,
+      text: quote.q,
       source: "zen_quotes",
-      sourceAttribution: "ZenQuotes API",
+      sourceAttribution: `ZenQuotes API (${quote.a})`,
       confidence: 0.76,
       fallbackUsed: false,
       errorState: null,

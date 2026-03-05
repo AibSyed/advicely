@@ -33,7 +33,6 @@ import {
 } from "@/features/advice/contracts";
 import {
   getAdviceBlockTitle,
-  getAdviceFitLabel,
   getAdviceSignalLabel,
   getDetailLabel,
   getIntentLabel,
@@ -246,7 +245,7 @@ export function AdviceStudio() {
 
                 <Box>
                   <Text fontSize="sm" color="gray.600" mb={2}>
-                    Advice type
+                    What kind of advice do you want?
                   </Text>
                   <SimpleGrid columns={{ base: 2, md: 3 }} gap={2}>
                     {intentOptions.map((option) => (
@@ -269,7 +268,7 @@ export function AdviceStudio() {
                 <SimpleGrid columns={{ base: 1, md: 2 }} gap={4}>
                   <Box>
                     <Text fontSize="sm" color="gray.600" mb={2}>
-                      Tone
+                      Voice
                     </Text>
                     <SimpleGrid columns={2} gap={2}>
                       {styleOptions.map((option) => (
@@ -291,7 +290,7 @@ export function AdviceStudio() {
 
                   <Box>
                     <Text fontSize="sm" color="gray.600" mb={2}>
-                      Detail
+                      Depth
                     </Text>
                     <SimpleGrid columns={3} gap={2}>
                       {detailOptions.map((option) => (
@@ -403,9 +402,6 @@ export function AdviceStudio() {
                   </Badge>
                   <Badge bg="gray.100" color="gray.700">
                     {getDetailLabel(latestCard.detail)}
-                  </Badge>
-                  <Badge bg="gray.100" color="gray.700">
-                    {getAdviceFitLabel(latestCard.confidence)}
                   </Badge>
                   {getAdviceSignalLabel(latestCard.errorState, latestCard.fallbackUsed) ? (
                     <Badge bg="signal.100" color="signal.900">

@@ -16,7 +16,6 @@ import {
 import { FiArrowLeft, FiCopy } from "react-icons/fi";
 import {
   getAdviceBlockTitle,
-  getAdviceFitLabel,
   getIntentLabel,
   getSourceLabel,
   getStyleLabel,
@@ -96,9 +95,6 @@ export function ShareExperience({ shareId }: ShareExperienceProps) {
               </Badge>
               <Badge bg="gray.100" color="gray.700" px={3} py={1} borderRadius="full">
                 {getStyleLabel(shareCard.card.style)}
-              </Badge>
-              <Badge bg="gray.100" color="gray.700" px={3} py={1} borderRadius="full">
-                {getAdviceFitLabel(shareCard.card.confidence)}
               </Badge>
             </HStack>
             <Heading as="h1" fontSize={{ base: "3xl", md: "5xl" }} lineHeight="1.05" color="gray.900">

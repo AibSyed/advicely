@@ -47,3 +47,17 @@
   - console errors: none after switching dev to webpack mode
   - mobile/desktop route sanity: `/`, `/saved`, `/history`, `/share/[id]` checked
   - performance trace (`/`): LCP 147ms, CLS 0.00 (local lab run)
+
+## 2026-03-04 UI/UX Polish Pass
+- [x] Reproduced odd output states in Chrome DevTools MCP (`Quick + Deep` no-context and context mismatch scenarios)
+- [x] Tightened provider quality/relevance heuristics for practical output
+- [x] Reworked shaping to remove generic deep warning behavior and enforce actionable blocks
+- [x] Simplified end-user terminology (removed confidence-fit badges from primary surfaces)
+- [x] Revalidated desktop/mobile output sanity via DevTools snapshots
+
+### Polish Verification
+- `pnpm run check` (pass)
+- `pnpm run test:e2e` (pass)
+- `pnpm run docs:check` (pass)
+- `pnpm run audit:high` (pass)
+- DevTools MCP checks: no console errors; practical output verified for `quick/deep` and `communication/deep` flows
