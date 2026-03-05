@@ -14,6 +14,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { FiArrowLeft, FiCopy } from "react-icons/fi";
+import { getAdviceFitLabel, getToneProfileLabel } from "@/features/advice/presentation";
 import { getShareCardById } from "@/features/momentum/storage";
 import type { ShareCardVM } from "@/features/momentum/contracts";
 
@@ -51,7 +52,7 @@ export function ShareExperience({ shareId }: ShareExperienceProps) {
           <Button alignSelf="flex-start" variant="ghost">
             <HStack>
               <Icon as={FiArrowLeft} />
-              <Text>Back to reactor</Text>
+              <Text>Back to advice</Text>
             </HStack>
           </Button>
         </NextLink>
@@ -66,10 +67,10 @@ export function ShareExperience({ shareId }: ShareExperienceProps) {
           >
             <HStack gap={2} mb={4}>
               <Badge bg="reactor.500" color="white" px={3} py={1} borderRadius="full">
-                {shareCard.toneProfile}
+                {getToneProfileLabel(shareCard.toneProfile)}
               </Badge>
               <Badge bg="whiteAlpha.200" color="white" px={3} py={1} borderRadius="full">
-                {Math.round(shareCard.confidence * 100)}% confidence
+                {getAdviceFitLabel(shareCard.confidence)}
               </Badge>
             </HStack>
             <Heading as="h1" id="main-content" fontSize={{ base: "3xl", md: "5xl" }} lineHeight="1.05">
@@ -79,7 +80,7 @@ export function ShareExperience({ shareId }: ShareExperienceProps) {
               {shareCard.advice}
             </Text>
             <Text mt={4} color="whiteAlpha.700" fontSize="sm">
-              Generated from {shareCard.source} · {new Date(shareCard.createdAt).toLocaleString()}
+              Created {new Date(shareCard.createdAt).toLocaleString()}
             </Text>
 
             <Button mt={6} onClick={handleCopy} bg="ember.500" color="white" _hover={{ bg: "ember.400" }}>
@@ -97,14 +98,14 @@ export function ShareExperience({ shareId }: ShareExperienceProps) {
         ) : (
           <Box bg="whiteAlpha.120" borderRadius="panel" borderWidth="1px" borderColor="whiteAlpha.300" p={8}>
             <Heading as="h1" id="main-content" size="lg">
-              Share card not found
+              We could not find that share card
             </Heading>
             <Text mt={3} color="whiteAlpha.800">
-              This share card may have expired from local storage. Generate a new card and create a fresh share link.
+              It may have been cleared from this browser. Generate a new card and share again.
             </Text>
             <NextLink href="/">
               <Button mt={5} bg="reactor.500">
-                Generate new advice
+                Get new advice
               </Button>
             </NextLink>
           </Box>

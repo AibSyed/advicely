@@ -10,24 +10,24 @@ export interface TonedAdvice {
 
 const toneBlueprint: Record<ToneProfile, { headline: string; microAction: string; reflectionPrompt: string }> = {
   grounded: {
-    headline: "Practical Signal",
-    microAction: "Commit to one concrete next step you can finish in 10 minutes.",
-    reflectionPrompt: "What would make this advice easier to execute today?",
+    headline: "Practical Next Step",
+    microAction: "Choose one step you can finish in the next 10 minutes.",
+    reflectionPrompt: "What might block this, and how can you make it easier?",
   },
   bold: {
-    headline: "Pressure Test",
-    microAction: "Do the uncomfortable action first and measure what changes.",
-    reflectionPrompt: "Which fear is pretending to be strategy right now?",
+    headline: "Clear Push Forward",
+    microAction: "Do the hardest useful step first, even if it feels uncomfortable.",
+    reflectionPrompt: "If you stopped overthinking, what would you do next?",
   },
   calm: {
-    headline: "Steady Reset",
-    microAction: "Take one slow breath, then move with deliberate pacing.",
-    reflectionPrompt: "What outcome matters if you remove urgency from this moment?",
+    headline: "Steady Advice",
+    microAction: "Take one slow breath, then take a small step at a steady pace.",
+    reflectionPrompt: "What would this look like at a pace you can sustain?",
   },
   playful: {
-    headline: "Momentum Spark",
-    microAction: "Gamify the next move and reward yourself for launching quickly.",
-    reflectionPrompt: "How can you make this step feel lighter without lowering quality?",
+    headline: "Fresh Perspective",
+    microAction: "Make the next step tiny and enjoyable so you actually begin.",
+    reflectionPrompt: "How can you make this easier to start right now?",
   },
 };
 
@@ -57,7 +57,7 @@ export function applyToneProfile(baseAdvice: string, toneProfile: ToneProfile): 
   if (toneProfile === "playful") {
     return {
       headline: blueprint.headline,
-      advice: `${cleaned} Treat it like a small quest.`,
+      advice: `${cleaned} Keep it light and start small.`,
       microAction: blueprint.microAction,
       reflectionPrompt: blueprint.reflectionPrompt,
     };

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import NextLink from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
@@ -21,13 +21,14 @@ import {
 } from "@chakra-ui/react";
 import { FiArrowRight, FiBookmark, FiCompass, FiRefreshCw, FiShare2, FiTrendingUp } from "react-icons/fi";
 import { adviceResponseSchema, type AdviceResponse, type ToneProfile } from "@/features/advice/contracts";
+import { getAdviceFitLabel, getAdviceSignalLabel, getToneProfileLabel } from "@/features/advice/presentation";
 import { createShareCard, getMomentumState, recordGeneration, saveAdviceCard } from "@/features/momentum/storage";
 
 const toneProfiles: Array<{ id: ToneProfile; label: string; hint: string }> = [
-  { id: "grounded", label: "Grounded", hint: "Practical and direct" },
-  { id: "bold", label: "Bold", hint: "Decisive and urgent" },
-  { id: "calm", label: "Calm", hint: "Steady and thoughtful" },
-  { id: "playful", label: "Playful", hint: "Light and energizing" },
+  { id: "grounded", label: "Practical", hint: "Straight and useful" },
+  { id: "bold", label: "Direct", hint: "Pushes you to act" },
+  { id: "calm", label: "Calm", hint: "Steady and low stress" },
+  { id: "playful", label: "Light", hint: "Friendly and energizing" },
 ];
 
 interface SnapshotStats {
@@ -103,13 +104,8 @@ export function AdviceReactor() {
   });
 
   const adviceCard = adviceResponse?.card;
-
-  const confidenceLabel = useMemo(() => {
-    if (!adviceCard) {
-      return "--";
-    }
-    return `${Math.round(adviceCard.confidence * 100)}%`;
-  }, [adviceCard]);
+  const adviceFitLabel = adviceCard ? getAdviceFitLabel(adviceCard.confidence) : "--";
+  const adviceSignalLabel = adviceCard ? getAdviceSignalLabel(adviceCard.errorState, adviceCard.fallbackUsed) : null;
 
   function handleGenerate() {
     setStatusMessage(null);
@@ -146,27 +142,27 @@ export function AdviceReactor() {
         >
           <Stack gap={3} maxW="3xl">
             <Badge alignSelf="flex-start" bg="ember.500" color="white" px={3} py={1} borderRadius="full">
-              Advice Reactor v4
+              Advicely v4
             </Badge>
             <Heading as="h1" id="main-content" fontSize={{ base: "3xl", md: "5xl" }} lineHeight="1.05">
-              Instant advice with enough intelligence to stay useful.
+              Get clear advice in one click.
             </Heading>
             <Text color="whiteAlpha.800" fontSize={{ base: "md", md: "lg" }}>
-              One click gives you a refined signal. Hybrid providers, quality scoring, and curated fallback keep the loop alive even when external APIs wobble.
+              Pick a style, tap Get Advice, and you will get one clear idea, one next step, and one question to help you follow through.
             </Text>
           </Stack>
           <SimpleGrid columns={3} gap={3} w={{ base: "100%", lg: "auto" }} minW={{ lg: "24rem" }}>
             <Box bg="whiteAlpha.120" p={4} borderRadius="panel" borderWidth="1px" borderColor="whiteAlpha.300">
               <Text fontSize="xs" color="whiteAlpha.700" textTransform="uppercase" letterSpacing="0.08em">
-                Streak
+                Days used
               </Text>
               <Text fontSize="2xl" fontWeight="700">
-                {snapshotStats.streakDays}d
+                {snapshotStats.streakDays}
               </Text>
             </Box>
             <Box bg="whiteAlpha.120" p={4} borderRadius="panel" borderWidth="1px" borderColor="whiteAlpha.300">
               <Text fontSize="xs" color="whiteAlpha.700" textTransform="uppercase" letterSpacing="0.08em">
-                Generations
+                Advice cards
               </Text>
               <Text fontSize="2xl" fontWeight="700">
                 {snapshotStats.totalGenerations}
@@ -174,7 +170,7 @@ export function AdviceReactor() {
             </Box>
             <Box bg="whiteAlpha.120" p={4} borderRadius="panel" borderWidth="1px" borderColor="whiteAlpha.300">
               <Text fontSize="xs" color="whiteAlpha.700" textTransform="uppercase" letterSpacing="0.08em">
-                Saved
+                Saved ideas
               </Text>
               <Text fontSize="2xl" fontWeight="700">
                 {snapshotStats.savedCount}
@@ -187,7 +183,7 @@ export function AdviceReactor() {
           <Stack gap={4} gridColumn={{ xl: "span 2" }}>
             <Box bg="whiteAlpha.100" borderRadius="panel" p={5} borderWidth="1px" borderColor="whiteAlpha.300">
               <Text fontSize="sm" color="whiteAlpha.800" mb={3}>
-                Tone profile
+                Advice style
               </Text>
               <Stack gap={3}>
                 {toneProfiles.map((tone) => (
@@ -204,7 +200,7 @@ export function AdviceReactor() {
                     borderRadius="xl"
                     _hover={{ borderColor: "reactor.300", bg: tone.id === toneProfile ? "reactor.400" : "whiteAlpha.150" }}
                     _focusVisible={{ outline: "2px solid", outlineColor: "ember.300" }}
-                    aria-label={`Set tone profile to ${tone.label}`}
+                    aria-label={`Set advice style to ${tone.label}`}
                   >
                     <Box textAlign="left">
                       <Text fontWeight="700">{tone.label}</Text>
@@ -222,7 +218,7 @@ export function AdviceReactor() {
               <Button size="lg" bg="ember.500" color="white" onClick={handleGenerate} _hover={{ bg: "ember.400" }} _focusVisible={{ outline: "2px solid", outlineColor: "ember.200" }}>
                 <HStack>
                   <Icon as={FiRefreshCw} />
-                  <Text>Generate Advice</Text>
+                  <Text>Get Advice</Text>
                 </HStack>
               </Button>
               <Button
@@ -236,7 +232,7 @@ export function AdviceReactor() {
               >
                 <HStack>
                   <Icon as={FiBookmark} />
-                  <Text>Save</Text>
+                  <Text>Save This</Text>
                 </HStack>
               </Button>
             </SimpleGrid>
@@ -244,7 +240,7 @@ export function AdviceReactor() {
             <Button variant="ghost" justifyContent="flex-start" color="whiteAlpha.900" onClick={handleShare} disabled={!adviceCard} _hover={{ bg: "whiteAlpha.150" }}>
               <HStack>
                 <Icon as={FiShare2} />
-                <Text>Create share card</Text>
+                <Text>Share This Advice</Text>
               </HStack>
             </Button>
           </Stack>
@@ -267,16 +263,16 @@ export function AdviceReactor() {
               {adviceMutation.isPending ? (
                 <Stack h="100%" justify="center" align="center" gap={4}>
                   <Spinner size="lg" color="ember.300" />
-                  <Text color="whiteAlpha.800">Composing your next signal...</Text>
+                  <Text color="whiteAlpha.800">Finding your next useful step...</Text>
                 </Stack>
               ) : null}
 
               {adviceMutation.isError ? (
                 <Stack h="100%" justify="center" gap={4}>
                   <Heading as="h2" fontSize="2xl">
-                    Advice temporarily unavailable
+                    Advice is taking a moment
                   </Heading>
-                  <Text color="whiteAlpha.800">The service hit a rough patch. Trigger another generation to retry with fallback protection.</Text>
+                  <Text color="whiteAlpha.800">We could not reach live advice sources right now. Try again and we will use backup guidance if needed.</Text>
                   <Button alignSelf="flex-start" onClick={handleGenerate} bg="reactor.500">
                     <HStack>
                       <Icon as={FiRefreshCw} />
@@ -290,20 +286,14 @@ export function AdviceReactor() {
                 <Stack gap={6}>
                   <HStack wrap="wrap" gap={2}>
                     <Badge bg="reactor.500" color="white" borderRadius="full" px={3} py={1}>
-                      {adviceCard.toneProfile}
+                      {getToneProfileLabel(adviceCard.toneProfile)}
                     </Badge>
                     <Badge bg="whiteAlpha.200" color="white">
-                      Source: {adviceCard.sourceAttribution}
+                      {adviceFitLabel}
                     </Badge>
-                    <Badge bg="whiteAlpha.200" color="white">
-                      Confidence: {confidenceLabel}
-                    </Badge>
-                    <Badge bg="whiteAlpha.200" color="white">
-                      Freshness: {adviceCard.freshnessMinutes}m
-                    </Badge>
-                    {adviceCard.errorState ? (
+                    {adviceSignalLabel ? (
                       <Badge bg="ember.600" color="white">
-                        {adviceCard.errorState}
+                        {adviceSignalLabel}
                       </Badge>
                     ) : null}
                   </HStack>
@@ -316,13 +306,13 @@ export function AdviceReactor() {
                   <SimpleGrid columns={{ base: 1, md: 2 }} gap={4}>
                     <Box bg="whiteAlpha.120" borderRadius="xl" p={4}>
                       <Text fontSize="xs" color="whiteAlpha.700" textTransform="uppercase" letterSpacing="0.08em" mb={1}>
-                        Micro action
+                        Try this next
                       </Text>
                       <Text color="whiteAlpha.900">{adviceCard.microAction}</Text>
                     </Box>
                     <Box bg="whiteAlpha.120" borderRadius="xl" p={4}>
                       <Text fontSize="xs" color="whiteAlpha.700" textTransform="uppercase" letterSpacing="0.08em" mb={1}>
-                        Reflection
+                        Think about this
                       </Text>
                       <Text color="whiteAlpha.900">{adviceCard.reflectionPrompt}</Text>
                     </Box>
@@ -333,9 +323,9 @@ export function AdviceReactor() {
               {!adviceMutation.isPending && !adviceMutation.isError && !adviceCard ? (
                 <Stack h="100%" justify="center" align="flex-start" gap={4}>
                   <Heading as="h2" fontSize="2xl">
-                    Start the loop
+                    Ready when you are
                   </Heading>
-                  <Text color="whiteAlpha.800">Choose a tone profile and generate your first advice card.</Text>
+                  <Text color="whiteAlpha.800">Pick an advice style and press Get Advice.</Text>
                 </Stack>
               ) : null}
             </Box>
@@ -360,9 +350,9 @@ export function AdviceReactor() {
             >
               <HStack color="reactor.100" mb={2}>
                 <Icon as={FiTrendingUp} />
-                <Text fontWeight="700">Momentum</Text>
+                <Text fontWeight="700">Progress</Text>
               </HStack>
-              <Text color="whiteAlpha.800">Track streaks, reflections, and generation consistency.</Text>
+              <Text color="whiteAlpha.800">Review recent advice and save short notes about what worked.</Text>
             </Box>
           </NextLink>
 
@@ -377,9 +367,9 @@ export function AdviceReactor() {
             >
               <HStack color="ember.100" mb={2}>
                 <Icon as={FiBookmark} />
-                <Text fontWeight="700">Library</Text>
+                <Text fontWeight="700">Saved Advice</Text>
               </HStack>
-              <Text color="whiteAlpha.800">Curate your strongest advice cards by tone and confidence.</Text>
+              <Text color="whiteAlpha.800">Keep the advice you want to revisit later.</Text>
             </Box>
           </NextLink>
         </SimpleGrid>
