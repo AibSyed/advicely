@@ -22,8 +22,8 @@ import { addReflection, getMomentumState } from "@/features/momentum/storage";
 import { emptyMomentumState, type MomentumStateVM } from "@/features/momentum/contracts";
 
 const reflectionFormSchema = z.object({
-  adviceId: z.string().min(1, "Pick a recent advice entry."),
-  reflection: z.string().trim().min(12, "Reflection should be at least 12 characters.").max(280),
+  adviceId: z.string().min(1, "Choose an advice card first."),
+  reflection: z.string().trim().min(12, "Write at least 12 characters so this note is useful.").max(280),
 });
 
 type ReflectionFormValues = z.infer<typeof reflectionFormSchema>;
@@ -66,24 +66,24 @@ export function MomentumDashboard() {
           <Button alignSelf="flex-start" variant="ghost">
             <HStack>
               <Icon as={FiArrowLeft} />
-              <Text>Back to reactor</Text>
+              <Text>Back to advice</Text>
             </HStack>
           </Button>
         </NextLink>
 
         <Stack gap={2}>
           <Heading as="h1" id="main-content" fontSize={{ base: "3xl", md: "5xl" }}>
-            Momentum board
+            Your progress
           </Heading>
           <Text color="whiteAlpha.800" maxW="2xl">
-            Convert advice into behavior by tracking streak consistency and reflection quality.
+            Keep a simple record of what you have tried and what helped.
           </Text>
         </Stack>
 
         <SimpleGrid columns={{ base: 1, md: 4 }} gap={4}>
           <Box bg="whiteAlpha.120" borderRadius="panel" borderWidth="1px" borderColor="whiteAlpha.300" p={4}>
             <Text color="whiteAlpha.700" fontSize="xs" textTransform="uppercase" letterSpacing="0.08em">
-              Active streak
+              Days practiced
             </Text>
             <Text fontSize="3xl" fontWeight="700">
               {state.streakDays} days
@@ -91,7 +91,7 @@ export function MomentumDashboard() {
           </Box>
           <Box bg="whiteAlpha.120" borderRadius="panel" borderWidth="1px" borderColor="whiteAlpha.300" p={4}>
             <Text color="whiteAlpha.700" fontSize="xs" textTransform="uppercase" letterSpacing="0.08em">
-              Total generations
+              Advice sessions
             </Text>
             <Text fontSize="3xl" fontWeight="700">
               {state.totalGenerations}
@@ -99,7 +99,7 @@ export function MomentumDashboard() {
           </Box>
           <Box bg="whiteAlpha.120" borderRadius="panel" borderWidth="1px" borderColor="whiteAlpha.300" p={4}>
             <Text color="whiteAlpha.700" fontSize="xs" textTransform="uppercase" letterSpacing="0.08em">
-              Saved cards
+              Saved advice
             </Text>
             <Text fontSize="3xl" fontWeight="700">
               {state.savedCards.length}
@@ -107,7 +107,7 @@ export function MomentumDashboard() {
           </Box>
           <Box bg="whiteAlpha.120" borderRadius="panel" borderWidth="1px" borderColor="whiteAlpha.300" p={4}>
             <Text color="whiteAlpha.700" fontSize="xs" textTransform="uppercase" letterSpacing="0.08em">
-              Reflections
+              Notes written
             </Text>
             <Text fontSize="3xl" fontWeight="700">
               {reflectionCount}
@@ -120,12 +120,12 @@ export function MomentumDashboard() {
             <HStack mb={4} color="reactor.100">
               <Icon as={FiZap} />
               <Heading as="h2" size="md">
-                Recent generations
+                Recent advice
               </Heading>
             </HStack>
             <Stack gap={3} maxH="23rem" overflowY="auto" pr={1}>
               {state.generatedHistory.length === 0 ? (
-                <Text color="whiteAlpha.700">Generate your first advice card on the reactor page.</Text>
+                <Text color="whiteAlpha.700">Generate your first advice card from the home page.</Text>
               ) : null}
               {state.generatedHistory.map((item) => (
                 <Box key={item.id} borderWidth="1px" borderColor="whiteAlpha.300" borderRadius="xl" p={3} bg="whiteAlpha.100">
@@ -147,17 +147,17 @@ export function MomentumDashboard() {
             <HStack mb={4} color="ember.100">
               <Icon as={FiEdit3} />
               <Heading as="h2" size="md">
-                Reflection capture
+                Add a quick note
               </Heading>
             </HStack>
 
             <Stack gap={4}>
               <Box>
                 <Text mb={2} color="whiteAlpha.800">
-                  Advice entry
+                  Advice card
                 </Text>
                 <select
-                  aria-label="Advice entry"
+                  aria-label="Advice card"
                   style={{
                     width: "100%",
                     borderRadius: "0.75rem",
@@ -169,7 +169,7 @@ export function MomentumDashboard() {
                   {...form.register("adviceId")}
                 >
                   <option value="" style={{ color: "#1f2937" }}>
-                    Select a recent card
+                    Choose a recent card
                   </option>
                   {historyOptions.map((item) => (
                     <option key={item.id} value={item.id} style={{ color: "#1f2937" }}>
@@ -186,11 +186,11 @@ export function MomentumDashboard() {
 
               <Box>
                 <Text mb={2} color="whiteAlpha.800">
-                  Reflection
+                  What happened after trying it?
                 </Text>
                 <textarea
                   rows={5}
-                  aria-label="Reflection"
+                  aria-label="Outcome note"
                   style={{
                     width: "100%",
                     borderRadius: "0.75rem",
@@ -199,7 +199,7 @@ export function MomentumDashboard() {
                     color: "white",
                     padding: "0.75rem",
                   }}
-                  placeholder="Write what changed after applying the advice..."
+                  placeholder="Write what you tried and what happened..."
                   {...form.register("reflection")}
                 />
                 {form.formState.errors.reflection ? (
@@ -213,7 +213,7 @@ export function MomentumDashboard() {
                 <Button type="submit" bg="reactor.500" color="white" _hover={{ bg: "reactor.400" }}>
                   <HStack>
                     <Icon as={FiCheckCircle} />
-                    <Text>Save reflection</Text>
+                    <Text>Save note</Text>
                   </HStack>
                 </Button>
                 {savedMessage ? (

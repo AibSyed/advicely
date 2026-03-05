@@ -27,10 +27,10 @@ export default function OpenGraphImage() {
           Advicely Reactor
         </div>
         <div style={{ fontSize: 72, lineHeight: 1.03, maxWidth: 900, fontWeight: 700 }}>
-          One click. Better advice. Repeatable momentum.
+          Clear advice in one click.
         </div>
         <div style={{ fontSize: 30, opacity: 0.92 }}>
-          Adaptive tone, fallback intelligence, and daily progress loops.
+          A practical next step, a simple reflection, and support when you need it.
         </div>
       </div>
     ),

@@ -18,17 +18,17 @@ const bodyFont = Space_Grotesk({
 export const metadata: Metadata = {
   title: "Advicely Reactor",
   description:
-    "Instant advice for 2026: one-click wisdom with adaptive tone, momentum tracking, and graceful fallback intelligence.",
+    "Get clear advice in one click, save what helps, and keep simple notes on what worked.",
   metadataBase: new URL("https://advicely.vercel.app"),
   openGraph: {
     title: "Advicely Reactor",
-    description: "Generate focused advice instantly and turn it into daily momentum.",
+    description: "One click gives you practical advice, a next step, and a quick reflection prompt.",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Advicely Reactor",
-    description: "One click. Better advice. Repeatable momentum.",
+    description: "Clear advice in one click for everyday decisions.",
   },
 };
 

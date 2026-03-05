@@ -16,11 +16,19 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { FiArrowLeft, FiFilter, FiTrash2 } from "react-icons/fi";
+import { getAdviceFitLabel, getToneProfileLabel } from "@/features/advice/presentation";
 import { getMomentumState, removeSavedCard } from "@/features/momentum/storage";
 import { emptyMomentumState, type MomentumStateVM } from "@/features/momentum/contracts";
 import type { ToneProfile } from "@/features/advice/contracts";
 
 const toneOptions: Array<ToneProfile | "all"> = ["all", "grounded", "bold", "calm", "playful"];
+const toneOptionLabels: Record<ToneProfile | "all", string> = {
+  all: "All styles",
+  grounded: "Practical",
+  bold: "Direct",
+  calm: "Calm",
+  playful: "Light",
+};
 
 export function LibraryGrid() {
   const [state, setState] = useState<MomentumStateVM>(emptyMomentumState);
@@ -50,7 +58,7 @@ export function LibraryGrid() {
           <Button alignSelf="flex-start" variant="ghost">
             <HStack>
               <Icon as={FiArrowLeft} />
-              <Text>Back to reactor</Text>
+              <Text>Back to advice</Text>
             </HStack>
           </Button>
         </NextLink>
@@ -60,7 +68,7 @@ export function LibraryGrid() {
             Advice library
           </Heading>
           <Text color="whiteAlpha.800" maxW="2xl">
-            Your curated collection of cards worth reusing. Filter by tone and prune anything stale.
+            Save advice that actually helps, then come back to it when you need it.
           </Text>
         </Stack>
 
@@ -77,12 +85,12 @@ export function LibraryGrid() {
         >
           <Flex align="center" gap={2} color="whiteAlpha.900">
             <Icon as={FiFilter} />
-            <Text fontWeight="600">Tone filter</Text>
+            <Text fontWeight="600">Style</Text>
           </Flex>
           <select
             value={toneFilter}
             onChange={(event) => setToneFilter(event.target.value as ToneProfile | "all")}
-            aria-label="Filter saved advice by tone"
+            aria-label="Filter saved advice by style"
             style={{
               borderRadius: "0.7rem",
               border: "1px solid rgba(255,255,255,0.28)",
@@ -94,7 +102,7 @@ export function LibraryGrid() {
           >
             {toneOptions.map((tone) => (
               <option key={tone} value={tone} style={{ color: "#111827" }}>
-                {tone}
+                {toneOptionLabels[tone]}
               </option>
             ))}
           </select>
@@ -110,7 +118,7 @@ export function LibraryGrid() {
               borderColor="whiteAlpha.300"
               p={8}
             >
-              <Text color="whiteAlpha.800">No saved cards yet for this filter. Generate and save from the reactor to build your library.</Text>
+              <Text color="whiteAlpha.800">No saved advice in this style yet. Save cards from home to build your library.</Text>
             </Box>
           ) : null}
 
@@ -120,10 +128,10 @@ export function LibraryGrid() {
                 <Stack gap={2}>
                   <HStack>
                     <Badge bg="reactor.500" color="white">
-                      {card.toneProfile}
+                      {getToneProfileLabel(card.toneProfile)}
                     </Badge>
                     <Badge bg="whiteAlpha.200" color="white">
-                      {Math.round(card.confidence * 100)}%
+                      {getAdviceFitLabel(card.confidence)}
                     </Badge>
                   </HStack>
                   <Heading as="h2" size="md">
@@ -142,7 +150,7 @@ export function LibraryGrid() {
                 {card.advice}
               </Text>
               <Text mt={3} color="whiteAlpha.700" fontSize="sm">
-                Saved {new Date(card.savedAt).toLocaleString()} · Source {card.source}
+                Saved {new Date(card.savedAt).toLocaleString()}
               </Text>
             </Box>
           ))}

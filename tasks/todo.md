@@ -30,3 +30,16 @@
   - Console errors resolved after Chakra hydration hardening (`--webpack` scripts + hydration-safe client state initialization).
   - Mobile viewport check (`390x844`) confirmed responsive route rendering on `/`, `/momentum`, `/library`.
   - Trace summary on `/`: LCP `408ms`, CLS `0.00` (no throttling).
+
+## 2026-03-04 Copy Clarity and Everyday-Use Pass (`codex/ux-copy-clarity`)
+- [x] Replace technical and game-jargon copy on `/` with plain-language guidance.
+- [x] Translate confidence/error/internal-source surfacing into user-friendly labels.
+- [x] Reframe `/momentum`, `/library`, and `/share/[id]` language for regular users.
+- [x] Keep API/domain contracts stable while adding shared UI presentation helpers.
+- [x] Update e2e assertions to new primary headings and CTA language.
+- [x] Run verification ladder: `pnpm run lint`, `pnpm run typecheck`, `pnpm run test`, `pnpm run test:e2e`, `pnpm run build`.
+
+### Verification Notes
+- Final sequential ladder passed: `pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run test:e2e && pnpm run build && pnpm run audit:high`.
+- `pnpm run check` passed.
+- Next.js dev-origin warning addressed via `allowedDevOrigins` in `next.config.ts` (`localhost`, `127.0.0.1`).

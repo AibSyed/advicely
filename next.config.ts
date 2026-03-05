@@ -30,6 +30,7 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   typedRoutes: true,
   poweredByHeader: false,
+  allowedDevOrigins: ["localhost", "127.0.0.1"],
   async headers() {
     return [
       {
