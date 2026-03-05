@@ -1,40 +1,21 @@
 "use client";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import {
-  ChakraProvider,
-  createSystem,
-  defaultConfig,
-} from "@chakra-ui/react";
-import { PropsWithChildren, useState } from "react";
+import type { ReactNode } from "react";
+import { ChakraProvider } from "@chakra-ui/react";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { advicelySystem } from "@/components/theme-system";
+import { getQueryClient } from "@/lib/query/client";
 
-const system = createSystem(defaultConfig, {
-  theme: {
-    tokens: {
-      fonts: {
-        heading: { value: "var(--font-display), sans-serif" },
-        body: { value: "var(--font-body), sans-serif" },
-      },
-    },
-  },
-});
+interface ProvidersProps {
+  children: ReactNode;
+}
 
-export function Providers({ children }: PropsWithChildren) {
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            staleTime: 1000 * 60,
-            refetchOnWindowFocus: false,
-          },
-        },
-      })
-  );
+export function Providers({ children }: ProvidersProps) {
+  const queryClient = getQueryClient();
 
   return (
-    <ChakraProvider value={system}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    </ChakraProvider>
+    <QueryClientProvider client={queryClient}>
+      <ChakraProvider value={advicelySystem}>{children}</ChakraProvider>
+    </QueryClientProvider>
   );
 }

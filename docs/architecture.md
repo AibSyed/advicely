@@ -1,42 +1,54 @@
-# Advicely Architecture v3
+# Advicely v4 Architecture
 
-## Runtime and Boundaries
-- Framework: Next.js App Router + TypeScript strict mode.
-- UI baseline: Chakra UI with route-specific client components.
-- Data boundary: route handler returns only Zod-validated normalized payloads.
-- Persistence boundary: browser-local progression schema `version: 2` only.
+## Intent
+Advicely v4 optimizes for an immediate advice loop with robust reliability safeguards and a light momentum layer.
 
-## Topology
+## System Topology
 ```mermaid
-flowchart LR
-  UI["Daily Loop UI"] --> API["GET /api/coaching"]
-  API --> DOM["Coaching Domain Service"]
-  DOM --> P1["AdviceSlip Adapter"]
-  DOM --> P2["Quotable Adapter"]
-  DOM --> SAFE["Safety + Low Quality Filter"]
-  DOM --> FALL["Curated Prompt Fallback"]
-  DOM --> VM["Zod-normalized CoachingResponse"]
-  VM --> UI
-  UI --> STORE["Local Progression Store v2"]
+flowchart TB
+  UI["App Router Client Experience"] --> API["/api/advice"]
+  API --> ENG["Advice Engine"]
+  ENG --> PRI["AdviceSlip Adapter"]
+  ENG --> SEC["ZenQuotes Adapter"]
+  ENG --> CAT["Fallback Catalog"]
+  ENG --> QUAL["Quality and Dedupe Layer"]
+  QUAL --> SHAPE["Tone Shaping Layer"]
+  SHAPE --> CONTRACT["AdviceResponse Zod Contract"]
+  CONTRACT --> UI
+  UI --> STORE["Local Storage: advicely:v4:momentum"]
 ```
 
-## Data Contracts
-- `CoachingResponse`
-  - `card.id`, `card.theme`, `card.headline`, `card.prompt`
-  - `card.reflection`, `card.microAction`, `card.xpReward`
-  - `card.source`, `card.confidenceScore`, `card.fallbackUsed`, `card.generatedAt`
-  - `providerHealth[]`, `partialData`
-- `ProgressionState`
-  - `version`, `streakDays`, `totalXp`, `sessionsCompleted`, `lastCheckInDate`, `reflections[]`
+## Public Contracts
+- `AdviceCardVM`
+  - id, headline, advice, microAction, reflectionPrompt
+  - toneProfile, source, sourceAttribution
+  - freshnessMinutes, confidence, fallbackUsed
+  - errorState, textHash, generatedAt
+- `AdviceMetaVM`
+  - requestId, generatedAt
+  - providerHealth (primary/secondary)
+  - diagnostics
+- `ShareCardVM`
+  - id, headline, advice, toneProfile, source, confidence, createdAt
+- `MomentumStateVM`
+  - versioned local persistence (`version: 4`)
 
-## Error Model
-- `unavailable`: all providers fail, fallback path engaged.
-- `invalid_payload`: adapter payload rejected by Zod.
-- `partial`: provider returns minimally useful data while fallback fills gaps.
-- `stale`: provider freshness cannot satisfy target recency.
-- `rate_limited`: upstream throttling encountered, fallback continuity used.
+## Failure Modes
+- `unavailable`: provider request failure or timeout
+- `stale`: reserved for stale upstream payload semantics
+- `partial`: low-quality or duplicate payload rejected
+- `rate_limited`: upstream 429
+- `invalid_payload`: schema mismatch from provider
 
-## Security Notes
-- Provider endpoints and any sensitive values are server-only.
-- Share-card route does not expose provider diagnostics or internal env values.
-- CSP and secure headers are enforced globally.
+## Storage Keys
+- `advicely:v4:momentum`
+
+## Security Boundaries
+- External API calls happen only in server route handlers.
+- Env parsing is server-only (`lib/env.ts`).
+- CSP and hardened security headers are configured globally.
+
+## Deployment and Operations
+- Vercel hosts production and previews.
+- `master` auto-deploys to production.
+- CI gate requires lint, typecheck, test, e2e, build, docs checks, and high-severity audit.

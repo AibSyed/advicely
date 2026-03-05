@@ -1,14 +1,15 @@
-import { Container } from "@chakra-ui/react";
-import { ShareCard } from "@/components/coach/share-card";
+import { ShareExperience } from "@/components/share/share-experience";
 
-export default async function SharePage({ params }: { params: Promise<{ id: string }> }) {
+interface SharePageProps {
+  params: Promise<{ id: string }>;
+}
+
+export default async function SharePage({ params }: SharePageProps) {
   const { id } = await params;
 
   return (
-    <main id="main-content">
-      <Container maxW="6xl" py={{ base: 8, md: 10 }}>
-        <ShareCard id={id} />
-      </Container>
+    <main>
+      <ShareExperience shareId={id} />
     </main>
   );
 }

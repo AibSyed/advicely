@@ -1,11 +1,13 @@
 import type { NextConfig } from "next";
 
+const isDev = process.env.NODE_ENV !== "production";
+
 const contentSecurityPolicy = [
   "default-src 'self'",
   "base-uri 'self'",
   "frame-ancestors 'none'",
   "object-src 'none'",
-  "script-src 'self' 'unsafe-inline'",
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' https: data: blob:",
   "font-src 'self' data:",
@@ -16,18 +18,25 @@ const contentSecurityPolicy = [
 ].join("; ");
 
 const securityHeaders = [
+  { key: "Content-Security-Policy", value: contentSecurityPolicy },
   { key: "X-Frame-Options", value: "DENY" },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
-  { key: "Content-Security-Policy", value: contentSecurityPolicy },
+  { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+  { key: "Cross-Origin-Resource-Policy", value: "same-site" },
 ];
 
 const nextConfig: NextConfig = {
   typedRoutes: true,
-  allowedDevOrigins: ["127.0.0.1", "localhost"],
+  poweredByHeader: false,
   async headers() {
-    return [{ source: "/(.*)", headers: securityHeaders }];
+    return [
+      {
+        source: "/(.*)",
+        headers: securityHeaders,
+      },
+    ];
   },
 };
 

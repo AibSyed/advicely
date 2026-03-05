@@ -1,46 +1,67 @@
+:root {
+  color-scheme: dark;
+  --bg-top: #081327;
+  --bg-bottom: #0d0a22;
+  --text-main: #f5f9ff;
+}
+
 * {
   box-sizing: border-box;
 }
 
+html,
 body {
   margin: 0;
-  min-height: 100vh;
+  min-height: 100%;
   background:
-    radial-gradient(circle at 10% 12%, rgba(255, 122, 26, 0.22), transparent 25%),
-    radial-gradient(circle at 88% 10%, rgba(34, 211, 238, 0.16), transparent 22%),
-    linear-gradient(165deg, #fffaf4, #f3f9ff 62%, #edf7ff);
-  color: #0f172a;
+    radial-gradient(circle at 20% 10%, rgba(26, 114, 255, 0.25), transparent 40%),
+    radial-gradient(circle at 80% 10%, rgba(249, 115, 22, 0.2), transparent 35%),
+    linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+  color: var(--text-main);
+}
+
+body {
+  font-family: var(--font-body), "Segoe UI", sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display), "Trebuchet MS", sans-serif;
+  letter-spacing: 0.01em;
 }
 
 .skip-link {
   position: absolute;
-  left: 1rem;
-  top: -40px;
+  left: 0.75rem;
+  top: 0.5rem;
   z-index: 100;
-  border-radius: 9999px;
-  background: #ecfeff;
-  color: #0f172a;
-  padding: 0.45rem 0.8rem;
+  transform: translateY(-200%);
+  border-radius: 999px;
+  background: #ffffff;
+  color: #050b16;
+  font-weight: 700;
+  padding: 0.5rem 0.9rem;
+  transition: transform 160ms ease;
 }
 
-.skip-link:focus {
-  top: 1rem;
+.skip-link:focus-visible {
+  transform: translateY(0);
 }
 
-.route-shell {
-  margin: 0 auto;
-  min-height: 100vh;
-  max-width: 1120px;
-  padding: 4rem 1.5rem;
-  color: #0f172a;
+::selection {
+  background: rgba(255, 179, 106, 0.45);
+  color: #ffffff;
 }
 
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
-    animation: none !important;
-    transition: none !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
     scroll-behavior: auto !important;
   }
 }
