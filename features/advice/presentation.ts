@@ -45,10 +45,10 @@ const errorLabels: Record<AdviceErrorState, string> = {
 
 const blockTitles: Record<AdviceBlockVM["type"], string> = {
   core_advice: "Advice",
-  steps: "Steps",
+  steps: "Next Steps",
   script: "Suggested Script",
   reframe: "Perspective",
-  caution: "Important",
+  caution: "Use Caution",
   checklist: "Checklist",
 };
 
@@ -66,22 +66,6 @@ export function getDetailLabel(detail: AdviceDetail): string {
 
 export function getSourceLabel(source: AdviceProvider): string {
   return sourceLabels[source];
-}
-
-export function getAdviceFitLabel(confidence: number): string {
-  if (confidence >= 0.85) {
-    return "Strong fit";
-  }
-
-  if (confidence >= 0.7) {
-    return "Good fit";
-  }
-
-  if (confidence >= 0.55) {
-    return "Worth trying";
-  }
-
-  return "Try and adapt";
 }
 
 export function getAdviceSignalLabel(
