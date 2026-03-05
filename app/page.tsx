@@ -1,12 +1,9 @@
-import { Container } from "@chakra-ui/react";
-import { MomentumArena } from "@/components/coach/momentum-arena";
+import { AdviceReactor } from "@/components/advice/advice-reactor";
 
 export default function HomePage() {
   return (
-    <main id="main-content">
-      <Container maxW="7xl" py={{ base: 8, md: 10 }}>
-        <MomentumArena />
-      </Container>
+    <main>
+      <AdviceReactor />
     </main>
   );
 }
