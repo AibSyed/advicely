@@ -1,31 +1,50 @@
 import { NextResponse } from "next/server";
-import { toneProfileSchema } from "@/features/advice/contracts";
+import { adviceRequestSchema } from "@/features/advice/contracts";
 import { generateAdvice } from "@/lib/api/advice-engine";
 
 export const runtime = "nodejs";
 
-function parseRecentHashes(rawRecent: string | null): Set<string> {
-  if (!rawRecent) {
-    return new Set();
-  }
-
-  return new Set(
-    rawRecent
-      .split(",")
-      .map((value) => value.trim())
-      .filter((value) => /^[a-f0-9]{64}$/.test(value))
-      .slice(0, 12),
-  );
-}
-
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const parsedTone = toneProfileSchema.safeParse(searchParams.get("tone") ?? "grounded");
-  const toneProfile = parsedTone.success ? parsedTone.data : "grounded";
-  const recentHashes = parseRecentHashes(searchParams.get("recent"));
+export async function POST(request: Request) {
+  let body: unknown;
 
   try {
-    const payload = await generateAdvice({ toneProfile, recentHashes });
+    body = await request.json();
+  } catch {
+    return NextResponse.json(
+      {
+        error: "Request body must be valid JSON",
+      },
+      {
+        status: 400,
+        headers: {
+          "Cache-Control": "no-store, max-age=0",
+        },
+      },
+    );
+  }
+
+  const parsedRequest = adviceRequestSchema.safeParse(body);
+  if (!parsedRequest.success) {
+    return NextResponse.json(
+      {
+        error: "Invalid request payload",
+        issues: parsedRequest.error.issues.map((issue) => ({
+          path: issue.path.join("."),
+          message: issue.message,
+        })),
+      },
+      {
+        status: 400,
+        headers: {
+          "Cache-Control": "no-store, max-age=0",
+        },
+      },
+    );
+  }
+
+  try {
+    const payload = await generateAdvice({ request: parsedRequest.data });
+
     return NextResponse.json(payload, {
       headers: {
         "Cache-Control": "no-store, max-age=0",
@@ -44,4 +63,19 @@ export async function GET(request: Request) {
       },
     );
   }
+}
+
+export async function GET() {
+  return NextResponse.json(
+    {
+      error: "Method Not Allowed",
+    },
+    {
+      status: 405,
+      headers: {
+        Allow: "POST",
+        "Cache-Control": "no-store, max-age=0",
+      },
+    },
+  );
 }

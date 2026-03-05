@@ -1,5 +1,5 @@
 name: Bug Report
-description: Report an issue in coaching generation or UX.
+description: Report an issue in advice generation, saved/history flows, or UX.
 title: "[bug]: "
 labels: [bug]
 body:

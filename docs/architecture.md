@@ -1,54 +1,77 @@
-# Advicely v4 Architecture
+# Advicely v5 Architecture
 
 ## Intent
-Advicely v4 optimizes for an immediate advice loop with robust reliability safeguards and a light momentum layer.
+Advicely v5 is a utility-first advice tool for normal users: generate relevant advice quickly, save it, retrieve it, and share it.
 
 ## System Topology
 ```mermaid
 flowchart TB
-  UI["App Router Client Experience"] --> API["/api/advice"]
-  API --> ENG["Advice Engine"]
-  ENG --> PRI["AdviceSlip Adapter"]
-  ENG --> SEC["ZenQuotes Adapter"]
-  ENG --> CAT["Fallback Catalog"]
-  ENG --> QUAL["Quality and Dedupe Layer"]
-  QUAL --> SHAPE["Tone Shaping Layer"]
-  SHAPE --> CONTRACT["AdviceResponse Zod Contract"]
+  UI["App Router Client UI"] --> API["/api/advice POST"]
+  API --> EN["Advice Engine"]
+  EN --> PRI["AdviceSlip Adapter"]
+  EN --> SEC["ZenQuotes Adapter"]
+  EN --> CAT["Fallback Catalog"]
+  EN --> QUAL["Quality and Dedupe Layer"]
+  QUAL --> SHAPE["Adaptive Block Shaper"]
+  SHAPE --> CONTRACT["AdviceResponseVM Zod Contract"]
   CONTRACT --> UI
-  UI --> STORE["Local Storage: advicely:v4:momentum"]
+  UI --> STORE["Local Storage: advicely:v5:workspace"]
 ```
 
-## Public Contracts
+## Request Contract
+`POST /api/advice`
+
+- `context?: string` (0..600)
+- `intent: "quick" | "decision" | "communication" | "planning" | "stress" | "general"`
+- `style: "balanced" | "direct" | "supportive" | "creative"`
+- `detail: "short" | "standard" | "deep"`
+- `avoidRecentHashes?: string[]`
+
+## Response Contract
 - `AdviceCardVM`
-  - id, headline, advice, microAction, reflectionPrompt
-  - toneProfile, source, sourceAttribution
-  - freshnessMinutes, confidence, fallbackUsed
-  - errorState, textHash, generatedAt
+  - `id`, `headline`, `summary`
+  - `blocks: AdviceBlockVM[]` (adaptive)
+  - `intent`, `style`, `detail`, `context?`
+  - `source`, `sourceAttribution`
+  - `confidence`, `fallbackUsed`, `errorState`, `textHash`, `generatedAt`
 - `AdviceMetaVM`
-  - requestId, generatedAt
-  - providerHealth (primary/secondary)
-  - diagnostics
-- `ShareCardVM`
-  - id, headline, advice, toneProfile, source, confidence, createdAt
-- `MomentumStateVM`
-  - versioned local persistence (`version: 4`)
+  - `requestId`, `generatedAt`
+  - `providerHealth` (primary/secondary)
+  - `diagnostics` (internal-facing trace hints)
 
-## Failure Modes
-- `unavailable`: provider request failure or timeout
-- `stale`: reserved for stale upstream payload semantics
-- `partial`: low-quality or duplicate payload rejected
-- `rate_limited`: upstream 429
-- `invalid_payload`: schema mismatch from provider
+### `AdviceBlockVM` Types
+- `core_advice`
+- `steps`
+- `script`
+- `reframe`
+- `caution`
+- `checklist`
 
-## Storage Keys
-- `advicely:v4:momentum`
+## Failure States
+- `unavailable`
+- `stale`
+- `partial`
+- `rate_limited`
+- `invalid_payload`
+
+## Local Persistence
+Storage key:
+- `advicely:v5:workspace`
+
+Stored collections:
+- `history[]`
+- `savedCards[]`
+- `shareCards[]`
+- `preferences`
+
+No backward migration from v4 key is provided by design.
 
 ## Security Boundaries
-- External API calls happen only in server route handlers.
+- External providers are called only from server route handlers.
 - Env parsing is server-only (`lib/env.ts`).
-- CSP and hardened security headers are configured globally.
+- CSP and hardening headers are configured in `next.config.ts`.
 
 ## Deployment and Operations
-- Vercel hosts production and previews.
-- `master` auto-deploys to production.
-- CI gate requires lint, typecheck, test, e2e, build, docs checks, and high-severity audit.
+- Vercel production deploys from `master`.
+- PR previews are required for integration validation.
+- CI required checks: lint, typecheck (with pre-clean + `next typegen`), test, e2e, build, docs checks, and high-severity audit.

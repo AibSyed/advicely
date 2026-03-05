@@ -22,7 +22,10 @@ export async function requestAdviceSlip(url: string, timeoutMs: number): Promise
     });
 
     if (!response.ok) {
-      throw new AdviceProviderError(`AdviceSlip request failed (${response.status})`, mapStatusToErrorState(response.status));
+      throw new AdviceProviderError(
+        `AdviceSlip request failed (${response.status})`,
+        mapStatusToErrorState(response.status),
+      );
     }
 
     const payload = adviceSlipSchema.safeParse(await response.json());
@@ -35,7 +38,6 @@ export async function requestAdviceSlip(url: string, timeoutMs: number): Promise
       source: "advice_slip",
       sourceAttribution: "AdviceSlip API",
       confidence: 0.82,
-      freshnessMinutes: 0,
       fallbackUsed: false,
       errorState: null,
     };

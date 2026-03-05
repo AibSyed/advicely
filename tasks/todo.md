@@ -1,45 +1,49 @@
-# Advicely v4 Relaunch Checklist
+# Advicely v5 Utility-First Rebuild Checklist
 
-## Baseline Capture (Pre-rewrite)
-- Branch target: `codex/ux-relaunch-2026-advicely`
-- Baseline command results (before purge):
-  - `pnpm run check` passed
-  - `pnpm run test:e2e` passed
-  - `pnpm run audit:high` passed
-- Baseline notes:
-  - Prior implementation diverged from old Advicely one-click advice identity.
-  - Existing architecture needed hard reset to prevent mixed legacy patterns.
+## Scope
+- Branch target: `codex/advicely-v5-utility-rebuild`
+- Product target: practical advice utility (context-optional generation, save/history/share)
+- Compatibility stance: zero-legacy, breaking changes allowed
 
-## Rewrite Acceptance Criteria
-- [x] Purge legacy domain files in `app/components/features/lib/tests/docs`
-- [x] Rebuild route map: `/`, `/momentum`, `/library`, `/share/[id]`, `/api/advice`
-- [x] Implement hybrid provider pipeline with validation, scoring, dedupe, fallback
-- [x] Implement local momentum persistence v4 schema
-- [x] Rebuild README and architecture docs with GitHub-safe Mermaid labels
-- [x] Run full verification ladder
-- [x] Run UX/performance sanity pass in Chrome DevTools
-- [x] Prepare merge summary with evidence
+## Preflight Baseline
+- [x] Capture baseline command results from pre-rewrite state:
+  - [x] `pnpm run lint` (pass)
+  - [x] `pnpm run typecheck` (failed on stale `.next` route validator drift to removed routes)
+  - [x] `pnpm run test` (pass)
+  - [x] `pnpm run test:e2e` (pass)
+  - [x] `pnpm run build` (pass)
+  - [x] `pnpm run audit:high` (pass)
+- [x] Record known baseline failures and causes
+
+## Implementation
+- [x] Purge v4 momentum/gamified modules and routes
+- [x] Redesign advice contracts to v5 adaptive block model
+- [x] Rebuild advice engine for contextual shaping + adaptive blocks
+- [x] Rewrite `/api/advice` to POST + request body validation
+- [x] Replace UI with Advice Studio, Saved, History, Share
+- [x] Replace local persistence schema/key to `advicely:v5:workspace`
+- [x] Fix typed-routes/typegen pipeline and route typing issues
+- [x] Rewrite tests (unit + e2e) for v5 behavior
+- [x] Rewrite README and architecture docs for v5
+
+## Acceptance Criteria
+- [x] Core flow: generate advice (with and without context) works end-to-end
+- [x] Adaptive blocks render without fixed forced labels
+- [x] Save/history/share flows work with local persistence
+- [x] Provider outage and invalid payloads degrade gracefully
+- [x] Accessibility baseline: keyboard, focus-visible, live-region status
+- [x] Quality gates all pass
 
 ## Verification Log
-- `pnpm run docs:check` passed (markdown lint, link check, Mermaid validator).
-- `pnpm run check` passed (`lint`, `typecheck`, `test`, `build`).
-- `pnpm run test:e2e` passed (primary reactor flow).
-- `pnpm run audit:high` passed (no high/critical vulnerabilities).
-- `pnpm outdated` result: only `eslint@10` available; intentionally pinned to `eslint@9.39.3` due current Next plugin ecosystem peer ranges.
+- `pnpm run lint` (pass)
+- `pnpm run typecheck` (pass)
+- `pnpm run test` (pass)
+- `pnpm run test:e2e` (pass)
+- `pnpm run build` (pass)
+- `pnpm run docs:check` (pass)
+- `pnpm run audit:high` (pass)
+- `pnpm run check` (pass)
 - Chrome DevTools MCP QA:
-  - Console errors resolved after Chakra hydration hardening (`--webpack` scripts + hydration-safe client state initialization).
-  - Mobile viewport check (`390x844`) confirmed responsive route rendering on `/`, `/momentum`, `/library`.
-  - Trace summary on `/`: LCP `408ms`, CLS `0.00` (no throttling).
-
-## 2026-03-04 Copy Clarity and Everyday-Use Pass (`codex/ux-copy-clarity`)
-- [x] Replace technical and game-jargon copy on `/` with plain-language guidance.
-- [x] Translate confidence/error/internal-source surfacing into user-friendly labels.
-- [x] Reframe `/momentum`, `/library`, and `/share/[id]` language for regular users.
-- [x] Keep API/domain contracts stable while adding shared UI presentation helpers.
-- [x] Update e2e assertions to new primary headings and CTA language.
-- [x] Run verification ladder: `pnpm run lint`, `pnpm run typecheck`, `pnpm run test`, `pnpm run test:e2e`, `pnpm run build`.
-
-### Verification Notes
-- Final sequential ladder passed: `pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run test:e2e && pnpm run build && pnpm run audit:high`.
-- `pnpm run check` passed.
-- Next.js dev-origin warning addressed via `allowedDevOrigins` in `next.config.ts` (`localhost`, `127.0.0.1`).
+  - console errors: none after switching dev to webpack mode
+  - mobile/desktop route sanity: `/`, `/saved`, `/history`, `/share/[id]` checked
+  - performance trace (`/`): LCP 147ms, CLS 0.00 (local lab run)
