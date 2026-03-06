@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { Panel, Pill } from "@/components/ui/primitives";
 
 const routeNotes: Record<string, string> = {
-  "/": "Deck open. Take a fresh pull and keep only the lines you would want to see again.",
+  "/": "Deck open. Pull a fresh line, then keep only what you want to revisit.",
   "/saved": "Library open. Saved cards and private notes are here when you want to revisit them.",
   "/history": "Recent draws open. Skim what surfaced lately and keep anything worth another look.",
   "/sources": "Sources open. See where each card comes from and when the reserve steps in.",
@@ -37,22 +37,29 @@ export function SiteFooter() {
           </Panel>
 
           <Panel tone="dark" className="site-footer__panel">
-            <Pill tone="accent">Deck makeup</Pill>
-            <div className="site-footer__pill-row">
-              <Pill tone="translucent">AdviceSlip</Pill>
-              <Pill tone="translucent">ZenQuotes</Pill>
-              <Pill tone="translucent">Advicely Reserve</Pill>
-            </div>
-            <p className="site-footer__copy">
-              When a live pull fails, repeats, or comes back too weak to keep, the deck falls back to the Advicely Reserve instead of pretending the result is still live.
-            </p>
+            <Pill tone="accent">Deck sources</Pill>
+            <p className="site-footer__copy">Cards are pulled from two live sources with a clearly-labeled local reserve when needed.</p>
+            <ul className="site-footer__source-list">
+              <li className="site-footer__source-item">
+                <span className="site-footer__source-name">AdviceSlip</span>
+                <span className="site-footer__source-role">Live advice lines</span>
+              </li>
+              <li className="site-footer__source-item">
+                <span className="site-footer__source-name">ZenQuotes</span>
+                <span className="site-footer__source-role">Live quote lines</span>
+              </li>
+              <li className="site-footer__source-item">
+                <span className="site-footer__source-name">Advicely Reserve</span>
+                <span className="site-footer__source-role">Local fallback when live draws fail checks</span>
+              </li>
+            </ul>
           </Panel>
 
           <Panel tone="dark" className="site-footer__panel">
             <Pill tone="ember">Use judgment</Pill>
             <p className="site-footer__callout">{resolveRouteNote(pathname)}</p>
             <p className="site-footer__copy">
-              Advicely is for reflection, not for decisions that could put health, safety, finances, or wellbeing at risk. Use common sense before acting on anything you pull here.
+              This app is for reflection and perspective only. Do not treat any card as medical, legal, financial, or safety guidance.
             </p>
           </Panel>
         </div>
