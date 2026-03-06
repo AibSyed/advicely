@@ -1,4 +1,4 @@
-export type ProviderFailureState = "unavailable" | "invalid_payload" | "rate_limited";
+type ProviderFailureState = "unavailable" | "invalid_payload" | "rate_limited";
 
 export class AdviceProviderError extends Error {
   constructor(

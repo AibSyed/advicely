@@ -4,7 +4,7 @@
 
 Advicely v6 is a local-first random draw app.
 
-The server selects a live advice or quote source based on the requested mode, performs only minimal normalization and filtering, and returns one source card with explicit provenance. The client stores draw history, saved cards, share cards, and private notes in local storage.
+The server selects a live advice or quote source based on the requested mode, performs only minimal normalization and filtering, and returns one source card with explicit provenance. The client stores draw history, saved cards, copy cards, and private notes in local storage.
 
 ## Data Flow
 
@@ -41,7 +41,7 @@ interface SourceCardVM {
   kind: "advice" | "quote";
   text: string;
   author?: string;
-  source: "advice_slip" | "zen_quotes" | "local_collection";
+  source: "advice_slip" | "zen_quotes" | "advicely_reserve";
   sourceLabel: string;
   provenance: "live" | "fallback";
   fallbackReason?: "provider_unavailable" | "invalid_payload" | "filtered" | "duplicate";
@@ -71,7 +71,7 @@ interface LibraryStateVM {
   version: 6;
   history: SourceCardVM[];
   savedCards: Array<SourceCardVM & { savedAt: string; note?: string }>;
-  shareCards: Array<{ id: string; createdAt: string; card: SourceCardVM; note?: string }>;
+  copyCards: Array<{ id: string; createdAt: string; card: SourceCardVM; note?: string }>;
   preferences: {
     lastMode: "advice" | "quote" | "mixed";
   };
@@ -84,7 +84,7 @@ interface LibraryStateVM {
 - Personal notes are local-only and never sent upstream.
 - Fallback cards are labeled as reserve cards in the UI.
 - The app uses webpack for both `dev` and `build` to avoid the Chakra/Emotion hydration issue seen in Turbopack builds.
-- Share output excludes personal notes unless the user explicitly opts in on the share screen.
+- Copy output excludes personal notes unless the user explicitly opts in on the copy screen.
 
 ## Failure Modes
 
@@ -93,8 +93,8 @@ interface LibraryStateVM {
 - Duplicate recent draw: fall back to a non-duplicate reserve card.
 - Invalid upstream payload: reserve card with explicit fallback provenance.
 
-## Verification Targets
+## Release Checklist
 
-- No browser console errors on `/`, `/saved`, and `/history`
-- Keyboard traversal works for draw, save, note, share, and navigation flows
+- No browser console errors on `/`, `/saved`, `/history`, and `/copy/[id]`
+- Keyboard traversal works for draw, save, note, copy, and navigation flows
 - `lint`, `typecheck`, `test`, `test:e2e`, `build`, `docs:check`, and `audit:high` all pass

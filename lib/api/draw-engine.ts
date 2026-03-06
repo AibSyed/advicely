@@ -7,7 +7,7 @@ import {
   type ProviderOutcome,
   type SourceCardVM,
 } from "@/features/draw/contracts";
-import { localCollection } from "@/features/draw/local-collection";
+import { reserveDeck } from "@/features/draw/reserve-deck";
 import { isFilteredText } from "@/features/draw/text";
 import { env } from "@/lib/env";
 import { sha256Hex } from "@/lib/utils/hash";
@@ -78,9 +78,9 @@ function fallbackReasonFromOutcomes(outcomes: ProviderOutcome[]): FallbackReason
   return "duplicate";
 }
 
-function selectLocalCollection(mode: DrawMode, recentHashes: Set<string>) {
-  const eligible = localCollection.filter((entry) => entry.modes.includes(mode) || (mode === "mixed" && entry.modes.includes("mixed")));
-  const pool = eligible.length > 0 ? eligible : localCollection;
+function selectReserveCard(mode: DrawMode, recentHashes: Set<string>) {
+  const eligible = reserveDeck.filter((entry) => entry.modes.includes(mode) || (mode === "mixed" && entry.modes.includes("mixed")));
+  const pool = eligible.length > 0 ? eligible : reserveDeck;
   const startIndex = pool.length > 1 ? Math.floor(Math.random() * pool.length) : 0;
 
   for (let offset = 0; offset < pool.length; offset += 1) {
@@ -117,15 +117,15 @@ function toSourceCard(candidate: ProviderCandidate, drawnAt: string): SourceCard
 }
 
 function toFallbackCard(mode: DrawMode, recentHashes: Set<string>, reason: FallbackReason, drawnAt: string): SourceCardVM {
-  const local = selectLocalCollection(mode, recentHashes);
+  const local = selectReserveCard(mode, recentHashes);
 
   return {
     id: randomUUID(),
     kind: local.card.kind,
     text: local.card.text,
     ...(local.card.author ? { author: local.card.author } : {}),
-    source: "local_collection",
-    sourceLabel: "Advicely Collection",
+    source: "advicely_reserve",
+    sourceLabel: "Advicely Reserve",
     provenance: "fallback",
     fallbackReason: reason,
     textHash: local.textHash,

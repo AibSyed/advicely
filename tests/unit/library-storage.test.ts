@@ -2,9 +2,9 @@ import { beforeEach, describe, expect, it } from "vitest";
 import type { SourceCardVM } from "@/features/draw/contracts";
 import {
   clearLibrary,
-  createShareCard,
+  createCopyCard,
   getLibraryState,
-  getShareCardById,
+  getCopyCardById,
   recordDrawnCard,
   saveCard,
   updateSavedCardNote,
@@ -14,8 +14,8 @@ const baseCard: SourceCardVM = {
   id: "card-1",
   kind: "advice",
   text: "Pick one useful move and do it before opening three more tabs.",
-  source: "local_collection",
-  sourceLabel: "Advicely Collection",
+  source: "advicely_reserve",
+  sourceLabel: "Advicely Reserve",
   provenance: "fallback",
   fallbackReason: "provider_unavailable",
   textHash: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
@@ -37,13 +37,13 @@ describe("library storage", () => {
     expect(getLibraryState().savedCards[0]?.note).toBe("Use this when work starts sprawling.");
   });
 
-  it("updates saved notes and resolves share cards", () => {
+  it("updates saved notes and resolves local copy cards", () => {
     saveCard(baseCard, "first note");
     const nextState = updateSavedCardNote(baseCard.id, "updated note");
     expect(nextState.savedCards[0]?.note).toBe("updated note");
 
-    const shareCard = createShareCard(baseCard, "updated note");
-    const resolved = getShareCardById(shareCard.id);
+    const copyCard = createCopyCard(baseCard, "updated note");
+    const resolved = getCopyCardById(copyCard.id);
     expect(resolved?.note).toBe("updated note");
   });
 });

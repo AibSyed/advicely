@@ -1,0 +1,8 @@
+export function matchesTextQuery(query: string, values: Array<string | undefined>): boolean {
+  const normalized = query.trim().toLowerCase();
+  if (!normalized) {
+    return true;
+  }
+
+  return values.some((value) => (value ?? "").toLowerCase().includes(normalized));
+}

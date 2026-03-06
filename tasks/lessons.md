@@ -39,3 +39,8 @@
 - What went wrong: The shell polish changed visible copy, but Playwright still asserted the previous eyebrow text and failed late in verification.
 - Root cause: UI copy changes were finalized before the e2e expectations were reconciled against the shipped wording.
 - Prevention rule: When surface copy changes, update the browser specs in the same patch and rerun the affected flow before moving on to broader verification.
+
+## 2026-03-05
+- What went wrong: The honesty-first rewrite still kept “share” naming in routes, storage, and docs even after the product had become a local copy flow.
+- Root cause: Semantic cleanup stopped at the visible UI layer instead of tracing the concept through route contracts, persistence, and task documentation.
+- Prevention rule: When a product term changes, run a repo-wide terminology sweep across routes, storage contracts, docs, and tests before final verification.

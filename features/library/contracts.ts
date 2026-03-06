@@ -13,7 +13,7 @@ export const savedCardVMSchema = sourceCardVMSchema.extend({
   note: noteSchema,
 });
 
-export const shareCardVMSchema = z.object({
+export const copyCardVMSchema = z.object({
   id: z.string().min(1),
   createdAt: z.string().datetime(),
   card: sourceCardVMSchema,
@@ -28,7 +28,7 @@ export const libraryStateVMSchema = z.object({
   version: z.literal(6),
   history: z.array(sourceCardVMSchema).max(160),
   savedCards: z.array(savedCardVMSchema).max(240),
-  shareCards: z.array(shareCardVMSchema).max(120),
+  copyCards: z.array(copyCardVMSchema).max(120),
   preferences: libraryPreferencesSchema,
 });
 
@@ -36,13 +36,13 @@ export const emptyLibraryState: z.infer<typeof libraryStateVMSchema> = {
   version: 6,
   history: [],
   savedCards: [],
-  shareCards: [],
+  copyCards: [],
   preferences: {
     lastMode: "mixed",
   },
 };
 
 export type SavedCardVM = z.infer<typeof savedCardVMSchema>;
-export type ShareCardVM = z.infer<typeof shareCardVMSchema>;
+export type CopyCardVM = z.infer<typeof copyCardVMSchema>;
 export type LibraryPreferencesVM = z.infer<typeof libraryPreferencesSchema>;
 export type LibraryStateVM = z.infer<typeof libraryStateVMSchema>;
