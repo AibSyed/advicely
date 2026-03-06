@@ -54,3 +54,8 @@
 - What went wrong: The page metadata kept older internal-facing product wording after the visible homepage copy had already been simplified.
 - Root cause: Metadata was treated as technical setup instead of part of the same user-facing copy surface as the hero and social preview text.
 - Prevention rule: Whenever headline copy changes, update `Metadata`, Open Graph, and Twitter text in the same patch and verify the rendered title on production.
+
+## 2026-03-05
+- What went wrong: Final verification briefly produced another false lint failure during the toast and transition pass.
+- Root cause: `check` and Playwright were launched in parallel again, and Playwright rotated `test-results` while ESLint was traversing the repo.
+- Prevention rule: For Advicely final evidence, run `check` first and `test:e2e` second in separate commands, never in the same parallel batch.

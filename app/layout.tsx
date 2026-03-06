@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans, Fraunces } from "next/font/google";
 import { Providers } from "@/components/providers";
+import { RouteFrame } from "@/components/route-frame";
 import { SiteFooter } from "@/components/site-footer";
 import "./globals.css";
 
@@ -40,7 +41,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           Skip to main content
         </a>
         <Providers>
-          {children}
+          <RouteFrame>{children}</RouteFrame>
           <SiteFooter />
         </Providers>
       </body>
