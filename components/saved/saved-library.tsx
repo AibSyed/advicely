@@ -8,6 +8,7 @@ import { FiCopy, FiSearch, FiTrash2 } from "react-icons/fi";
 import { AppNav } from "@/components/app-nav";
 import { SourceCardView } from "@/components/source-card";
 import type { DrawSource, SourceCardKind } from "@/features/draw/contracts";
+import { notifyInfo, notifySuccess } from "@/features/feedback/notify";
 import type { SavedCardVM } from "@/features/library/contracts";
 import { matchesTextQuery } from "@/features/library/query";
 import { createCopyCard, getLibraryState, removeSavedCard, updateSavedCardNote } from "@/features/library/storage";
@@ -35,10 +36,18 @@ export function SavedLibrary() {
   function handleRemove(cardId: string) {
     const nextState = removeSavedCard(cardId);
     setSavedCards(nextState.savedCards);
+    notifySuccess({
+      title: "Removed from your library",
+      description: "The card is still available in recent draws if you need it again.",
+    });
   }
 
   function handleOpenCopyView(card: SavedCardVM) {
     const copyCard = createCopyCard(card, card.note);
+    notifyInfo({
+      title: "Copy view ready",
+      description: "The copy view keeps the source attached and leaves your note optional.",
+    });
     router.push(`/copy/${copyCard.id}` as Route);
   }
 

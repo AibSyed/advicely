@@ -9,6 +9,7 @@ import { AppNav } from "@/components/app-nav";
 import { SourceCardView } from "@/components/source-card";
 import type { SourceCardKind, SourceCardVM } from "@/features/draw/contracts";
 import { getCardEyebrow } from "@/features/draw/presentation";
+import { notifyInfo, notifySuccess } from "@/features/feedback/notify";
 import { matchesTextQuery } from "@/features/library/query";
 import { createCopyCard, getLibraryState, saveCard } from "@/features/library/storage";
 
@@ -36,10 +37,18 @@ export function HistoryTimeline() {
   function handleSave(card: SourceCardVM) {
     const nextState = saveCard(card);
     setSavedHashes(new Set(nextState.savedCards.map((saved) => saved.textHash)));
+    notifySuccess({
+      title: "Saved to your library",
+      description: "You can add a private note from the library whenever you want.",
+    });
   }
 
   function handleOpenCopyView(card: SourceCardVM) {
     const copyCard = createCopyCard(card);
+    notifyInfo({
+      title: "Copy view ready",
+      description: "You can copy the card text there with attribution intact.",
+    });
     router.push(`/copy/${copyCard.id}` as Route);
   }
 

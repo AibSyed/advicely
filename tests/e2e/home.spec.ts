@@ -66,17 +66,19 @@ test("honesty-first draw flow works without console errors", async ({ page }) =>
 
   await page.getByLabel(/optional personal note/i).fill("Keep this around for bad meetings.");
   await page.getByRole("button", { name: /open copy view/i }).click();
+  await expect(page.getByText(/copy view ready/i)).toBeVisible();
   await expect(page).toHaveURL(/\/copy\//);
   await expect(page.getByRole("heading", { name: /copy card/i })).toBeVisible();
   await page.getByText(/include private note when copying/i).click();
   await page.getByRole("button", { name: /copy card text/i }).click();
-  await expect(page.getByRole("status")).toHaveText(/copied to clipboard/i);
+  await expect(page.getByText(/copied to clipboard/i)).toBeVisible();
   await expect(page.getByText(/keep this around for bad meetings/i)).toBeVisible();
 
   await page.goto("/");
   await page.getByRole("button", { name: /draw a card/i }).click();
   await page.getByLabel(/optional personal note/i).fill("Keep this around for bad meetings.");
   await page.getByRole("button", { name: /save to library/i }).click();
+  await expect(page.getByText(/saved to your library/i)).toBeVisible();
   await page.getByRole("link", { name: /library/i }).click();
 
   await expect(page.getByRole("heading", { name: /your library/i })).toBeVisible();

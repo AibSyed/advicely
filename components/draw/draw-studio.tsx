@@ -20,6 +20,7 @@ import {
 import { FiBookmark, FiCopy, FiEye, FiRefreshCw, FiShuffle } from "react-icons/fi";
 import { AppNav } from "@/components/app-nav";
 import { SourceCardView } from "@/components/source-card";
+import { notifyError, notifyInfo, notifySuccess } from "@/features/feedback/notify";
 import {
   type DrawMode,
   type DrawRequestVM,
@@ -86,7 +87,6 @@ export function DrawStudio() {
   const [mode, setMode] = useState<DrawMode>("mixed");
   const [latestResponse, setLatestResponse] = useState<DrawResponseVM | null>(null);
   const [noteDraft, setNoteDraft] = useState("");
-  const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [snapshot, setSnapshot] = useState<LibrarySnapshot>({ historyCount: 0, savedCount: 0 });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -113,7 +113,6 @@ export function DrawStudio() {
   }, [latestCard, savedCard]);
 
   async function handleDraw() {
-    setStatusMessage(null);
     setIsLoading(true);
     updatePreferences(mode);
 
@@ -130,9 +129,18 @@ export function DrawStudio() {
         historyCount: nextState.history.length,
         savedCount: nextState.savedCards.length,
       });
-      setStatusMessage(response.card.provenance === "live" ? "Fresh draw ready." : "Reserve draw ready.");
+      notifySuccess({
+        title: response.card.provenance === "live" ? "Fresh draw ready" : "Reserve draw ready",
+        description:
+          response.card.provenance === "live"
+            ? `${response.card.sourceLabel} delivered a new ${response.card.kind}.`
+            : "The reserve stepped in because a live pull did not clear the deck rules.",
+      });
     } catch (error) {
-      setStatusMessage(error instanceof Error ? error.message : "Could not draw a new card right now.");
+      notifyError({
+        title: "Could not draw a new card",
+        description: error instanceof Error ? error.message : "Try again in a moment.",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -145,7 +153,10 @@ export function DrawStudio() {
 
     const nextState = saveCard(latestCard, noteDraft);
     setSnapshot((current) => ({ ...current, savedCount: nextState.savedCards.length }));
-    setStatusMessage(cardSaved ? "Saved note updated." : "Card saved to your library.");
+    notifySuccess({
+      title: cardSaved ? "Library card updated" : "Saved to your library",
+      description: cardSaved ? "Your local note changed." : "The card is now waiting in your library.",
+    });
   }
 
   function handleOpenCopyView() {
@@ -154,6 +165,10 @@ export function DrawStudio() {
     }
 
     const copyCard = createCopyCard(latestCard, noteDraft);
+    notifyInfo({
+      title: "Copy view ready",
+      description: "Attribution stays visible there, and your note stays optional.",
+    });
     router.push(`/copy/${copyCard.id}` as Route);
   }
 
@@ -349,9 +364,6 @@ export function DrawStudio() {
               </Box>
             )}
 
-            <Box role="status" aria-live="polite" minH="1.5rem">
-              {statusMessage ? <Text color="ink.600">{statusMessage}</Text> : null}
-            </Box>
           </Stack>
         </SimpleGrid>
       </Stack>

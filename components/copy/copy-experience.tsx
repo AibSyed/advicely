@@ -6,6 +6,7 @@ import { Badge, Box, Button, Checkbox, Container, Heading, HStack, Icon, Spinner
 import { FiCopy } from "react-icons/fi";
 import { AppNav } from "@/components/app-nav";
 import { SourceCardView } from "@/components/source-card";
+import { notifyError, notifySuccess } from "@/features/feedback/notify";
 import { buildCopyCardText } from "@/features/library/copy-text";
 import type { CopyCardVM } from "@/features/library/contracts";
 import { getCopyCardById } from "@/features/library/storage";
@@ -16,7 +17,6 @@ interface CopyExperienceProps {
 
 export function CopyExperience({ copyId }: CopyExperienceProps) {
   const [copyCard, setCopyCard] = useState<CopyCardVM | null | undefined>(undefined);
-  const [copyMessage, setCopyMessage] = useState<string | null>(null);
   const [includeNote, setIncludeNote] = useState(false);
 
   useEffect(() => {
@@ -30,11 +30,15 @@ export function CopyExperience({ copyId }: CopyExperienceProps) {
 
     try {
       await navigator.clipboard.writeText(buildCopyCardText(copyCard, includeNote));
-      setCopyMessage("Copied to clipboard.");
-      setTimeout(() => setCopyMessage(null), 1800);
+      notifySuccess({
+        title: "Copied to clipboard",
+        description: includeNote ? "Your private note was included in this copy." : "Your private note stayed out of this copy.",
+      });
     } catch {
-      setCopyMessage("Clipboard unavailable in this browser.");
-      setTimeout(() => setCopyMessage(null), 1800);
+      notifyError({
+        title: "Clipboard unavailable",
+        description: "Try copying from a browser tab with clipboard access enabled.",
+      });
     }
   }
 
@@ -88,7 +92,6 @@ export function CopyExperience({ copyId }: CopyExperienceProps) {
                     <Text>Copy card text</Text>
                   </HStack>
                 </Button>
-                {copyMessage ? <Text role="status" color="accent.700">{copyMessage}</Text> : null}
               </Stack>
             }
           />

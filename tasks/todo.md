@@ -104,3 +104,26 @@
   - `/saved` loaded with no console messages
   - `/history` loaded with no console messages
   - previous CSP `unsafe-eval` issue was eliminated after removing runtime Zod from the client bundle
+
+## 2026-03-05 Toast + Transition Polish
+- [x] Add a centralized Chakra toast system instead of per-screen inline status text
+- [x] Route draw/save/copy feedback through shared toast helpers so action feedback stays consistent
+- [x] Add cleaner route/nav motion without introducing App Router hacks or duplicated pending state
+- [x] Update browser coverage for the new feedback surfaces
+- [x] Re-run the repo verification ladder and local production browser QA
+
+### Toast + Transition Polish Verification Log
+- Context7 references used before implementation:
+  - Chakra UI toast guidance for `createToaster` singleton setup and app-level `Toaster` rendering
+  - Chakra UI `Presence`/transition guidance for entry animation constraints
+  - Next.js App Router guidance for supported navigation feedback patterns (`useLinkStatus`, `loading.tsx`-style route feedback constraints)
+- `pnpm run lint` (pass)
+- `pnpm run typecheck` (pass)
+- `pnpm run test` (pass)
+- `pnpm run test:e2e` (pass)
+- `pnpm run check` (pass)
+- Chrome DevTools MCP on local production build `http://127.0.0.1:3102`:
+  - `/` loaded with no console warnings or errors
+  - draw success toast rendered with live-source detail
+  - save toast rendered after moving a card into the library
+  - `/saved` route loaded cleanly after navigation with no console warnings or errors

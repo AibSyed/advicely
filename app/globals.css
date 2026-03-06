@@ -25,6 +25,10 @@ body {
   font-family: var(--font-body), "Helvetica Neue", sans-serif;
 }
 
+main {
+  isolation: isolate;
+}
+
 body::before {
   content: "";
   position: fixed;
@@ -69,6 +73,42 @@ h4 {
   color: #17120d;
 }
 
+@keyframes route-frame-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes nav-card-pulse {
+  0% {
+    transform: translateX(-105%);
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(105%);
+    opacity: 0;
+  }
+}
+
+.route-frame-enter {
+  animation: route-frame-enter 220ms ease-out;
+}
+
+.nav-card-pulse {
+  animation: nav-card-pulse 900ms ease-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -77,5 +117,10 @@ h4 {
     animation-iteration-count: 1 !important;
     transition-duration: 1ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .route-frame-enter,
+  .nav-card-pulse {
+    animation: none !important;
   }
 }
