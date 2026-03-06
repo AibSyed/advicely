@@ -74,3 +74,8 @@
 - What went wrong: Browser specs asserted toast copy that was too transient to be a stable end-to-end contract.
 - Root cause: A visual feedback detail was tested as durable page content instead of as a best-effort transient affordance.
 - Prevention rule: In e2e coverage, assert durable outcomes first and only assert transient toast copy when the timing is explicitly stabilized.
+
+## 2026-03-06
+- What went wrong: Homepage signal icons and footer information cards shipped with inconsistent visual alignment and low-contrast badge treatment in dark surfaces.
+- Root cause: Shared flex utility composition and panel spacing assumptions leaked into specialized sections without a dedicated contrast/layout QA pass.
+- Prevention rule: For every homepage/footer change, run a targeted UI audit for icon baseline alignment, explicit container layout (`display` + `gap`), and WCAG AA contrast thresholds before final verification.
