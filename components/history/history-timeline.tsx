@@ -3,9 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
-import { Box, Button, Container, Heading, HStack, Icon, Input, SimpleGrid, Stack, Text } from "@chakra-ui/react";
+import { Badge, Box, Button, Container, Heading, HStack, Icon, Input, SimpleGrid, Stack, Text } from "@chakra-ui/react";
 import { FiBookmark, FiSearch, FiShare2 } from "react-icons/fi";
-import { RouteLink } from "@/components/route-link";
+import { AppNav } from "@/components/app-nav";
 import { SourceCardView } from "@/components/source-card";
 import type { SourceCardKind, SourceCardVM } from "@/features/draw/contracts";
 import { getCardEyebrow } from "@/features/draw/presentation";
@@ -52,20 +52,19 @@ export function HistoryTimeline() {
   return (
     <Container maxW="7xl" py={{ base: 6, md: 10 }}>
       <Stack gap={8}>
-        <HStack wrap="wrap" gap={3}>
-          <RouteLink href="/">Back to draw deck</RouteLink>
-          <RouteLink href="/saved">Saved cards</RouteLink>
-          <RouteLink href="/sources">Sources</RouteLink>
-        </HStack>
-
         <Stack gap={3} maxW="3xl">
+          <Badge alignSelf="flex-start" bg="ink.800" color="paper.50" px={3} py={1} borderRadius="full">
+            Recent
+          </Badge>
           <Heading as="h1" fontSize={{ base: "4xl", md: "6xl" }} color="ink.800" lineHeight="0.96">
-            Draw history
+            Recent draws
           </Heading>
           <Text color="ink.600" fontSize={{ base: "md", md: "lg" }}>
-            Revisit recent cards, save the ones worth keeping, or share a clean copy with attribution.
+            A quiet trail of what the deck has surfaced lately. Save anything worth revisiting or share a clean copy with attribution intact.
           </Text>
         </Stack>
+
+        <AppNav />
 
         <SimpleGrid columns={{ base: 1, lg: 3 }} gap={4}>
           <HStack bg="rgba(255, 250, 240, 0.92)" p={4} borderRadius="panel" borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)" shadow="float" gridColumn={{ lg: "span 2" }}>
@@ -80,7 +79,9 @@ export function HistoryTimeline() {
             />
           </HStack>
           <Box bg="rgba(255, 250, 240, 0.92)" p={4} borderRadius="panel" borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)" shadow="float">
-            <Text fontSize="sm" textTransform="uppercase" letterSpacing="0.12em" color="ink.500" mb={2}>Filter</Text>
+            <Text fontSize="sm" textTransform="uppercase" letterSpacing="0.12em" color="ink.500" mb={2}>
+              Filter by type
+            </Text>
             <HStack gap={2}>
               {(["all", "advice", "quote"] as const).map((filter) => (
                 <Button
@@ -101,8 +102,12 @@ export function HistoryTimeline() {
 
         {filteredCards.length === 0 ? (
           <Box bg="rgba(255, 250, 240, 0.92)" borderRadius="panel" borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)" p={8} shadow="float">
-            <Heading as="h2" size="lg" color="ink.800">No history yet</Heading>
-            <Text mt={2} color="ink.600">Draw a card from the home page to start building your history.</Text>
+            <Heading as="h2" size="lg" color="ink.800">
+              No recent draws yet
+            </Heading>
+            <Text mt={2} color="ink.600">
+              Draw a card from the deck to start building a history.
+            </Text>
           </Box>
         ) : null}
 
@@ -121,7 +126,7 @@ export function HistoryTimeline() {
                     <Button size="sm" bg="accent.700" color="paper.50" onClick={() => handleSave(card)} disabled={savedHashes.has(card.textHash)}>
                       <HStack>
                         <Icon as={FiBookmark} />
-                        <Text>{savedHashes.has(card.textHash) ? "Saved" : "Save"}</Text>
+                        <Text>{savedHashes.has(card.textHash) ? "Saved" : "Save to library"}</Text>
                       </HStack>
                     </Button>
                     <Button size="sm" variant="outline" borderColor="rgba(54, 46, 34, 0.18)" onClick={() => handleShare(card)}>

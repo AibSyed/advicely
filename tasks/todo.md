@@ -31,7 +31,7 @@
 - [x] UI only presents normalized raw source content plus plain-language provenance
 - [x] No request field implies contextual personalization
 - [x] Save/history/share/notes flows work with local persistence
-- [x] Fallback content is clearly labeled as local collection content
+- [x] Fallback content is clearly labeled as reserve content
 - [x] README and architecture docs explicitly describe random-source behavior and limitations
 - [x] No console errors on `/`
 - [x] `lint`, `typecheck`, `test`, `test:e2e`, `build`, `docs:check`, and `audit:high` all pass
@@ -51,3 +51,25 @@
   - real quote draw from ZenQuotes verified
   - save note -> share flow verified with note hidden by default
   - `/saved` and `/history` route sanity verified with no console messages
+
+## 2026-03-05 Premium Shell Polish
+- [x] Replace vague hero badges with clearer portfolio-grade language
+- [x] Rename fallback collection language to a more premium, clearer term everywhere
+- [x] Replace flat `Saved / History / Sources` pills with a mobile-responsive navigation surface
+- [x] Add a premium footer with improved disclaimer, attribution, and route-aware copy
+- [x] Re-verify local build and local production UI after the shell polish
+
+### Premium Shell Polish Verification Log
+- `pnpm run lint` (pass)
+- `pnpm run typecheck` (pass)
+- `pnpm run test` (pass)
+- `pnpm run build` (pass)
+- `pnpm run test:e2e` (pass after updating the shipped eyebrow copy assertion)
+- `pnpm run docs:check` (pass)
+- `pnpm run audit:high` (pass)
+- `pnpm run check` (pass)
+- Chrome DevTools MCP on local production build `http://127.0.0.1:3100`:
+  - homepage mobile shell verified with updated hero signals, nav, and footer
+  - `/saved` mobile shell verified with responsive nav and filter layout
+  - live draw verified with no console errors
+  - screenshots captured: `tasks/qa-home-mobile.png`, `tasks/qa-saved-mobile.png`

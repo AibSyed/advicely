@@ -3,7 +3,7 @@
 Advicely is an honesty-first deck for random advice and quotes.
 
 It does three things well:
-- draws one random card from a clearly labeled live source or local fallback collection
+- draws one random card from a clearly labeled live source or the Advicely Reserve
 - lets you save cards and attach private notes in your browser
 - keeps sharing clean by preserving attribution and hiding personal notes by default
 
@@ -26,7 +26,7 @@ flowchart LR
 - `Advice` mode draws from AdviceSlip.
 - `Quote` mode draws from ZenQuotes.
 - `Mixed` mode can draw either.
-- If a live source fails, duplicates a recent draw, or returns unusable content, the app falls back to the Advicely collection.
+- If a live source fails, duplicates a recent draw, or returns unusable content, the app falls back to the Advicely Reserve.
 - Personal notes stay local to the browser and are never sent to AdviceSlip or ZenQuotes.
 
 Official provider references:

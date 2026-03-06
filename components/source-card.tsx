@@ -30,8 +30,14 @@ export function SourceCardView({ card, note, footer, compact = false }: SourceCa
           <Badge bg="paper.200" color="ink.800" px={3} py={1} borderRadius="full">
             {getCardKindLabel(card)}
           </Badge>
-          <Badge bg={card.provenance === "live" ? "accent.100" : "ink.100"} color={card.provenance === "live" ? "accent.800" : "ink.700"} px={3} py={1} borderRadius="full">
-            {card.provenance === "live" ? "Live source" : "Fallback collection"}
+          <Badge
+            bg={card.provenance === "live" ? "accent.100" : "ink.100"}
+            color={card.provenance === "live" ? "accent.800" : "ink.700"}
+            px={3}
+            py={1}
+            borderRadius="full"
+          >
+            {card.provenance === "live" ? "Live pull" : "Reserve draw"}
           </Badge>
         </HStack>
 
@@ -63,7 +69,7 @@ export function SourceCardView({ card, note, footer, compact = false }: SourceCa
         {note ? (
           <Box borderWidth="1px" borderColor="rgba(54, 46, 34, 0.1)" bg="rgba(255,255,255,0.52)" borderRadius="1rem" p={4}>
             <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.12em" color="ink.500" mb={2}>
-              Personal note
+              Private note
             </Text>
             <Text color="ink.700">{note}</Text>
           </Box>
