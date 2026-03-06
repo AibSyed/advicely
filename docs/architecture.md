@@ -1,77 +1,100 @@
-# Advicely v5 Architecture
+# Advicely v6 Architecture
 
-## Intent
-Advicely v5 is a utility-first advice tool for normal users: generate relevant advice quickly, save it, retrieve it, and share it.
+## Summary
 
-## System Topology
+Advicely v6 is a local-first random draw app.
+
+The server selects a live advice or quote source based on the requested mode, performs only minimal normalization and filtering, and returns one source card with explicit provenance. The client stores draw history, saved cards, share cards, and private notes in local storage.
+
+## Data Flow
+
 ```mermaid
-flowchart TB
-  UI["App Router Client UI"] --> API["/api/advice POST"]
-  API --> EN["Advice Engine"]
-  EN --> PRI["AdviceSlip Adapter"]
-  EN --> SEC["ZenQuotes Adapter"]
-  EN --> CAT["Fallback Catalog"]
-  EN --> QUAL["Quality and Dedupe Layer"]
-  QUAL --> SHAPE["Adaptive Block Shaper"]
-  SHAPE --> CONTRACT["AdviceResponseVM Zod Contract"]
-  CONTRACT --> UI
-  UI --> STORE["Local Storage: advicely:v5:workspace"]
+flowchart TD
+  UI["Client UI"] --> DRAW["POST /api/draw"]
+  DRAW --> DECIDE["Mode-based source order"]
+  DECIDE --> AS["AdviceSlip adapter"]
+  DECIDE --> ZQ["ZenQuotes adapter"]
+  DRAW --> FILTER["Duplicate and junk filter"]
+  FILTER --> LIVE["Live source card"]
+  FILTER --> FALLBACK["Advicely collection fallback"]
+  UI --> STORE["Local Storage: advicely:v6:library"]
 ```
 
-## Request Contract
-`POST /api/advice`
+## API Contract
 
-- `context?: string` (0..600)
-- `intent: "quick" | "decision" | "communication" | "planning" | "stress" | "general"`
-- `style: "balanced" | "direct" | "supportive" | "creative"`
-- `detail: "short" | "standard" | "deep"`
-- `avoidRecentHashes?: string[]`
+### `POST /api/draw`
 
-## Response Contract
-- `AdviceCardVM`
-  - `id`, `headline`, `summary`
-  - `blocks: AdviceBlockVM[]` (adaptive)
-  - `intent`, `style`, `detail`, `context?`
-  - `source`, `sourceAttribution`
-  - `confidence`, `fallbackUsed`, `errorState`, `textHash`, `generatedAt`
-- `AdviceMetaVM`
-  - `requestId`, `generatedAt`
-  - `providerHealth` (primary/secondary)
-  - `diagnostics` (internal-facing trace hints)
+Request:
 
-### `AdviceBlockVM` Types
-- `core_advice`
-- `steps`
-- `script`
-- `reframe`
-- `caution`
-- `checklist`
+```ts
+interface DrawRequestVM {
+  mode: "advice" | "quote" | "mixed";
+  avoidRecentHashes?: string[];
+}
+```
 
-## Failure States
-- `unavailable`
-- `stale`
-- `partial`
-- `rate_limited`
-- `invalid_payload`
+Response:
 
-## Local Persistence
-Storage key:
-- `advicely:v5:workspace`
+```ts
+interface SourceCardVM {
+  id: string;
+  kind: "advice" | "quote";
+  text: string;
+  author?: string;
+  source: "advice_slip" | "zen_quotes" | "local_collection";
+  sourceLabel: string;
+  provenance: "live" | "fallback";
+  fallbackReason?: "provider_unavailable" | "invalid_payload" | "filtered" | "duplicate";
+  textHash: string;
+  drawnAt: string;
+}
 
-Stored collections:
-- `history[]`
-- `savedCards[]`
-- `shareCards[]`
-- `preferences`
+interface DrawMetaVM {
+  requestId: string;
+  drawnAt: string;
+  outcomes: {
+    adviceSlip: "accepted" | "duplicate" | "filtered" | "unavailable" | "invalid_payload" | "skipped";
+    zenQuotes: "accepted" | "duplicate" | "filtered" | "unavailable" | "invalid_payload" | "skipped";
+  };
+}
+```
 
-No backward migration from v4 key is provided by design.
+## Storage Contract
 
-## Security Boundaries
-- External providers are called only from server route handlers.
-- Env parsing is server-only (`lib/env.ts`).
-- CSP and hardening headers are configured in `next.config.ts`.
+Key:
+- `advicely:v6:library`
 
-## Deployment and Operations
-- Vercel production deploys from `master`.
-- PR previews are required for integration validation.
-- CI required checks: lint, typecheck (with pre-clean + `next typegen`), test, e2e, build, docs checks, and high-severity audit.
+Stored shape:
+
+```ts
+interface LibraryStateVM {
+  version: 6;
+  history: SourceCardVM[];
+  savedCards: Array<SourceCardVM & { savedAt: string; note?: string }>;
+  shareCards: Array<{ id: string; createdAt: string; card: SourceCardVM; note?: string }>;
+  preferences: {
+    lastMode: "advice" | "quote" | "mixed";
+  };
+}
+```
+
+## Guardrails
+
+- Provider content is displayed as normalized source text, not rewritten guidance.
+- Personal notes are local-only and never sent upstream.
+- Fallback cards are labeled as collection cards in the UI.
+- The app uses webpack for both `dev` and `build` to avoid the Chakra/Emotion hydration issue seen in Turbopack builds.
+- Share output excludes personal notes unless the user explicitly opts in on the share screen.
+
+## Failure Modes
+
+- AdviceSlip unavailable: fall back to local advice or mixed collection.
+- ZenQuotes unavailable: fall back to local quote or mixed collection.
+- Duplicate recent draw: fall back to a non-duplicate local collection card.
+- Invalid upstream payload: local collection card with explicit fallback provenance.
+
+## Verification Targets
+
+- No browser console errors on `/`, `/saved`, and `/history`
+- Keyboard traversal works for draw, save, note, share, and navigation flows
+- `lint`, `typecheck`, `test`, `test:e2e`, `build`, `docs:check`, and `audit:high` all pass

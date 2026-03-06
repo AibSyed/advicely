@@ -19,19 +19,19 @@ export default function OpenGraphImage() {
           justifyContent: "space-between",
           padding: "64px",
           background:
-            "radial-gradient(circle at 10% 10%, rgba(24,137,225,0.28), transparent 35%), radial-gradient(circle at 90% 0%, rgba(246,122,29,0.32), transparent 32%), linear-gradient(180deg, #f4f7ff, #fff8ee)",
-          color: "#0f172a",
-          fontFamily: "Manrope",
+            "radial-gradient(circle at 12% 8%, rgba(79,154,113,0.18), transparent 26%), radial-gradient(circle at 88% 0%, rgba(246,117,52,0.16), transparent 24%), linear-gradient(180deg, #fffaf1, #f3ead6)",
+          color: "#17120d",
+          fontFamily: "DM Sans",
         }}
       >
-        <div style={{ fontSize: 26, letterSpacing: "0.12em", textTransform: "uppercase", opacity: 0.7 }}>
-          Advicely v5
+        <div style={{ fontSize: 26, letterSpacing: "0.12em", textTransform: "uppercase", opacity: 0.72 }}>
+          Advicely v6
         </div>
-        <div style={{ fontSize: 70, lineHeight: 1.03, maxWidth: 940, fontWeight: 700 }}>
-          Practical advice you can use right now.
+        <div style={{ fontSize: 68, lineHeight: 1.02, maxWidth: 980, fontWeight: 700 }}>
+          Random advice and quotes, clearly sourced.
         </div>
-        <div style={{ fontSize: 30, opacity: 0.8 }}>
-          Generate, save, find later, and share cleanly.
+        <div style={{ fontSize: 30, opacity: 0.84, maxWidth: 760 }}>
+          Draw, save, and revisit what matters. Personal notes stay local to your browser.
         </div>
       </div>
     ),

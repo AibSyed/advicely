@@ -1,21 +1,14 @@
-import type {
-  AdviceErrorState,
-  AdviceProvider,
-  ProviderHealthState,
-} from "@/features/advice/contracts";
+import type { DrawSource, ProviderOutcome, SourceCardKind } from "@/features/draw/contracts";
 
 export interface ProviderCandidate {
+  kind: SourceCardKind;
   text: string;
-  source: AdviceProvider;
-  sourceAttribution: string;
-  confidence: number;
-  fallbackUsed: boolean;
-  errorState: AdviceErrorState | null;
+  author?: string;
+  source: DrawSource;
+  sourceLabel: string;
 }
 
 export interface ProviderResult {
   candidate?: ProviderCandidate;
-  health: ProviderHealthState;
-  diagnostic?: string;
-  errorState?: AdviceErrorState;
+  outcome: ProviderOutcome;
 }

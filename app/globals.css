@@ -1,8 +1,9 @@
 :root {
   color-scheme: light;
-  --bg-soft: #f4f7ff;
-  --bg-warm: #fff8ee;
-  --text-main: #0f172a;
+  --bg-base: #f6f0e1;
+  --bg-cream: #fffaf0;
+  --ink-main: #17120d;
+  --line-soft: rgba(54, 46, 34, 0.12);
 }
 
 * {
@@ -14,22 +15,34 @@ body {
   margin: 0;
   min-height: 100%;
   background:
-    radial-gradient(circle at 8% 12%, rgba(58, 124, 255, 0.14), transparent 36%),
-    radial-gradient(circle at 88% 4%, rgba(251, 146, 60, 0.16), transparent 32%),
-    linear-gradient(180deg, var(--bg-soft), var(--bg-warm));
-  color: var(--text-main);
+    radial-gradient(circle at 12% 8%, rgba(79, 154, 113, 0.12), transparent 24%),
+    radial-gradient(circle at 88% 0%, rgba(246, 117, 52, 0.14), transparent 22%),
+    linear-gradient(180deg, #fffaf1 0%, #f3ead6 100%);
+  color: var(--ink-main);
 }
 
 body {
-  font-family: var(--font-body), "Avenir Next", sans-serif;
+  font-family: var(--font-body), "Helvetica Neue", sans-serif;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.34;
+  background-image:
+    linear-gradient(rgba(54, 46, 34, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(54, 46, 34, 0.02) 1px, transparent 1px);
+  background-size: 32px 32px;
 }
 
 h1,
 h2,
 h3,
 h4 {
-  font-family: var(--font-display), "Gill Sans", sans-serif;
-  letter-spacing: 0.01em;
+  font-family: var(--font-display), Georgia, serif;
+  letter-spacing: -0.02em;
 }
 
 .skip-link {
@@ -37,14 +50,14 @@ h4 {
   left: 0.75rem;
   top: 0.5rem;
   z-index: 100;
-  transform: translateY(-200%);
+  transform: translateY(-220%);
   border-radius: 999px;
-  background: #ffffff;
-  color: #0f172a;
+  background: #17120d;
+  color: #fffaf0;
   font-weight: 700;
-  padding: 0.5rem 0.9rem;
+  padding: 0.55rem 0.95rem;
   transition: transform 160ms ease;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.12);
+  box-shadow: 0 8px 24px rgba(23, 18, 13, 0.18);
 }
 
 .skip-link:focus-visible {
@@ -52,8 +65,8 @@ h4 {
 }
 
 ::selection {
-  background: rgba(56, 189, 248, 0.28);
-  color: #0f172a;
+  background: rgba(79, 154, 113, 0.26);
+  color: #17120d;
 }
 
 @media (prefers-reduced-motion: reduce) {

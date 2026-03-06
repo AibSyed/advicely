@@ -18,9 +18,14 @@
 ## 2026-03-04
 - What went wrong: Dev runtime produced a Chakra hydration mismatch after switching to Turbopack mode.
 - Root cause: Emotion style injection order in this stack can diverge under Turbopack dev hydration.
-- Prevention rule: Keep `next dev --webpack` for this repo and verify browser console is clean via DevTools before finalizing UI work.
+- Prevention rule: Keep both `next dev --webpack` and `next build --webpack` for this repo, then verify the production build in DevTools before finalizing UI work.
 
 ## 2026-03-04
 - What went wrong: Advice cards surfaced non-practical quote content and generic warning labels that confused normal users.
 - Root cause: Provider acceptance heuristics overvalued grammar/length and shaping rules added context-agnostic blocks for deep mode.
 - Prevention rule: Require practical-language heuristics plus context relevance before accepting provider text, and enforce intent-specific block assertions in unit tests.
+
+## 2026-03-05
+- What went wrong: The product was framed as tailored practical advice even though the live providers only return random advice and quotes.
+- Root cause: The rewrite treated local shaping as product value and let UI copy overstate what the source data could honestly support.
+- Prevention rule: For source-driven products, verify live upstream payloads first, lock truthful provenance copy in the primary UI and README, and forbid fabricated semantic sections unless they are explicitly labeled as app-authored.

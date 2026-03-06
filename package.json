@@ -1,11 +1,11 @@
 {
-  "name": "advicely-utility",
-  "version": "5.0.0",
+  "name": "advicely-random-deck",
+  "version": "6.0.0",
   "private": true,
   "packageManager": "pnpm@10.6.5",
   "scripts": {
     "dev": "next dev --webpack",
-    "build": "next build",
+    "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint . --max-warnings 0",
     "typegen": "node ./scripts/prepare-typegen.mjs && next typegen",
@@ -24,7 +24,6 @@
     "@chakra-ui/react": "^3.34.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@tanstack/react-query": "^5.90.21",
     "next": "^16.1.6",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",

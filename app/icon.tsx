@@ -17,14 +17,14 @@ export default function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(145deg, #1889e1 0%, #0f588f 55%, #f67a1d 100%)",
-          color: "#ffffff",
-          fontSize: 28,
+          background: "linear-gradient(145deg, #3d7e5a 0%, #2d6446 52%, #d95a1e 100%)",
+          color: "#fffaf0",
+          fontSize: 26,
           fontWeight: 700,
           borderRadius: 16,
         }}
       >
-        AV
+        AD
       </div>
     ),
     size,

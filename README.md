@@ -1,88 +1,111 @@
-# Advicely v5 Utility Studio
+# Advicely
 
-Advicely is a practical advice utility for everyday decisions.
-Use it in one tap, or add context for tailored guidance. Save what helps, find it later, and share cleanly.
+Advicely is an honesty-first deck for random advice and quotes.
 
-## Product Value
-- Fast generation: useful advice in seconds.
-- Context-aware output: advice shape adapts by intent instead of fixed labels on every card.
-- Local-first control: saved/history/share are browser-local in this phase.
+It does three things well:
+- draws one random card from a clearly labeled live source or local fallback collection
+- lets you save cards and attach private notes in your browser
+- keeps sharing clean by preserving attribution and hiding personal notes by default
+
+It does not claim to be a contextual assistant, a coaching engine, or professional advice.
 
 ## Architecture
+
 ```mermaid
 flowchart LR
-  U["User"] --> UI["Advice Studio UI"]
-  UI --> Q["TanStack Query"]
-  Q --> RH["/app/api/advice Route Handler"]
-  RH --> EN["Advice Engine"]
-  EN --> P1["AdviceSlip Provider"]
-  EN --> P2["ZenQuotes Provider"]
-  EN --> FB["Curated Fallback Catalog"]
-  EN --> SH["Adaptive Shaping Layer"]
-  SH --> ZD["Zod Contract Validation"]
-  ZD --> UI
-  UI --> LS["Local Storage: advicely:v5:workspace"]
-  LS --> SV["Saved Route"]
-  LS --> HS["History Route"]
-  LS --> SR["Share Route"]
+  U["Reader"] --> UI["Next.js App Router UI"]
+  UI --> API["/app/api/draw Route Handler"]
+  API --> AS["AdviceSlip Random Advice"]
+  API --> ZQ["ZenQuotes Random Quote"]
+  API --> LC["Advicely Local Collection"]
+  UI --> LS["Local Storage: advicely:v6:library"]
 ```
 
-Detailed system design: [docs/architecture.md](docs/architecture.md)
+## Product Truth
 
-## Route Map
-- `/` Advice Studio
-- `/saved` Saved advice with search and filters
-- `/history` Generated advice history
-- `/share/[id]` Local share card view
-- `/api/advice` POST-only normalized advice endpoint
+- `Advice` mode draws from AdviceSlip.
+- `Quote` mode draws from ZenQuotes.
+- `Mixed` mode can draw either.
+- If a live source fails, duplicates a recent draw, or returns unusable content, the app falls back to the Advicely collection.
+- Personal notes stay local to the browser and are never sent to AdviceSlip or ZenQuotes.
 
-## Runtime Stack
-- Next.js App Router (typed routes enabled)
-- React 19 + TypeScript strict mode
-- Chakra UI v3 system theming
-- TanStack Query v5
-- Zod contracts at API and view-model boundaries
-- Vitest + Playwright
+Official provider references:
+- [AdviceSlip API](https://api.adviceslip.com/)
+- [ZenQuotes Documentation](https://docs.zenquotes.io/zenquotes-documentation/)
 
-## Environment Contract
-Copy `.env.example` to `.env.local`.
+## Routes
 
-Server-only environment variables:
-- `ADVICE_PROVIDER_PRIMARY_URL`
-- `ADVICE_PROVIDER_SECONDARY_URL`
-- `ADVICE_REQUEST_TIMEOUT_MS`
+- `/`: draw deck
+- `/saved`: saved cards with local notes
+- `/history`: recent draws
+- `/share/[id]`: local share view
+- `/sources`: source behavior and limits
 
-No sensitive values should be exposed through `NEXT_PUBLIC_*`.
+## Runtime Contract
 
-## Local Development
-```bash
-pnpm install
-pnpm dev
+### `POST /api/draw`
+
+Request body:
+
+```json
+{
+  "mode": "mixed",
+  "avoidRecentHashes": ["<sha256>"]
+}
 ```
+
+Response body:
+
+```json
+{
+  "card": {
+    "id": "uuid",
+    "kind": "quote",
+    "text": "Life is like playing the violin in public and learning the instrument as one goes on.",
+    "author": "Samuel Butler",
+    "source": "zen_quotes",
+    "sourceLabel": "ZenQuotes",
+    "provenance": "live",
+    "textHash": "<sha256>",
+    "drawnAt": "2026-03-06T00:00:00.000Z"
+  },
+  "meta": {
+    "requestId": "uuid",
+    "drawnAt": "2026-03-06T00:00:00.000Z",
+    "outcomes": {
+      "adviceSlip": "skipped",
+      "zenQuotes": "accepted"
+    }
+  }
+}
+```
+
+## Environment
+
+See [`./.env.example`](./.env.example).
+
+Server-only variables:
+- `ADVICE_SLIP_URL`
+- `ZEN_QUOTES_RANDOM_URL`
+- `DRAW_REQUEST_TIMEOUT_MS`
 
 ## Quality Gates
-```bash
-pnpm run check
-pnpm run test:e2e
-pnpm run docs:check
-pnpm run audit:high
-```
 
-## Deployment Model
-- Platform: Vercel
-- Production branch: `master`
-- Preview deployments: pull requests and feature branches
-- Auto deploy: GitHub connected Vercel project
+- `pnpm run lint`
+- `pnpm run typecheck`
+- `pnpm run test`
+- `pnpm run test:e2e`
+- `pnpm run build`
+- `pnpm run docs:check`
+- `pnpm run audit:high`
+- `pnpm run check`
 
-## Security Posture
-- CSP and hardened security headers in `next.config.ts`
-- Server-only env parsing in `lib/env.ts`
-- Provider calls restricted to server route handlers
-- CI gate includes `audit:high` and CodeQL
+## Development Notes
 
-## Troubleshooting
-- Provider outage: app returns fallback guidance with retry path.
-- Duplicate-feeling advice: recent hash dedupe avoids immediate repeats.
-- Hydration mismatch in development: this repo uses `next dev --webpack` for stable Chakra Emotion hydration.
-- Local state reset: clear browser storage key `advicely:v5:workspace`.
-- Docs check failure: run `pnpm run docs:check` and fix markdown/diagram issues.
+- This Chakra UI + Next.js stack is pinned to webpack for both development and production builds.
+- Use `pnpm dev` and `pnpm build`; both are already configured with `--webpack` in `package.json`.
+- Share links are local-only because saved cards and notes live in browser storage.
+
+## What This App Is Not
+
+Advicely is not medical, legal, financial, crisis, or otherwise professional advice. It is a clean draw, save, and reflection tool built around explicit source attribution.

@@ -2,89 +2,49 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { Route } from "next";
-import NextLink from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  Badge,
-  Box,
-  Button,
-  Container,
-  Flex,
-  Heading,
-  HStack,
-  Icon,
-  Input,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
-import { FiArrowLeft, FiBookmark, FiCornerUpLeft, FiSearch, FiShare2 } from "react-icons/fi";
-import type { AdviceCardVM } from "@/features/advice/contracts";
-import {
-  getDetailLabel,
-  getIntentLabel,
-  getSourceLabel,
-  getStyleLabel,
-} from "@/features/advice/presentation";
-import {
-  createShareCard,
-  getWorkspaceState,
-  saveAdviceCard,
-  updateWorkspacePreferences,
-} from "@/features/workspace/storage";
+import { Box, Button, Container, Heading, HStack, Icon, Input, SimpleGrid, Stack, Text } from "@chakra-ui/react";
+import { FiBookmark, FiSearch, FiShare2 } from "react-icons/fi";
+import { RouteLink } from "@/components/route-link";
+import { SourceCardView } from "@/components/source-card";
+import type { SourceCardKind, SourceCardVM } from "@/features/draw/contracts";
+import { getCardEyebrow } from "@/features/draw/presentation";
+import { createShareCard, getLibraryState, saveCard } from "@/features/library/storage";
 
-function textFromCard(card: AdviceCardVM): string {
-  const blocks = card.blocks
-    .flatMap((block) => {
-      if ("text" in block) {
-        return [block.text];
-      }
+function matchesQuery(card: SourceCardVM, query: string): boolean {
+  const normalized = query.trim().toLowerCase();
+  if (!normalized) {
+    return true;
+  }
 
-      return block.items;
-    })
-    .join(" ")
-    .toLowerCase();
-
-  return `${card.headline} ${card.summary} ${blocks}`;
+  return [card.text, card.author ?? "", card.sourceLabel, getCardEyebrow(card)].some((value) => value.toLowerCase().includes(normalized));
 }
 
 export function HistoryTimeline() {
   const router = useRouter();
-  const [historyCards, setHistoryCards] = useState<AdviceCardVM[]>([]);
-  const [savedHashes, setSavedHashes] = useState<Set<string>>(new Set());
+  const [historyCards, setHistoryCards] = useState<SourceCardVM[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [kindFilter, setKindFilter] = useState<"all" | SourceCardKind>("all");
+  const [savedHashes, setSavedHashes] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    const state = getWorkspaceState();
+    const state = getLibraryState();
     setHistoryCards(state.history);
     setSavedHashes(new Set(state.savedCards.map((card) => card.textHash)));
   }, []);
 
-  const filteredCards = useMemo(() => {
-    if (!searchQuery.trim()) {
-      return historyCards;
-    }
+  const filteredCards = useMemo(
+    () =>
+      historyCards.filter((card) => (kindFilter === "all" ? true : card.kind === kindFilter)).filter((card) => matchesQuery(card, searchQuery)),
+    [historyCards, kindFilter, searchQuery],
+  );
 
-    const normalized = searchQuery.trim().toLowerCase();
-    return historyCards.filter((card) => textFromCard(card).includes(normalized));
-  }, [historyCards, searchQuery]);
-
-  function handleSave(card: AdviceCardVM) {
-    const nextState = saveAdviceCard(card);
+  function handleSave(card: SourceCardVM) {
+    const nextState = saveCard(card);
     setSavedHashes(new Set(nextState.savedCards.map((saved) => saved.textHash)));
   }
 
-  function handleReuse(card: AdviceCardVM) {
-    updateWorkspacePreferences({
-      intent: card.intent,
-      style: card.style,
-      detail: card.detail,
-      contextDraft: card.context ?? "",
-    });
-
-    router.push("/" as Route);
-  }
-
-  function handleShare(card: AdviceCardVM) {
+  function handleShare(card: SourceCardVM) {
     const shareCard = createShareCard(card);
     router.push(`/share/${shareCard.id}` as Route);
   }
@@ -92,100 +52,89 @@ export function HistoryTimeline() {
   return (
     <Container maxW="7xl" py={{ base: 6, md: 10 }}>
       <Stack gap={8}>
-        <NextLink href="/">
-          <Button alignSelf="flex-start" variant="ghost" color="gray.800" _hover={{ bg: "gray.100" }}>
-            <HStack>
-              <Icon as={FiArrowLeft} />
-              <Text>Back to studio</Text>
-            </HStack>
-          </Button>
-        </NextLink>
+        <HStack wrap="wrap" gap={3}>
+          <RouteLink href="/">Back to draw deck</RouteLink>
+          <RouteLink href="/saved">Saved cards</RouteLink>
+          <RouteLink href="/sources">Sources</RouteLink>
+        </HStack>
 
-        <Stack gap={2}>
-          <Heading as="h1" fontSize={{ base: "3xl", md: "5xl" }} color="gray.900">
-            Advice history
+        <Stack gap={3} maxW="3xl">
+          <Heading as="h1" fontSize={{ base: "4xl", md: "6xl" }} color="ink.800" lineHeight="0.96">
+            Draw history
           </Heading>
-          <Text color="gray.600" maxW="2xl">
-            Reopen anything you generated recently, save it, or share it.
+          <Text color="ink.600" fontSize={{ base: "md", md: "lg" }}>
+            Revisit recent cards, save the ones worth keeping, or share a clean copy with attribution.
           </Text>
         </Stack>
 
-        <HStack gap={3} bg="white" p={4} borderRadius="panel" borderWidth="1px" borderColor="gray.200" shadow="sm">
-          <Icon as={FiSearch} color="gray.500" />
-          <Input
-            value={searchQuery}
-            onChange={(event) => setSearchQuery(event.currentTarget.value)}
-            placeholder="Search history"
-            aria-label="Search history"
-            bg="gray.50"
-            borderColor="gray.300"
-          />
-        </HStack>
+        <SimpleGrid columns={{ base: 1, lg: 3 }} gap={4}>
+          <HStack bg="rgba(255, 250, 240, 0.92)" p={4} borderRadius="panel" borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)" shadow="float" gridColumn={{ lg: "span 2" }}>
+            <Icon as={FiSearch} color="ink.500" />
+            <Input
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.currentTarget.value)}
+              placeholder="Search text, author, or source"
+              aria-label="Search history"
+              bg="rgba(255,255,255,0.7)"
+              borderColor="rgba(54, 46, 34, 0.14)"
+            />
+          </HStack>
+          <Box bg="rgba(255, 250, 240, 0.92)" p={4} borderRadius="panel" borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)" shadow="float">
+            <Text fontSize="sm" textTransform="uppercase" letterSpacing="0.12em" color="ink.500" mb={2}>Filter</Text>
+            <HStack gap={2}>
+              {(["all", "advice", "quote"] as const).map((filter) => (
+                <Button
+                  key={filter}
+                  size="sm"
+                  variant={kindFilter === filter ? "solid" : "outline"}
+                  bg={kindFilter === filter ? "accent.700" : "rgba(255,255,255,0.7)"}
+                  color={kindFilter === filter ? "paper.50" : "ink.700"}
+                  borderColor="rgba(54, 46, 34, 0.14)"
+                  onClick={() => setKindFilter(filter)}
+                >
+                  {filter === "all" ? "All" : filter[0].toUpperCase() + filter.slice(1)}
+                </Button>
+              ))}
+            </HStack>
+          </Box>
+        </SimpleGrid>
 
         {filteredCards.length === 0 ? (
-          <Box bg="white" borderRadius="panel" borderWidth="1px" borderColor="gray.200" p={8} shadow="sm">
-            <Heading as="h2" size="md" color="gray.900">
-              No history yet
-            </Heading>
-            <Text mt={2} color="gray.600">
-              Generate advice from the studio to build your history.
-            </Text>
+          <Box bg="rgba(255, 250, 240, 0.92)" borderRadius="panel" borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)" p={8} shadow="float">
+            <Heading as="h2" size="lg" color="ink.800">No history yet</Heading>
+            <Text mt={2} color="ink.600">Draw a card from the home page to start building your history.</Text>
           </Box>
         ) : null}
 
-        <Stack gap={4}>
-          {filteredCards.map((card) => {
-            const saved = savedHashes.has(card.textHash);
-
-            return (
-              <Box key={card.id} bg="white" borderRadius="panel" borderWidth="1px" borderColor="gray.200" p={5} shadow="sm">
-                <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }} gap={3}>
-                  <Stack gap={2}>
-                    <HStack wrap="wrap" gap={2}>
-                      <Badge bg="utility.600" color="white">{getIntentLabel(card.intent)}</Badge>
-                      <Badge bg="gray.100" color="gray.700">{getStyleLabel(card.style)}</Badge>
-                      <Badge bg="gray.100" color="gray.700">{getDetailLabel(card.detail)}</Badge>
-                      <Badge bg="gray.100" color="gray.700">{getSourceLabel(card.source)}</Badge>
-                    </HStack>
-                    <Heading as="h2" size="md" color="gray.900">
-                      {card.headline}
-                    </Heading>
-                    <Text color="gray.700">{card.summary}</Text>
-                    <Text fontSize="xs" color="gray.500">
-                      Generated {new Date(card.generatedAt).toLocaleString()}
-                    </Text>
-                  </Stack>
-                </Flex>
-
-                <HStack mt={4} gap={2} wrap="wrap">
-                  <Button size="sm" variant="outline" borderColor="gray.300" onClick={() => handleReuse(card)}>
-                    <HStack>
-                      <Icon as={FiCornerUpLeft} />
-                      <Text>Use in Studio</Text>
-                    </HStack>
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    borderColor="gray.300"
-                    onClick={() => handleSave(card)}
-                    disabled={saved}
-                  >
-                    <HStack>
-                      <Icon as={FiBookmark} />
-                      <Text>{saved ? "Saved" : "Save"}</Text>
-                    </HStack>
-                  </Button>
-                  <Button size="sm" variant="outline" borderColor="gray.300" onClick={() => handleShare(card)}>
-                    <HStack>
-                      <Icon as={FiShare2} />
-                      <Text>Share</Text>
-                    </HStack>
-                  </Button>
-                </HStack>
-              </Box>
-            );
-          })}
+        <Stack gap={5}>
+          {filteredCards.map((card) => (
+            <SourceCardView
+              key={card.id}
+              card={card}
+              compact
+              footer={
+                <Stack gap={3}>
+                  <Text color="ink.500" fontSize="sm">
+                    {card.sourceLabel} · Drawn {new Date(card.drawnAt).toLocaleString()}
+                  </Text>
+                  <HStack wrap="wrap" gap={3}>
+                    <Button size="sm" bg="accent.700" color="paper.50" onClick={() => handleSave(card)} disabled={savedHashes.has(card.textHash)}>
+                      <HStack>
+                        <Icon as={FiBookmark} />
+                        <Text>{savedHashes.has(card.textHash) ? "Saved" : "Save"}</Text>
+                      </HStack>
+                    </Button>
+                    <Button size="sm" variant="outline" borderColor="rgba(54, 46, 34, 0.18)" onClick={() => handleShare(card)}>
+                      <HStack>
+                        <Icon as={FiShare2} />
+                        <Text>Share</Text>
+                      </HStack>
+                    </Button>
+                  </HStack>
+                </Stack>
+              }
+            />
+          ))}
         </Stack>
       </Stack>
     </Container>
