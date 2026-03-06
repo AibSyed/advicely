@@ -56,7 +56,7 @@ test("honesty-first draw flow works without console errors", async ({ page }) =>
   await page.keyboard.press("Tab");
   await expect(page.getByRole("link", { name: /skip to main content/i })).toBeFocused();
 
-  await expect(page.getByRole("heading", { name: /premium draw deck for random advice and quotes/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /find a line worth keeping/i })).toBeVisible();
   await page.getByRole("button", { name: /quote deck/i }).click();
   await page.getByRole("button", { name: /draw a card/i }).click();
 

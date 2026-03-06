@@ -44,3 +44,8 @@
 - What went wrong: The honesty-first rewrite still kept “share” naming in routes, storage, and docs even after the product had become a local copy flow.
 - Root cause: Semantic cleanup stopped at the visible UI layer instead of tracing the concept through route contracts, persistence, and task documentation.
 - Prevention rule: When a product term changes, run a repo-wide terminology sweep across routes, storage contracts, docs, and tests before final verification.
+
+## 2026-03-05
+- What went wrong: The homepage and supporting copy started explaining internal product constraints instead of leading with user value.
+- Root cause: Internal alignment language from the honesty-first rewrite leaked into hero and footer copy without a separate plain-language value pass.
+- Prevention rule: For any marketing-facing surface, keep the headline and subhead focused on what the user gets in one sentence, then push trust or implementation details into secondary copy.

@@ -17,7 +17,7 @@ import {
   Text,
   Textarea,
 } from "@chakra-ui/react";
-import { FiBookmark, FiCopy, FiEye, FiLock, FiRefreshCw, FiShuffle } from "react-icons/fi";
+import { FiBookmark, FiCopy, FiEye, FiRefreshCw, FiShuffle } from "react-icons/fi";
 import { AppNav } from "@/components/app-nav";
 import { SourceCardView } from "@/components/source-card";
 import {
@@ -42,19 +42,19 @@ const modeOptions: DrawMode[] = ["mixed", "advice", "quote"];
 
 const heroSignals = [
   {
-    icon: FiEye,
-    title: "Clearly sourced",
-    body: "Every card tells you whether it came from AdviceSlip, ZenQuotes, or the Advicely Reserve.",
-  },
-  {
-    icon: FiLock,
-    title: "Private by default",
-    body: "Notes stay in this browser unless you deliberately include them when copying a card.",
-  },
-  {
     icon: FiShuffle,
-    title: "Worth saving",
-    body: "Draw freely, keep what lands, and revisit it later through your library or recent trail.",
+    title: "Fresh every time",
+    body: "Switch between advice, quotes, or a mixed deck whenever you want a different kind of pull.",
+  },
+  {
+    icon: FiBookmark,
+    title: "Worth keeping",
+    body: "Save the cards that land, then come back to them later with your own note beside them.",
+  },
+  {
+    icon: FiEye,
+    title: "Source included",
+    body: "Every card keeps its attribution so you always know whether it came from a live source or the reserve.",
   },
 ] as const;
 
@@ -165,10 +165,10 @@ export function DrawStudio() {
             Advicely
           </Badge>
           <Heading as="h1" fontSize={{ base: "4xl", md: "6xl" }} color="ink.800" lineHeight="0.94">
-            A premium draw deck for random advice and quotes.
+            Find a line worth keeping.
           </Heading>
           <Text color="ink.600" fontSize={{ base: "md", md: "lg" }} maxW="3xl">
-            Built for honest browsing, quiet collecting, and clean copying. No fake coaching layer, no hidden source switching, no private notes leaving your browser.
+            Draw a piece of advice or a quote, save the ones that stick, and keep a private note when you want to remember why.
           </Text>
         </Stack>
 
