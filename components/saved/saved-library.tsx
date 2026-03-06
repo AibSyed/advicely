@@ -3,10 +3,10 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
-import { Badge, Box, Button, Container, Heading, HStack, Icon, Input, SimpleGrid, Stack, Text, Textarea } from "@chakra-ui/react";
 import { FiCopy, FiSearch, FiTrash2 } from "react-icons/fi";
 import { AppNav } from "@/components/app-nav";
 import { SourceCardView } from "@/components/source-card";
+import { Button, FilterChip, PageIntro, Panel } from "@/components/ui/primitives";
 import type { DrawSource, SourceCardKind } from "@/features/draw/contracts";
 import { notifyInfo, notifySuccess } from "@/features/feedback/notify";
 import type { SavedCardVM } from "@/features/library/contracts";
@@ -57,71 +57,47 @@ export function SavedLibrary() {
   }
 
   return (
-    <Container maxW="7xl" py={{ base: 6, md: 10 }}>
-      <Stack gap={8}>
-        <Stack gap={3} maxW="3xl">
-          <Badge alignSelf="flex-start" bg="ink.800" color="paper.50" px={3} py={1} borderRadius="full">
-            Library
-          </Badge>
-          <Heading as="h1" fontSize={{ base: "4xl", md: "6xl" }} color="ink.800" lineHeight="0.96">
-            Your library
-          </Heading>
-          <Text color="ink.600" fontSize={{ base: "md", md: "lg" }}>
-            Keep the cards that earn a second look, annotate them with private notes, and pull them back into focus whenever you need them.
-          </Text>
-        </Stack>
+    <div className="page-shell page-shell--wide">
+      <div className="page-stack">
+        <PageIntro
+          eyebrow="Library"
+          title="Your library"
+          description="Keep the cards that earn a second look, annotate them with private notes, and pull them back into focus whenever you need them."
+        />
 
         <AppNav />
 
-        <SimpleGrid columns={{ base: 1, lg: 2 }} gap={4}>
-          <HStack bg="rgba(255, 250, 240, 0.92)" p={4} borderRadius="panel" borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)" shadow="float">
-            <Icon as={FiSearch} color="ink.500" />
-            <Input
-              value={searchQuery}
-              onChange={(event) => setSearchQuery(event.currentTarget.value)}
-              placeholder="Search cards, authors, or notes"
-              aria-label="Search library"
-              bg="rgba(255,255,255,0.7)"
-              borderColor="rgba(54, 46, 34, 0.14)"
-            />
-          </HStack>
+        <div className="filter-layout">
+          <Panel className="search-panel search-panel--wide">
+            <div className="search-field">
+              <FiSearch aria-hidden="true" />
+              <input
+                className="ui-input"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.currentTarget.value)}
+                placeholder="Search cards, authors, or notes"
+                aria-label="Search library"
+              />
+            </div>
+          </Panel>
 
-          <SimpleGrid columns={{ base: 1, sm: 2 }} gap={3}>
-            <Box bg="rgba(255, 250, 240, 0.92)" p={4} borderRadius="panel" borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)" shadow="float">
-              <Text fontSize="sm" textTransform="uppercase" letterSpacing="0.12em" color="ink.500" mb={2}>
-                Card type
-              </Text>
-              <HStack gap={2} wrap="wrap">
+          <div className="filter-layout__stack">
+            <Panel compact>
+              <p className="field-label">Card type</p>
+              <div className="chip-row">
                 {(["all", "advice", "quote"] as const).map((filter) => (
-                  <Button
-                    key={filter}
-                    size="sm"
-                    variant={kindFilter === filter ? "solid" : "outline"}
-                    bg={kindFilter === filter ? "accent.700" : "rgba(255,255,255,0.7)"}
-                    color={kindFilter === filter ? "paper.50" : "ink.700"}
-                    borderColor="rgba(54, 46, 34, 0.14)"
-                    onClick={() => setKindFilter(filter)}
-                  >
+                  <FilterChip key={filter} active={kindFilter === filter} onClick={() => setKindFilter(filter)}>
                     {filter === "all" ? "All" : filter[0].toUpperCase() + filter.slice(1)}
-                  </Button>
+                  </FilterChip>
                 ))}
-              </HStack>
-            </Box>
-            <Box bg="rgba(255, 250, 240, 0.92)" p={4} borderRadius="panel" borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)" shadow="float">
-              <Text fontSize="sm" textTransform="uppercase" letterSpacing="0.12em" color="ink.500" mb={2}>
-                Source
-              </Text>
-              <HStack gap={2} wrap="wrap">
+              </div>
+            </Panel>
+
+            <Panel compact>
+              <p className="field-label">Source</p>
+              <div className="chip-row">
                 {(["all", "advice_slip", "zen_quotes", "advicely_reserve"] as const).map((filter) => (
-                  <Button
-                    key={filter}
-                    size="sm"
-                    variant={sourceFilter === filter ? "solid" : "outline"}
-                    bg={sourceFilter === filter ? "accent.700" : "rgba(255,255,255,0.7)"}
-                    color={sourceFilter === filter ? "paper.50" : "ink.700"}
-                    borderColor="rgba(54, 46, 34, 0.14)"
-                    onClick={() => setSourceFilter(filter)}
-                  >
+                  <FilterChip key={filter} active={sourceFilter === filter} onClick={() => setSourceFilter(filter)}>
                     {filter === "all"
                       ? "All"
                       : filter === "advice_slip"
@@ -129,25 +105,21 @@ export function SavedLibrary() {
                         : filter === "zen_quotes"
                           ? "ZenQuotes"
                           : "Reserve"}
-                  </Button>
+                  </FilterChip>
                 ))}
-              </HStack>
-            </Box>
-          </SimpleGrid>
-        </SimpleGrid>
+              </div>
+            </Panel>
+          </div>
+        </div>
 
         {filteredCards.length === 0 ? (
-          <Box bg="rgba(255, 250, 240, 0.92)" borderRadius="panel" borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)" p={8} shadow="float">
-            <Heading as="h2" size="lg" color="ink.800">
-              No cards match this view
-            </Heading>
-            <Text mt={2} color="ink.600">
-              Clear a filter or save a new card from the deck.
-            </Text>
-          </Box>
+          <Panel className="empty-state">
+            <h2 className="empty-state__title">No cards match this view.</h2>
+            <p className="empty-state__body">Clear a filter or save a new card from the deck.</p>
+          </Panel>
         ) : null}
 
-        <Stack gap={5}>
+        <div className="card-stack">
           {filteredCards.map((card) => (
             <SourceCardView
               key={card.id}
@@ -155,44 +127,43 @@ export function SavedLibrary() {
               note={card.note}
               compact
               footer={
-                <Stack gap={4}>
-                  <Text color="ink.500" fontSize="sm">
+                <div className="footer-stack">
+                  <p className="meta-line">
                     Saved {new Date(card.savedAt).toLocaleString()} · {card.sourceLabel}
-                  </Text>
-                  <Box>
-                    <Text fontSize="sm" textTransform="uppercase" letterSpacing="0.12em" color="ink.500" mb={2}>
+                  </p>
+                  <div>
+                    <label className="field-label" htmlFor={`note-${card.id}`}>
                       Edit private note
-                    </Text>
-                    <Textarea
+                    </label>
+                    <textarea
+                      id={`note-${card.id}`}
+                      className="ui-textarea"
                       value={card.note ?? ""}
                       onChange={(event) => handleNoteChange(card.id, event.currentTarget.value.slice(0, 320))}
                       placeholder="Why this card matters to you"
-                      minH="6.5rem"
-                      bg="rgba(255,255,255,0.72)"
-                      borderColor="rgba(54, 46, 34, 0.14)"
                       aria-label={`Edit note for ${card.text}`}
                     />
-                  </Box>
-                  <HStack wrap="wrap" gap={3}>
-                    <Button size="sm" bg="accent.700" color="paper.50" onClick={() => handleOpenCopyView(card)}>
-                      <HStack>
-                        <Icon as={FiCopy} />
-                        <Text>Open copy view</Text>
-                      </HStack>
+                  </div>
+                  <div className="action-row">
+                    <Button tone="primary" size="sm" onClick={() => handleOpenCopyView(card)}>
+                      <span className="button-inline">
+                        <FiCopy aria-hidden="true" />
+                        <span>Open copy view</span>
+                      </span>
                     </Button>
-                    <Button size="sm" variant="outline" borderColor="rgba(54, 46, 34, 0.18)" onClick={() => handleRemove(card.id)}>
-                      <HStack>
-                        <Icon as={FiTrash2} />
-                        <Text>Remove</Text>
-                      </HStack>
+                    <Button tone="secondary" size="sm" onClick={() => handleRemove(card.id)}>
+                      <span className="button-inline">
+                        <FiTrash2 aria-hidden="true" />
+                        <span>Remove</span>
+                      </span>
                     </Button>
-                  </HStack>
-                </Stack>
+                  </div>
+                </div>
               }
             />
           ))}
-        </Stack>
-      </Stack>
-    </Container>
+        </div>
+      </div>
+    </div>
   );
 }

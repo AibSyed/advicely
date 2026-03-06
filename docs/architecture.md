@@ -83,7 +83,7 @@ interface LibraryStateVM {
 - Provider content is displayed as normalized source text, not rewritten guidance.
 - Personal notes are local-only and never sent upstream.
 - Fallback cards are labeled as reserve cards in the UI.
-- The app uses webpack for both `dev` and `build` to avoid the Chakra/Emotion hydration issue seen in Turbopack builds.
+- The UI shell uses static CSS plus local primitives built with `class-variance-authority` and `clsx`.
 - Copy output excludes personal notes unless the user explicitly opts in on the copy screen.
 
 ## Failure Modes

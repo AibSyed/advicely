@@ -1,75 +1,73 @@
-import { Badge, Box, Container, Heading, HStack, Stack, Text } from "@chakra-ui/react";
 import { AppNav } from "@/components/app-nav";
+import { PageIntro, Panel, Pill } from "@/components/ui/primitives";
 
 export function SourceGuide() {
   return (
-    <Container maxW="6xl" py={{ base: 8, md: 12 }}>
-      <Stack gap={8}>
-        <Stack gap={3} maxW="3xl">
-          <Badge alignSelf="flex-start" bg="ink.800" color="paper.50" px={3} py={1} borderRadius="full">
-            Source notes
-          </Badge>
-          <Heading as="h1" fontSize={{ base: "4xl", md: "6xl" }} color="ink.800" lineHeight="0.96">
-            Where the cards come from.
-          </Heading>
-          <Text color="ink.600" fontSize={{ base: "md", md: "lg" }}>
-            These pulls are random, not tailored. Advicely helps you save, note, and revisit them without obscuring where they came from.
-          </Text>
-        </Stack>
+    <div className="page-shell page-shell--medium">
+      <div className="page-stack">
+        <PageIntro
+          eyebrow="Source notes"
+          title="Where the cards come from."
+          description="These pulls are random, not tailored. Advicely helps you save, note, and revisit them without obscuring where they came from."
+        />
 
         <AppNav />
 
-        <Stack gap={5}>
-          <Box bg="rgba(255, 250, 240, 0.92)" borderRadius="panel" borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)" p={6} shadow="float">
-            <HStack wrap="wrap" gap={2} mb={3}>
-              <Badge bg="paper.200" color="ink.800">Live advice</Badge>
-              <Badge bg="accent.100" color="accent.800">AdviceSlip</Badge>
-            </HStack>
-            <Heading as="h2" size="lg" color="ink.800">AdviceSlip</Heading>
-            <Text mt={3} color="ink.600">
+        <div className="card-stack">
+          <Panel>
+            <div className="source-guide__pills">
+              <Pill>Live advice</Pill>
+              <Pill tone="accent">AdviceSlip</Pill>
+            </div>
+            <h2 className="section-title">AdviceSlip</h2>
+            <p className="section-copy">
               Advice mode pulls one random advice slip from AdviceSlip and presents it as a source card, not a personalized recommendation.
-            </Text>
-            <Text mt={3} color="ink.600">
-              Official site: <a href="https://api.adviceslip.com/" target="_blank" rel="noreferrer">api.adviceslip.com</a>
-            </Text>
-          </Box>
+            </p>
+            <p className="section-copy">
+              Official site:{" "}
+              <a href="https://api.adviceslip.com/" target="_blank" rel="noreferrer">
+                api.adviceslip.com
+              </a>
+            </p>
+          </Panel>
 
-          <Box bg="rgba(255, 250, 240, 0.92)" borderRadius="panel" borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)" p={6} shadow="float">
-            <HStack wrap="wrap" gap={2} mb={3}>
-              <Badge bg="paper.200" color="ink.800">Live quote</Badge>
-              <Badge bg="ember.100" color="ember.800">ZenQuotes</Badge>
-            </HStack>
-            <Heading as="h2" size="lg" color="ink.800">ZenQuotes</Heading>
-            <Text mt={3} color="ink.600">
-              Quote mode pulls one random quote from ZenQuotes and preserves the author when it is provided.
-            </Text>
-            <Text mt={3} color="ink.600">
-              Official docs: <a href="https://docs.zenquotes.io/zenquotes-documentation/" target="_blank" rel="noreferrer">docs.zenquotes.io</a>
-            </Text>
-          </Box>
+          <Panel>
+            <div className="source-guide__pills">
+              <Pill>Live quote</Pill>
+              <Pill tone="ember">ZenQuotes</Pill>
+            </div>
+            <h2 className="section-title">ZenQuotes</h2>
+            <p className="section-copy">Quote mode pulls one random quote from ZenQuotes and preserves the author when it is provided.</p>
+            <p className="section-copy">
+              Official docs:{" "}
+              <a href="https://docs.zenquotes.io/zenquotes-documentation/" target="_blank" rel="noreferrer">
+                docs.zenquotes.io
+              </a>
+            </p>
+          </Panel>
 
-          <Box bg="rgba(255, 250, 240, 0.92)" borderRadius="panel" borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)" p={6} shadow="float">
-            <HStack wrap="wrap" gap={2} mb={3}>
-              <Badge bg="paper.200" color="ink.800">Reserve</Badge>
-              <Badge bg="ink.100" color="ink.700">Advicely Reserve</Badge>
-            </HStack>
-            <Heading as="h2" size="lg" color="ink.800">Advicely Reserve</Heading>
-            <Text mt={3} color="ink.600">
+          <Panel>
+            <div className="source-guide__pills">
+              <Pill>Reserve</Pill>
+              <Pill tone="muted">Advicely Reserve</Pill>
+            </div>
+            <h2 className="section-title">Advicely Reserve</h2>
+            <p className="section-copy">
               When a live pull fails, repeats, or returns unusable data, Advicely uses its own reserve deck instead of pretending the result is still live.
-            </Text>
-            <Text mt={3} color="ink.600">
-              Private notes stay in browser storage under `advicely:v6:library` and are never sent to AdviceSlip or ZenQuotes.
-            </Text>
-          </Box>
-        </Stack>
+            </p>
+            <p className="section-copy">
+              Private notes stay in browser storage under <code>advicely:v6:library</code> and are never sent to AdviceSlip or ZenQuotes.
+            </p>
+          </Panel>
+        </div>
 
-        <Box bg="ink.800" color="paper.50" borderRadius="panel" p={6} shadow="float">
-          <Heading as="h2" size="lg">Use judgment</Heading>
-          <Text mt={3} color="paper.100">
+        <Panel tone="dark">
+          <h2 className="section-title section-title--light">Use judgment</h2>
+          <p className="section-copy section-copy--light">
             Advicely is for reflection and curation. It is not medical, legal, financial, crisis, or otherwise professional advice.
-          </Text>
-        </Box>
-      </Stack>
-    </Container>
+          </p>
+        </Panel>
+      </div>
+    </div>
   );
 }
