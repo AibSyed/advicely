@@ -4,15 +4,15 @@ import { usePathname } from "next/navigation";
 import { Badge, Box, Container, HStack, SimpleGrid, Stack, Text } from "@chakra-ui/react";
 
 const routeNotes: Record<string, string> = {
-  "/": "Deck open. Draw slowly and save only what still feels useful tomorrow.",
-  "/saved": "Library open. Notes stay private until you explicitly include them in a copied card.",
-  "/history": "Recent draws open. Live duplicates are filtered before a reserve draw appears.",
-  "/sources": "Source notes open. Attribution is part of the product, not a legal footnote.",
+  "/": "Deck open. Take a fresh pull and keep only the lines you would want to see again.",
+  "/saved": "Library open. Saved cards and private notes are here when you want to revisit them.",
+  "/history": "Recent draws open. Skim what surfaced lately and keep anything worth another look.",
+  "/sources": "Sources open. See where each card comes from and when the reserve steps in.",
 };
 
 function resolveRouteNote(pathname: string): string {
   if (pathname.startsWith("/copy/")) {
-    return "Copy view open. Source text stays intact, and notes remain hidden unless you opt in.";
+    return "Copy view open. Take a clean, attributed copy and include your note only if you want to.";
   }
 
   return routeNotes[pathname] ?? routeNotes["/"];
@@ -42,10 +42,10 @@ export function SiteFooter() {
                 Advicely
               </Badge>
               <Text mt={4} fontSize="2xl" fontWeight="700" color="paper.50">
-                Random advice and quotes with enough honesty to be worth keeping.
+                A good line at the right moment is worth keeping.
               </Text>
               <Text mt={3} color="paper.100">
-                The deck stays close to the original source text, keeps attribution visible, and leaves your private notes in the browser unless you choose otherwise.
+                Pull something fresh, save what resonates, and leave yourself a note when it helps. The app keeps attribution close and your private notes local.
               </Text>
             </Box>
 

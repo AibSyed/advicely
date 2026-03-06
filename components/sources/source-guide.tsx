@@ -10,10 +10,10 @@ export function SourceGuide() {
             Source notes
           </Badge>
           <Heading as="h1" fontSize={{ base: "4xl", md: "6xl" }} color="ink.800" lineHeight="0.96">
-            Where the deck comes from.
+            Where the cards come from.
           </Heading>
           <Text color="ink.600" fontSize={{ base: "md", md: "lg" }}>
-            Advicely is a transparent draw deck for random advice and quotes. It does not tailor live source content to your situation, and it does not present itself as professional guidance.
+            These pulls are random, not tailored. Advicely helps you save, note, and revisit them without obscuring where they came from.
           </Text>
         </Stack>
 
@@ -66,7 +66,7 @@ export function SourceGuide() {
         <Box bg="ink.800" color="paper.50" borderRadius="panel" p={6} shadow="float">
           <Heading as="h2" size="lg">Use judgment</Heading>
           <Text mt={3} color="paper.100">
-            Advicely is for reflection, curation, and lightweight sharing. It is not medical, legal, financial, crisis, or otherwise professional advice.
+            Advicely is for reflection and curation. It is not medical, legal, financial, crisis, or otherwise professional advice.
           </Text>
         </Box>
       </Stack>
