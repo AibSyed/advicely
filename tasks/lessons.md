@@ -59,3 +59,8 @@
 - What went wrong: Final verification briefly produced another false lint failure during the toast and transition pass.
 - Root cause: `check` and Playwright were launched in parallel again, and Playwright rotated `test-results` while ESLint was traversing the repo.
 - Prevention rule: For Advicely final evidence, run `check` first and `test:e2e` second in separate commands, never in the same parallel batch.
+
+## 2026-03-05
+- What went wrong: Production CSP still reported a blocked `eval` path even after earlier client-side Zod cleanup.
+- Root cause: The browser-side library storage module still imported Zod-backed contract modules, which shipped Zod's JIT `Function(...)` path into the client bundle.
+- Prevention rule: Keep browser storage and client guards on plain TypeScript/manual validation only; any Zod schema module imported by a client file must be treated as a bundle leak and removed from that path.

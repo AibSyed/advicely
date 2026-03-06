@@ -7,10 +7,122 @@ import {
   type LibraryStateVM,
   type SavedCardVM,
   type CopyCardVM,
-  libraryStateVMSchema,
 } from "@/features/library/contracts";
 
 const STORAGE_KEY = "advicely:v6:library";
+const CARD_KINDS = new Set(["advice", "quote"] as const);
+const SOURCES = new Set(["advice_slip", "zen_quotes", "advicely_reserve"] as const);
+const PROVENANCES = new Set(["live", "fallback"] as const);
+const FALLBACK_REASONS = new Set(["provider_unavailable", "invalid_payload", "filtered", "duplicate"] as const);
+const DRAW_MODES = new Set(["advice", "quote", "mixed"] as const);
+
+function isObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function isIsoString(value: unknown): value is string {
+  return typeof value === "string" && !Number.isNaN(Date.parse(value));
+}
+
+function isSourceCard(value: unknown): value is SourceCardVM {
+  if (!isObject(value)) {
+    return false;
+  }
+
+  return (
+    typeof value.id === "string" &&
+    value.id.length > 0 &&
+    CARD_KINDS.has(value.kind as SourceCardVM["kind"]) &&
+    typeof value.text === "string" &&
+    value.text.length >= 4 &&
+    (value.author === undefined || typeof value.author === "string") &&
+    SOURCES.has(value.source as SourceCardVM["source"]) &&
+    typeof value.sourceLabel === "string" &&
+    value.sourceLabel.length > 0 &&
+    PROVENANCES.has(value.provenance as SourceCardVM["provenance"]) &&
+    (value.fallbackReason === undefined || FALLBACK_REASONS.has(value.fallbackReason as NonNullable<SourceCardVM["fallbackReason"]>)) &&
+    typeof value.textHash === "string" &&
+    /^[a-f0-9]{64}$/.test(value.textHash) &&
+    isIsoString(value.drawnAt)
+  );
+}
+
+function isSavedCard(value: unknown): value is SavedCardVM {
+  if (!isObject(value) || !isSourceCard(value)) {
+    return false;
+  }
+
+  const candidate = value as SavedCardVM;
+  return isIsoString(candidate.savedAt) && (candidate.note === undefined || typeof candidate.note === "string");
+}
+
+function isCopyCard(value: unknown): value is CopyCardVM {
+  return (
+    isObject(value) &&
+    typeof value.id === "string" &&
+    value.id.length > 0 &&
+    isIsoString(value.createdAt) &&
+    isSourceCard(value.card) &&
+    (value.note === undefined || typeof value.note === "string")
+  );
+}
+
+function sanitizeSourceCard(card: SourceCardVM): SourceCardVM {
+  return {
+    ...card,
+    author: typeof card.author === "string" && card.author.trim().length > 0 ? card.author : undefined,
+    fallbackReason: card.provenance === "fallback" ? card.fallbackReason : undefined,
+  };
+}
+
+function sanitizeSavedCard(card: SavedCardVM): SavedCardVM {
+  return {
+    ...sanitizeSourceCard(card),
+    savedAt: card.savedAt,
+    note: normalizeNote(card.note),
+  };
+}
+
+function sanitizeCopyCard(card: CopyCardVM): CopyCardVM {
+  return {
+    id: card.id,
+    createdAt: card.createdAt,
+    card: sanitizeSourceCard(card.card),
+    note: normalizeNote(card.note),
+  };
+}
+
+function parseLibraryState(value: unknown): LibraryStateVM {
+  if (!isObject(value)) {
+    return emptyLibraryState;
+  }
+
+  if (value.version !== 6) {
+    return emptyLibraryState;
+  }
+
+  if (!Array.isArray(value.history) || !Array.isArray(value.savedCards) || !Array.isArray(value.copyCards) || !isObject(value.preferences)) {
+    return emptyLibraryState;
+  }
+
+  if (!DRAW_MODES.has(value.preferences.lastMode as DrawMode)) {
+    return emptyLibraryState;
+  }
+
+  const history = value.history.filter(isSourceCard).map(sanitizeSourceCard).slice(0, 160);
+  const savedCards = value.savedCards.filter(isSavedCard).map(sanitizeSavedCard).slice(0, 240);
+  const copyCards = value.copyCards.filter(isCopyCard).map(sanitizeCopyCard).slice(0, 120);
+
+  return {
+    version: 6,
+    history,
+    savedCards,
+    copyCards,
+    preferences: {
+      lastMode: value.preferences.lastMode as DrawMode,
+    },
+  };
+}
 
 function normalizeNote(note?: string): string | undefined {
   const normalized = note?.trim().slice(0, 320);
@@ -36,8 +148,7 @@ function readState(): LibraryStateVM {
       return emptyLibraryState;
     }
 
-    const parsed = libraryStateVMSchema.safeParse(JSON.parse(raw));
-    return parsed.success ? parsed.data : emptyLibraryState;
+    return parseLibraryState(JSON.parse(raw));
   } catch {
     return emptyLibraryState;
   }
