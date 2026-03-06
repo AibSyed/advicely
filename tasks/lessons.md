@@ -18,7 +18,7 @@
 ## 2026-03-04
 - What went wrong: Dev runtime produced a Chakra hydration mismatch after switching to Turbopack mode.
 - Root cause: Emotion style injection order in this stack can diverge under Turbopack dev hydration.
-- Prevention rule: Keep both `next dev --webpack` and `next build --webpack` for this repo, then verify the production build in DevTools before finalizing UI work.
+- Prevention rule: If a styling/runtime stack fights the platform defaults, re-evaluate the primitive layer instead of pinning the whole repo to a fallback bundler, then verify the production build in DevTools before finalizing UI work.
 
 ## 2026-03-04
 - What went wrong: Advice cards surfaced non-practical quote content and generic warning labels that confused normal users.

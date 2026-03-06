@@ -178,7 +178,7 @@
 - [x] Replace the Chakra shell with static CSS primitives and a local toast system
 - [x] Restore default Next 16 `dev` and `build` scripts
 - [x] Re-verify the app under a Turbopack production build
-- [ ] Recheck the deployed production app after merge
+- [x] Recheck the deployed production app after merge
 
 ### Runtime Styling Migration Findings
 - Chakra was the only meaningful reason the repo stayed on webpack for both development and production.
@@ -200,3 +200,17 @@
   - `/saved` loaded with no console messages
   - `/sources` loaded with no console messages
   - draw flow, local copy flow, and navigation rendered cleanly under the Turbopack build
+ - Production recheck on `https://advicely.vercel.app` after merge:
+   - Vercel production deploy for merge commit `2b5b7a15a19b3c9b0f3aa92f6ec6958bd593c3e9` completed successfully
+   - public production alias serves the new Turbopack chunk graph
+   - fresh browser session on `/` is console-clean
+
+## 2026-03-05 Final Sweep
+- [x] Re-scan repo guidance, docs, tasks, and dependency/output residue after the runtime migration
+- [x] Remove stale generated artifacts from the workspace
+- [x] Correct any stale operational guidance discovered during the sweep
+
+### Final Sweep Findings
+- Removed leftover Playwright `test-results/` residue from the working tree.
+- Updated the outdated webpack-only lesson so it matches the current Turbopack-first architecture.
+- Reconfirmed that the only available dependency major upgrade is `eslint 10`, which remains intentionally deferred for current Next plugin peer compatibility.
