@@ -122,16 +122,68 @@ export function AppNav() {
   const pathname = usePathname();
 
   return (
-    <SimpleGrid columns={{ base: 2, md: 4 }} gap={3}>
-      {navItems.map((item) => {
-        const active = isActive(pathname, item.href);
+    <>
+      <HStack
+        display={{ base: "flex", md: "none" }}
+        gap={2}
+        overflowX="auto"
+        pb={1}
+        pr={1}
+        css={{
+          scrollbarWidth: "none",
+          WebkitOverflowScrolling: "touch",
+          msOverflowStyle: "none",
+        }}
+      >
+        {navItems.map((item) => {
+          const active = isActive(pathname, item.href);
 
-        return (
-          <NextLink key={item.href} href={item.href} style={{ textDecoration: "none" }} aria-current={active ? "page" : undefined}>
-            <NavCardContent item={item} active={active} />
-          </NextLink>
-        );
-      })}
-    </SimpleGrid>
+          return (
+            <NextLink key={item.href} href={item.href} style={{ textDecoration: "none", flexShrink: 0 }} aria-current={active ? "page" : undefined}>
+              <Box
+                position="relative"
+                overflow="hidden"
+                borderRadius="999px"
+                borderWidth="1px"
+                borderColor={active ? "rgba(61, 126, 90, 0.35)" : "rgba(54, 46, 34, 0.12)"}
+                bg={active ? "rgba(79, 154, 113, 0.14)" : "rgba(255, 250, 240, 0.88)"}
+                px={3.5}
+                py={2.5}
+                minW="fit-content"
+                transition="transform 140ms ease, box-shadow 220ms ease, border-color 140ms ease, background-color 220ms ease"
+                _hover={{ transform: "translateY(-1px)", shadow: "sm" }}
+              >
+                <HStack gap={2}>
+                  <Box
+                    borderRadius="999px"
+                    bg={active ? "accent.700" : "paper.200"}
+                    color={active ? "paper.50" : "ink.700"}
+                    p={1.5}
+                    flexShrink={0}
+                  >
+                    <Icon as={item.icon} boxSize={3.5} />
+                  </Box>
+                  <Text fontSize="sm" fontWeight="700" color="ink.800">
+                    {item.title}
+                  </Text>
+                </HStack>
+              </Box>
+            </NextLink>
+          );
+        })}
+      </HStack>
+
+      <SimpleGrid display={{ base: "none", md: "grid" }} columns={4} gap={3}>
+        {navItems.map((item) => {
+          const active = isActive(pathname, item.href);
+
+          return (
+            <NextLink key={item.href} href={item.href} style={{ textDecoration: "none" }} aria-current={active ? "page" : undefined}>
+              <NavCardContent item={item} active={active} />
+            </NextLink>
+          );
+        })}
+      </SimpleGrid>
+    </>
   );
 }
