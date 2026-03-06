@@ -6,7 +6,7 @@ import {
   type LibraryPreferencesVM,
   type LibraryStateVM,
   type SavedCardVM,
-  type ShareCardVM,
+  type CopyCardVM,
   libraryStateVMSchema,
 } from "@/features/library/contracts";
 
@@ -161,10 +161,10 @@ export function removeSavedCard(cardId: string): LibraryStateVM {
   });
 }
 
-export function createShareCard(card: SourceCardVM, note?: string): ShareCardVM {
+export function createCopyCard(card: SourceCardVM, note?: string): CopyCardVM {
   const state = readState();
-  const shareCard: ShareCardVM = {
-    id: getSafeRandomId("share"),
+  const copyCard: CopyCardVM = {
+    id: getSafeRandomId("copy"),
     createdAt: new Date().toISOString(),
     card,
     note: normalizeNote(note),
@@ -172,14 +172,14 @@ export function createShareCard(card: SourceCardVM, note?: string): ShareCardVM 
 
   writeState({
     ...state,
-    shareCards: [shareCard, ...state.shareCards].slice(0, 120),
+    copyCards: [copyCard, ...state.copyCards].slice(0, 120),
   });
 
-  return shareCard;
+  return copyCard;
 }
 
-export function getShareCardById(shareId: string): ShareCardVM | null {
-  return readState().shareCards.find((card) => card.id === shareId) ?? null;
+export function getCopyCardById(copyId: string): CopyCardVM | null {
+  return readState().copyCards.find((card) => card.id === copyId) ?? null;
 }
 
 export function clearLibrary(): LibraryStateVM {

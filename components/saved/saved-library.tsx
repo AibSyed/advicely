@@ -4,21 +4,13 @@ import { useEffect, useMemo, useState } from "react";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import { Badge, Box, Button, Container, Heading, HStack, Icon, Input, SimpleGrid, Stack, Text, Textarea } from "@chakra-ui/react";
-import { FiSearch, FiShare2, FiTrash2 } from "react-icons/fi";
+import { FiCopy, FiSearch, FiTrash2 } from "react-icons/fi";
 import { AppNav } from "@/components/app-nav";
 import { SourceCardView } from "@/components/source-card";
 import type { DrawSource, SourceCardKind } from "@/features/draw/contracts";
 import type { SavedCardVM } from "@/features/library/contracts";
-import { createShareCard, getLibraryState, removeSavedCard, updateSavedCardNote } from "@/features/library/storage";
-
-function matchesQuery(card: SavedCardVM, query: string): boolean {
-  const normalized = query.trim().toLowerCase();
-  if (!normalized) {
-    return true;
-  }
-
-  return [card.text, card.author ?? "", card.sourceLabel, card.note ?? ""].some((value) => value.toLowerCase().includes(normalized));
-}
+import { matchesTextQuery } from "@/features/library/query";
+import { createCopyCard, getLibraryState, removeSavedCard, updateSavedCardNote } from "@/features/library/storage";
 
 export function SavedLibrary() {
   const router = useRouter();
@@ -36,7 +28,7 @@ export function SavedLibrary() {
       savedCards
         .filter((card) => (kindFilter === "all" ? true : card.kind === kindFilter))
         .filter((card) => (sourceFilter === "all" ? true : card.source === sourceFilter))
-        .filter((card) => matchesQuery(card, searchQuery)),
+        .filter((card) => matchesTextQuery(searchQuery, [card.text, card.author, card.sourceLabel, card.note])),
     [savedCards, kindFilter, searchQuery, sourceFilter],
   );
 
@@ -45,9 +37,9 @@ export function SavedLibrary() {
     setSavedCards(nextState.savedCards);
   }
 
-  function handleShare(card: SavedCardVM) {
-    const shareCard = createShareCard(card, card.note);
-    router.push(`/share/${shareCard.id}` as Route);
+  function handleOpenCopyView(card: SavedCardVM) {
+    const copyCard = createCopyCard(card, card.note);
+    router.push(`/copy/${copyCard.id}` as Route);
   }
 
   function handleNoteChange(cardId: string, note: string) {
@@ -111,7 +103,7 @@ export function SavedLibrary() {
                 Source
               </Text>
               <HStack gap={2} wrap="wrap">
-                {(["all", "advice_slip", "zen_quotes", "local_collection"] as const).map((filter) => (
+                {(["all", "advice_slip", "zen_quotes", "advicely_reserve"] as const).map((filter) => (
                   <Button
                     key={filter}
                     size="sm"
@@ -173,10 +165,10 @@ export function SavedLibrary() {
                     />
                   </Box>
                   <HStack wrap="wrap" gap={3}>
-                    <Button size="sm" bg="accent.700" color="paper.50" onClick={() => handleShare(card)}>
+                    <Button size="sm" bg="accent.700" color="paper.50" onClick={() => handleOpenCopyView(card)}>
                       <HStack>
-                        <Icon as={FiShare2} />
-                        <Text>Share</Text>
+                        <Icon as={FiCopy} />
+                        <Text>Open copy view</Text>
                       </HStack>
                     </Button>
                     <Button size="sm" variant="outline" borderColor="rgba(54, 46, 34, 0.18)" onClick={() => handleRemove(card.id)}>

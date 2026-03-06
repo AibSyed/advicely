@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { AdviceProviderError, mapStatusToErrorState } from "@/lib/api/provider-error";
 import type { ProviderCandidate } from "@/lib/api/types";
 import { normalizeCardText } from "@/features/draw/text";
+import { requestProviderJson } from "@/lib/api/request-provider-json";
 
 const adviceSlipSchema = z.object({
   slip: z.object({
@@ -10,47 +10,19 @@ const adviceSlipSchema = z.object({
 });
 
 export async function requestAdviceSlip(url: string, timeoutMs: number): Promise<ProviderCandidate> {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  const payload = await requestProviderJson({
+    url,
+    timeoutMs,
+    schema: adviceSlipSchema,
+    requestFailedMessage: "AdviceSlip request failed",
+    invalidPayloadMessage: "AdviceSlip payload is invalid",
+    timeoutMessage: "AdviceSlip request timed out",
+  });
 
-  try {
-    const response = await fetch(url, {
-      cache: "no-store",
-      signal: controller.signal,
-      headers: {
-        accept: "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      throw new AdviceProviderError(
-        `AdviceSlip request failed (${response.status})`,
-        mapStatusToErrorState(response.status),
-      );
-    }
-
-    const payload = adviceSlipSchema.safeParse(await response.json());
-    if (!payload.success) {
-      throw new AdviceProviderError("AdviceSlip payload is invalid", "invalid_payload");
-    }
-
-    return {
-      kind: "advice",
-      text: normalizeCardText(payload.data.slip.advice),
-      source: "advice_slip",
-      sourceLabel: "AdviceSlip",
-    };
-  } catch (error) {
-    if (error instanceof AdviceProviderError) {
-      throw error;
-    }
-
-    if (error instanceof DOMException && error.name === "AbortError") {
-      throw new AdviceProviderError("AdviceSlip request timed out", "unavailable");
-    }
-
-    throw new AdviceProviderError("AdviceSlip request failed", "unavailable");
-  } finally {
-    clearTimeout(timeout);
-  }
+  return {
+    kind: "advice",
+    text: normalizeCardText(payload.slip.advice),
+    source: "advice_slip",
+    sourceLabel: "AdviceSlip",
+  };
 }

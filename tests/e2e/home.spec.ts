@@ -43,7 +43,18 @@ test("honesty-first draw flow works without console errors", async ({ page }) =>
     });
   });
 
+  await page.addInitScript(() => {
+    Object.defineProperty(window.navigator, "clipboard", {
+      configurable: true,
+      value: {
+        writeText: async () => undefined,
+      },
+    });
+  });
+
   await page.goto("/");
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("link", { name: /skip to main content/i })).toBeFocused();
 
   await expect(page.getByRole("heading", { name: /premium draw deck for random advice and quotes/i })).toBeVisible();
   await page.getByRole("button", { name: /quote deck/i }).click();
@@ -54,6 +65,17 @@ test("honesty-first draw flow works without console errors", async ({ page }) =>
   await expect(page.getByText(/samuel butler/i)).toBeVisible();
 
   await page.getByLabel(/optional personal note/i).fill("Keep this around for bad meetings.");
+  await page.getByRole("button", { name: /open copy view/i }).click();
+  await expect(page).toHaveURL(/\/copy\//);
+  await expect(page.getByRole("heading", { name: /copy card/i })).toBeVisible();
+  await page.getByText(/include private note when copying/i).click();
+  await page.getByRole("button", { name: /copy card text/i }).click();
+  await expect(page.getByRole("status")).toHaveText(/copied to clipboard/i);
+  await expect(page.getByText(/keep this around for bad meetings/i)).toBeVisible();
+
+  await page.goto("/");
+  await page.getByRole("button", { name: /draw a card/i }).click();
+  await page.getByLabel(/optional personal note/i).fill("Keep this around for bad meetings.");
   await page.getByRole("button", { name: /save to library/i }).click();
   await page.getByRole("link", { name: /library/i }).click();
 
@@ -62,19 +84,22 @@ test("honesty-first draw flow works without console errors", async ({ page }) =>
     /keep this around for bad meetings/i,
   );
 
-  await page.getByRole("button", { name: /^share$/i }).first().click();
-  await expect(page).toHaveURL(/\/share\//);
-  await expect(page.getByRole("heading", { name: /share card/i })).toBeVisible();
+  await page.getByRole("button", { name: /open copy view/i }).first().click();
+  await expect(page).toHaveURL(/\/copy\//);
+  await expect(page.getByRole("heading", { name: /copy card/i })).toBeVisible();
   await expect(page.getByText(/source: zenquotes/i)).toBeVisible();
   await expect(page.getByText(/keep this around for bad meetings/i)).toHaveCount(0);
+
+  await page.getByRole("link", { name: /recent/i }).click();
+  await expect(page.getByRole("heading", { name: /recent draws/i })).toBeVisible();
 
   expect(consoleErrors).toEqual([]);
   expect(pageErrors).toEqual([]);
 });
 
-test("missing share card renders recovery state", async ({ page }) => {
-  await page.goto("/share/not-found");
+test("missing local copy renders recovery state", async ({ page }) => {
+  await page.goto("/copy/not-found");
 
-  await expect(page.getByRole("heading", { name: /we could not find that share card/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /we could not find that local copy/i })).toBeVisible();
   await expect(page.getByRole("link", { name: /draw a new card/i })).toBeVisible();
 });

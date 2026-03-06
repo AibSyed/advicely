@@ -47,7 +47,7 @@ function isActive(pathname: string, href: Route): boolean {
   }
 
   if (href === "/saved") {
-    return pathname === "/saved" || pathname.startsWith("/share/");
+    return pathname === "/saved" || pathname.startsWith("/copy/");
   }
 
   return pathname === href;

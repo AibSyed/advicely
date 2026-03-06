@@ -1,13 +1,13 @@
 import type { DrawMode, SourceCardKind } from "@/features/draw/contracts";
 
-export interface LocalCollectionEntry {
+interface ReserveDeckEntry {
   kind: SourceCardKind;
   text: string;
   author?: string;
   modes: DrawMode[];
 }
 
-export const localCollection: LocalCollectionEntry[] = [
+export const reserveDeck: ReserveDeckEntry[] = [
   {
     kind: "advice",
     text: "If a day feels noisy, finish one small promise to yourself before you absorb anyone else's urgency.",
@@ -36,31 +36,31 @@ export const localCollection: LocalCollectionEntry[] = [
   {
     kind: "quote",
     text: "What steadies you is worth revisiting.",
-    author: "Advicely Collection",
+    author: "Advicely Reserve",
     modes: ["quote", "mixed"],
   },
   {
     kind: "quote",
     text: "Clarity often arrives after one honest sentence, not after ten more tabs.",
-    author: "Advicely Collection",
+    author: "Advicely Reserve",
     modes: ["quote", "mixed"],
   },
   {
     kind: "quote",
     text: "A gentle pace can still be forward motion.",
-    author: "Advicely Collection",
+    author: "Advicely Reserve",
     modes: ["quote", "mixed"],
   },
   {
     kind: "quote",
     text: "You do not need a dramatic reset to begin again today.",
-    author: "Advicely Collection",
+    author: "Advicely Reserve",
     modes: ["quote", "mixed"],
   },
   {
     kind: "quote",
     text: "Keep the thought that helps; leave the performance around it behind.",
-    author: "Advicely Collection",
+    author: "Advicely Reserve",
     modes: ["quote", "mixed"],
   },
 ];

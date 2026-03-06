@@ -5,7 +5,7 @@ Advicely is an honesty-first deck for random advice and quotes.
 It does three things well:
 - draws one random card from a clearly labeled live source or the Advicely Reserve
 - lets you save cards and attach private notes in your browser
-- keeps sharing clean by preserving attribution and hiding personal notes by default
+- keeps copying clean by preserving attribution and hiding personal notes by default
 
 It does not claim to be a contextual assistant, a coaching engine, or professional advice.
 
@@ -17,7 +17,7 @@ flowchart LR
   UI --> API["/app/api/draw Route Handler"]
   API --> AS["AdviceSlip Random Advice"]
   API --> ZQ["ZenQuotes Random Quote"]
-  API --> LC["Advicely Local Collection"]
+  API --> LC["Advicely Reserve"]
   UI --> LS["Local Storage: advicely:v6:library"]
 ```
 
@@ -38,7 +38,7 @@ Official provider references:
 - `/`: draw deck
 - `/saved`: saved cards with local notes
 - `/history`: recent draws
-- `/share/[id]`: local share view
+- `/copy/[id]`: local copy view
 - `/sources`: source behavior and limits
 
 ## Runtime Contract
@@ -91,6 +91,11 @@ Server-only variables:
 
 ## Quality Gates
 
+Core shortcut:
+- `pnpm run check`
+
+Full verification ladder:
+
 - `pnpm run lint`
 - `pnpm run typecheck`
 - `pnpm run test`
@@ -104,7 +109,7 @@ Server-only variables:
 
 - This Chakra UI + Next.js stack is pinned to webpack for both development and production builds.
 - Use `pnpm dev` and `pnpm build`; both are already configured with `--webpack` in `package.json`.
-- Share links are local-only because saved cards and notes live in browser storage.
+- Copy views are local-only because saved cards and notes live in browser storage.
 
 ## What This App Is Not
 

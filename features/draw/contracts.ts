@@ -2,8 +2,8 @@ import { z } from "zod";
 
 export const drawModeSchema = z.enum(["advice", "quote", "mixed"]);
 export const sourceCardKindSchema = z.enum(["advice", "quote"]);
-export const drawSourceSchema = z.enum(["advice_slip", "zen_quotes", "local_collection"]);
-export const drawProvenanceSchema = z.enum(["live", "fallback"]);
+export const drawSourceSchema = z.enum(["advice_slip", "zen_quotes", "advicely_reserve"]);
+const drawProvenanceSchema = z.enum(["live", "fallback"]);
 export const fallbackReasonSchema = z.enum(["provider_unavailable", "invalid_payload", "filtered", "duplicate"]);
 export const providerOutcomeSchema = z.enum(["accepted", "duplicate", "filtered", "unavailable", "invalid_payload", "skipped"]);
 
@@ -30,7 +30,7 @@ export const sourceCardVMSchema = z.object({
   drawnAt: z.string().datetime(),
 });
 
-export const drawMetaVMSchema = z.object({
+const drawMetaVMSchema = z.object({
   requestId: z.string().min(1),
   drawnAt: z.string().datetime(),
   outcomes: z.object({
@@ -47,10 +47,8 @@ export const drawResponseSchema = z.object({
 export type DrawMode = z.infer<typeof drawModeSchema>;
 export type SourceCardKind = z.infer<typeof sourceCardKindSchema>;
 export type DrawSource = z.infer<typeof drawSourceSchema>;
-export type DrawProvenance = z.infer<typeof drawProvenanceSchema>;
 export type FallbackReason = z.infer<typeof fallbackReasonSchema>;
 export type ProviderOutcome = z.infer<typeof providerOutcomeSchema>;
 export type DrawRequestVM = z.infer<typeof drawRequestSchema>;
 export type SourceCardVM = z.infer<typeof sourceCardVMSchema>;
-export type DrawMetaVM = z.infer<typeof drawMetaVMSchema>;
 export type DrawResponseVM = z.infer<typeof drawResponseSchema>;

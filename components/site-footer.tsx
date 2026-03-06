@@ -5,14 +5,14 @@ import { Badge, Box, Container, HStack, SimpleGrid, Stack, Text } from "@chakra-
 
 const routeNotes: Record<string, string> = {
   "/": "Deck open. Draw slowly and save only what still feels useful tomorrow.",
-  "/saved": "Library open. Notes stay private until you explicitly include them in a share card.",
+  "/saved": "Library open. Notes stay private until you explicitly include them in a copied card.",
   "/history": "Recent draws open. Live duplicates are filtered before a reserve draw appears.",
   "/sources": "Source notes open. Attribution is part of the product, not a legal footnote.",
 };
 
 function resolveRouteNote(pathname: string): string {
-  if (pathname.startsWith("/share/")) {
-    return "Share view open. Source text stays intact, and notes remain hidden unless you opt in.";
+  if (pathname.startsWith("/copy/")) {
+    return "Copy view open. Source text stays intact, and notes remain hidden unless you opt in.";
   }
 
   return routeNotes[pathname] ?? routeNotes["/"];
@@ -85,7 +85,7 @@ export function SiteFooter() {
             borderTop="1px solid rgba(255, 250, 240, 0.12)"
           >
             <Text color="paper.100">©{year} Created by Shoaib (Aib) Syed</Text>
-            <Text color="paper.100">Random by design. Save selectively. Share with context.</Text>
+            <Text color="paper.100">Random by design. Save selectively. Copy with context.</Text>
           </HStack>
         </Stack>
       </Container>

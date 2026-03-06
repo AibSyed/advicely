@@ -17,19 +17,18 @@ import {
   Text,
   Textarea,
 } from "@chakra-ui/react";
-import { FiBookmark, FiEye, FiLock, FiRefreshCw, FiShare2, FiShuffle } from "react-icons/fi";
+import { FiBookmark, FiCopy, FiEye, FiLock, FiRefreshCw, FiShuffle } from "react-icons/fi";
 import { AppNav } from "@/components/app-nav";
 import { SourceCardView } from "@/components/source-card";
 import {
-  drawRequestSchema,
-  drawResponseSchema,
   type DrawMode,
   type DrawRequestVM,
   type DrawResponseVM,
 } from "@/features/draw/contracts";
+import { parseClientDrawResponse } from "@/features/draw/client-guard";
 import { getModeDescription, getModeLabel } from "@/features/draw/presentation";
 import {
-  createShareCard,
+  createCopyCard,
   findSavedCardByHash,
   getLibraryState,
   getRecentHashes,
@@ -50,7 +49,7 @@ const heroSignals = [
   {
     icon: FiLock,
     title: "Private by default",
-    body: "Notes stay in this browser unless you deliberately include them when sharing a card.",
+    body: "Notes stay in this browser unless you deliberately include them when copying a card.",
   },
   {
     icon: FiShuffle,
@@ -79,12 +78,7 @@ async function fetchDraw(request: DrawRequestVM): Promise<DrawResponseVM> {
     throw new Error(payload?.error ?? "Draw request failed");
   }
 
-  const parsed = drawResponseSchema.safeParse(payload);
-  if (!parsed.success) {
-    throw new Error("Draw payload failed validation");
-  }
-
-  return parsed.data;
+  return parseClientDrawResponse(payload);
 }
 
 export function DrawStudio() {
@@ -124,10 +118,10 @@ export function DrawStudio() {
     updatePreferences(mode);
 
     try {
-      const payload = drawRequestSchema.parse({
+      const payload: DrawRequestVM = {
         mode,
         avoidRecentHashes: getRecentHashes(),
-      });
+      };
       const response = await fetchDraw(payload);
       const nextState = recordDrawnCard(response.card);
 
@@ -154,13 +148,13 @@ export function DrawStudio() {
     setStatusMessage(cardSaved ? "Saved note updated." : "Card saved to your library.");
   }
 
-  function handleShare() {
+  function handleOpenCopyView() {
     if (!latestCard) {
       return;
     }
 
-    const shareCard = createShareCard(latestCard, savedCard?.note ?? noteDraft);
-    router.push(`/share/${shareCard.id}` as Route);
+    const copyCard = createCopyCard(latestCard, noteDraft);
+    router.push(`/copy/${copyCard.id}` as Route);
   }
 
   return (
@@ -174,7 +168,7 @@ export function DrawStudio() {
             A premium draw deck for random advice and quotes.
           </Heading>
           <Text color="ink.600" fontSize={{ base: "md", md: "lg" }} maxW="3xl">
-            Built for honest browsing, quiet collecting, and clean sharing. No fake coaching layer, no hidden source switching, no private notes leaving your browser.
+            Built for honest browsing, quiet collecting, and clean copying. No fake coaching layer, no hidden source switching, no private notes leaving your browser.
           </Text>
         </Stack>
 
@@ -312,7 +306,7 @@ export function DrawStudio() {
                         aria-label="Optional personal note"
                       />
                       <Text mt={2} color="ink.500" fontSize="sm">
-                        This note stays local unless you include it when copying a share card.
+                        This note stays local unless you include it when copying this card.
                       </Text>
                     </Box>
                     <HStack wrap="wrap" gap={3}>
@@ -322,10 +316,10 @@ export function DrawStudio() {
                           <Text>{cardSaved ? "Update library card" : "Save to library"}</Text>
                         </HStack>
                       </Button>
-                      <Button variant="outline" borderColor="rgba(54, 46, 34, 0.18)" color="ink.800" onClick={handleShare}>
+                      <Button variant="outline" borderColor="rgba(54, 46, 34, 0.18)" color="ink.800" onClick={handleOpenCopyView}>
                         <HStack>
-                          <Icon as={FiShare2} />
-                          <Text>Share card</Text>
+                          <Icon as={FiCopy} />
+                          <Text>Open copy view</Text>
                         </HStack>
                       </Button>
                     </HStack>

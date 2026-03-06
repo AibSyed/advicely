@@ -4,21 +4,13 @@ import { useEffect, useMemo, useState } from "react";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import { Badge, Box, Button, Container, Heading, HStack, Icon, Input, SimpleGrid, Stack, Text } from "@chakra-ui/react";
-import { FiBookmark, FiSearch, FiShare2 } from "react-icons/fi";
+import { FiBookmark, FiCopy, FiSearch } from "react-icons/fi";
 import { AppNav } from "@/components/app-nav";
 import { SourceCardView } from "@/components/source-card";
 import type { SourceCardKind, SourceCardVM } from "@/features/draw/contracts";
 import { getCardEyebrow } from "@/features/draw/presentation";
-import { createShareCard, getLibraryState, saveCard } from "@/features/library/storage";
-
-function matchesQuery(card: SourceCardVM, query: string): boolean {
-  const normalized = query.trim().toLowerCase();
-  if (!normalized) {
-    return true;
-  }
-
-  return [card.text, card.author ?? "", card.sourceLabel, getCardEyebrow(card)].some((value) => value.toLowerCase().includes(normalized));
-}
+import { matchesTextQuery } from "@/features/library/query";
+import { createCopyCard, getLibraryState, saveCard } from "@/features/library/storage";
 
 export function HistoryTimeline() {
   const router = useRouter();
@@ -35,7 +27,9 @@ export function HistoryTimeline() {
 
   const filteredCards = useMemo(
     () =>
-      historyCards.filter((card) => (kindFilter === "all" ? true : card.kind === kindFilter)).filter((card) => matchesQuery(card, searchQuery)),
+      historyCards
+        .filter((card) => (kindFilter === "all" ? true : card.kind === kindFilter))
+        .filter((card) => matchesTextQuery(searchQuery, [card.text, card.author, card.sourceLabel, getCardEyebrow(card)])),
     [historyCards, kindFilter, searchQuery],
   );
 
@@ -44,9 +38,9 @@ export function HistoryTimeline() {
     setSavedHashes(new Set(nextState.savedCards.map((saved) => saved.textHash)));
   }
 
-  function handleShare(card: SourceCardVM) {
-    const shareCard = createShareCard(card);
-    router.push(`/share/${shareCard.id}` as Route);
+  function handleOpenCopyView(card: SourceCardVM) {
+    const copyCard = createCopyCard(card);
+    router.push(`/copy/${copyCard.id}` as Route);
   }
 
   return (
@@ -60,7 +54,7 @@ export function HistoryTimeline() {
             Recent draws
           </Heading>
           <Text color="ink.600" fontSize={{ base: "md", md: "lg" }}>
-            A quiet trail of what the deck has surfaced lately. Save anything worth revisiting or share a clean copy with attribution intact.
+            A quiet trail of what the deck has surfaced lately. Save anything worth revisiting or open a clean copy with attribution intact.
           </Text>
         </Stack>
 
@@ -129,10 +123,10 @@ export function HistoryTimeline() {
                         <Text>{savedHashes.has(card.textHash) ? "Saved" : "Save to library"}</Text>
                       </HStack>
                     </Button>
-                    <Button size="sm" variant="outline" borderColor="rgba(54, 46, 34, 0.18)" onClick={() => handleShare(card)}>
+                    <Button size="sm" variant="outline" borderColor="rgba(54, 46, 34, 0.18)" onClick={() => handleOpenCopyView(card)}>
                       <HStack>
-                        <Icon as={FiShare2} />
-                        <Text>Share</Text>
+                        <Icon as={FiCopy} />
+                        <Text>Open copy view</Text>
                       </HStack>
                     </Button>
                   </HStack>
