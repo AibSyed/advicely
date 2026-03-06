@@ -127,3 +127,23 @@
   - draw success toast rendered with live-source detail
   - save toast rendered after moving a card into the library
   - `/saved` route loaded cleanly after navigation with no console warnings or errors
+
+## 2026-03-05 Mobile Real-Estate Tightening
+- [x] Reduce the amount of non-essential explanation above the fold on the home route
+- [x] Replace the mobile 2x2 nav block with a compact horizontal rail
+- [x] Compress mobile draw-mode selection into a tighter single-choice control
+- [x] Re-verify the mobile shell in a production build
+
+### Mobile Real-Estate Tightening Verification Log
+- Context7 references used before implementation:
+  - Chakra UI segmented control and compact button-group patterns for single-choice mobile controls
+- `pnpm run lint` (pass)
+- `pnpm run typecheck` (pass)
+- `pnpm run test` (pass)
+- `pnpm run build` (pass)
+- `pnpm run test:e2e` (pass)
+- Chrome DevTools MCP on local production build `http://127.0.0.1:3103` at `390x844`:
+  - homepage now shows compact summary bullets instead of three stacked signal cards
+  - nav now renders as a horizontal rail instead of a two-row grid
+  - draw mode now renders as a compact single-choice control with a short helper line
+  - no console warnings or errors

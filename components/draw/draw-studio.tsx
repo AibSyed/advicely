@@ -7,6 +7,7 @@ import {
   Badge,
   Box,
   Button,
+  ButtonGroup,
   Container,
   Heading,
   HStack,
@@ -57,6 +58,12 @@ const heroSignals = [
     title: "Source included",
     body: "Every card keeps its attribution so you always know whether it came from a live source or the reserve.",
   },
+] as const;
+
+const mobileHighlights = [
+  "Advice and quotes on one clean deck.",
+  "Save only what is worth revisiting.",
+  "Attribution stays attached.",
 ] as const;
 
 interface LibrarySnapshot {
@@ -185,9 +192,30 @@ export function DrawStudio() {
           <Text color="ink.600" fontSize={{ base: "md", md: "lg" }} maxW="3xl">
             Draw a piece of advice or a quote, save the ones that stick, and keep a private note when you want to remember why.
           </Text>
+
+          <Box
+            display={{ base: "block", md: "none" }}
+            bg="rgba(255, 250, 240, 0.82)"
+            borderRadius="1.25rem"
+            borderWidth="1px"
+            borderColor="rgba(54, 46, 34, 0.1)"
+            px={4}
+            py={3}
+          >
+            <Stack gap={2}>
+              {mobileHighlights.map((highlight) => (
+                <HStack key={highlight} gap={2} align="flex-start">
+                  <Box mt="0.42rem" boxSize="0.4rem" borderRadius="full" bg="accent.500" flexShrink={0} />
+                  <Text color="ink.600" fontSize="sm">
+                    {highlight}
+                  </Text>
+                </HStack>
+              ))}
+            </Stack>
+          </Box>
         </Stack>
 
-        <SimpleGrid columns={{ base: 1, md: 3 }} gap={3}>
+        <SimpleGrid display={{ base: "none", md: "grid" }} columns={3} gap={3}>
           {heroSignals.map((signal) => (
             <Box
               key={signal.title}
@@ -232,7 +260,29 @@ export function DrawStudio() {
                   <Text fontSize="sm" textTransform="uppercase" letterSpacing="0.12em" color="ink.500" mb={3}>
                     Draw mode
                   </Text>
-                  <Stack gap={3}>
+                  <ButtonGroup attached display={{ base: "flex", md: "none" }} width="100%">
+                    {modeOptions.map((option) => (
+                      <Button
+                        key={option}
+                        flex="1"
+                        minH="3.25rem"
+                        borderRadius="0"
+                        variant={mode === option ? "solid" : "outline"}
+                        bg={mode === option ? "accent.700" : "rgba(255, 255, 255, 0.72)"}
+                        color={mode === option ? "paper.50" : "ink.700"}
+                        borderColor="rgba(54, 46, 34, 0.16)"
+                        onClick={() => setMode(option)}
+                      >
+                        <Text fontWeight="700">{getModeLabel(option)}</Text>
+                      </Button>
+                    ))}
+                  </ButtonGroup>
+
+                  <Text display={{ base: "block", md: "none" }} mt={3} color="ink.600" fontSize="sm">
+                    {getModeDescription(mode)}
+                  </Text>
+
+                  <Stack display={{ base: "none", md: "flex" }} gap={3}>
                     {modeOptions.map((option) => (
                       <Button
                         key={option}
@@ -257,19 +307,19 @@ export function DrawStudio() {
                 </Box>
 
                 <SimpleGrid columns={2} gap={3}>
-                  <Box bg="rgba(255,255,255,0.68)" borderRadius="1rem" p={4} borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)">
+                  <Box bg="rgba(255,255,255,0.68)" borderRadius="1rem" p={{ base: 3, md: 4 }} borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)">
                     <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.12em" color="ink.500">
                       Recent
                     </Text>
-                    <Text fontSize="3xl" fontWeight="700" color="ink.800">
+                    <Text fontSize={{ base: "2xl", md: "3xl" }} fontWeight="700" color="ink.800">
                       {snapshot.historyCount}
                     </Text>
                   </Box>
-                  <Box bg="rgba(255,255,255,0.68)" borderRadius="1rem" p={4} borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)">
+                  <Box bg="rgba(255,255,255,0.68)" borderRadius="1rem" p={{ base: 3, md: 4 }} borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)">
                     <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.12em" color="ink.500">
                       Library
                     </Text>
-                    <Text fontSize="3xl" fontWeight="700" color="ink.800">
+                    <Text fontSize={{ base: "2xl", md: "3xl" }} fontWeight="700" color="ink.800">
                       {snapshot.savedCount}
                     </Text>
                   </Box>
@@ -290,7 +340,7 @@ export function DrawStudio() {
                   </HStack>
                 </Button>
 
-                <Text color="ink.600" fontSize="sm">
+                <Text color="ink.600" fontSize="sm" display={{ base: "none", md: "block" }}>
                   Advice pulls come from AdviceSlip. Quote pulls come from ZenQuotes. Reserve draws only appear when a live pull fails, repeats, or returns unusable text.
                 </Text>
               </Stack>
