@@ -1,45 +1,33 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import NextLink from "next/link";
-import {
-  Badge,
-  Box,
-  Button,
-  Container,
-  Heading,
-  HStack,
-  Icon,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
-import { FiArrowLeft, FiCopy } from "react-icons/fi";
-import {
-  getAdviceBlockTitle,
-  getIntentLabel,
-  getSourceLabel,
-  getStyleLabel,
-} from "@/features/advice/presentation";
-import type { ShareCardVM } from "@/features/workspace/contracts";
-import { getShareCardById } from "@/features/workspace/storage";
+import { Box, Button, Checkbox, Container, Heading, HStack, Icon, Stack, Text } from "@chakra-ui/react";
+import { FiCopy } from "react-icons/fi";
+import { RouteLink } from "@/components/route-link";
+import { SourceCardView } from "@/components/source-card";
+import type { ShareCardVM } from "@/features/library/contracts";
+import { getShareCardById } from "@/features/library/storage";
 
 interface ShareExperienceProps {
   shareId: string;
 }
 
-function buildCopyText(card: ShareCardVM): string {
-  const lines: string[] = [card.card.headline, "", card.card.summary, ""];
+function buildCopyText(card: ShareCardVM, includeNote: boolean): string {
+  const lines = [card.card.text];
 
-  for (const block of card.card.blocks) {
-    lines.push(`${getAdviceBlockTitle(block.type)}:`);
-    if ("text" in block) {
-      lines.push(block.text);
-    } else {
-      for (const item of block.items) {
-        lines.push(`- ${item}`);
-      }
-    }
+  if (card.card.author) {
+    lines.push(`— ${card.card.author}`);
+  }
+
+  lines.push("");
+  lines.push(`Source: ${card.card.sourceLabel}`);
+  if (card.card.provenance === "fallback") {
+    lines.push("Provenance: Advicely collection fallback");
+  }
+
+  if (includeNote && card.note) {
     lines.push("");
+    lines.push(`Personal note: ${card.note}`);
   }
 
   return lines.join("\n").trim();
@@ -48,6 +36,7 @@ function buildCopyText(card: ShareCardVM): string {
 export function ShareExperience({ shareId }: ShareExperienceProps) {
   const [shareCard, setShareCard] = useState<ShareCardVM | null>(null);
   const [copyMessage, setCopyMessage] = useState<string | null>(null);
+  const [includeNote, setIncludeNote] = useState(false);
 
   useEffect(() => {
     setShareCard(getShareCardById(shareId));
@@ -59,7 +48,7 @@ export function ShareExperience({ shareId }: ShareExperienceProps) {
     }
 
     try {
-      await navigator.clipboard.writeText(buildCopyText(shareCard));
+      await navigator.clipboard.writeText(buildCopyText(shareCard, includeNote));
       setCopyMessage("Copied to clipboard.");
       setTimeout(() => setCopyMessage(null), 1800);
     } catch {
@@ -69,91 +58,61 @@ export function ShareExperience({ shareId }: ShareExperienceProps) {
   }
 
   return (
-    <Container maxW="4xl" py={{ base: 6, md: 10 }}>
+    <Container maxW="5xl" py={{ base: 6, md: 10 }}>
       <Stack gap={8}>
-        <NextLink href="/">
-          <Button alignSelf="flex-start" variant="ghost" color="gray.800" _hover={{ bg: "gray.100" }}>
-            <HStack>
-              <Icon as={FiArrowLeft} />
-              <Text>Back to studio</Text>
-            </HStack>
-          </Button>
-        </NextLink>
+        <HStack wrap="wrap" gap={3}>
+          <RouteLink href="/">Back to draw deck</RouteLink>
+          <RouteLink href="/saved">Saved cards</RouteLink>
+        </HStack>
 
         {shareCard ? (
-          <Box
-            bg="white"
-            borderRadius="1.6rem"
-            borderWidth="1px"
-            borderColor="gray.200"
-            p={{ base: 6, md: 10 }}
-            shadow="sm"
-          >
-            <HStack wrap="wrap" gap={2} mb={4}>
-              <Badge bg="utility.600" color="white" px={3} py={1} borderRadius="full">
-                {getIntentLabel(shareCard.card.intent)}
-              </Badge>
-              <Badge bg="gray.100" color="gray.700" px={3} py={1} borderRadius="full">
-                {getStyleLabel(shareCard.card.style)}
-              </Badge>
-            </HStack>
-            <Heading as="h1" fontSize={{ base: "3xl", md: "5xl" }} lineHeight="1.05" color="gray.900">
-              {shareCard.card.headline}
-            </Heading>
-            <Text mt={5} fontSize={{ base: "lg", md: "2xl" }} color="gray.800" lineHeight="1.45">
-              {shareCard.card.summary}
-            </Text>
-
-            <Stack mt={6} gap={4}>
-              {shareCard.card.blocks.map((block, index) => (
-                <Box key={`${block.type}-${index}`} borderWidth="1px" borderColor="gray.200" bg="gray.50" borderRadius="xl" p={4}>
-                  <Text fontSize="xs" color="gray.500" textTransform="uppercase" letterSpacing="0.08em" mb={2}>
-                    {getAdviceBlockTitle(block.type)}
-                  </Text>
-                  {"text" in block ? (
-                    <Text color="gray.800">{block.text}</Text>
-                  ) : (
-                    <Stack as="ul" gap={2} pl={4} m={0}>
-                      {block.items.map((item) => (
-                        <Text as="li" key={`${block.type}-${item}`} color="gray.800">
-                          {item}
-                        </Text>
-                      ))}
-                    </Stack>
-                  )}
-                </Box>
-              ))}
+          <Stack gap={5}>
+            <Stack gap={3} maxW="3xl">
+              <Heading as="h1" fontSize={{ base: "4xl", md: "6xl" }} color="ink.800" lineHeight="0.96">
+                Share card
+              </Heading>
+              <Text color="ink.600" fontSize={{ base: "md", md: "lg" }}>
+                This card keeps the original text and source attribution. Personal notes stay hidden unless you choose to include them when copying.
+              </Text>
             </Stack>
 
-            <Text mt={4} color="gray.500" fontSize="sm">
-              Source: {getSourceLabel(shareCard.card.source)} · Created {new Date(shareCard.createdAt).toLocaleString()}
-            </Text>
-
-            <Button mt={6} onClick={handleCopy} bg="signal.600" color="white" _hover={{ bg: "signal.500" }}>
-              <HStack>
-                <Icon as={FiCopy} />
-                <Text>Copy share text</Text>
-              </HStack>
-            </Button>
-            {copyMessage ? (
-              <Text role="status" mt={2} color="green.700" fontSize="sm">
-                {copyMessage}
-              </Text>
-            ) : null}
-          </Box>
+            <SourceCardView
+              card={shareCard.card}
+              note={includeNote ? shareCard.note : undefined}
+              footer={
+                <Stack gap={4}>
+                  <Text color="ink.500" fontSize="sm">
+                    Source: {shareCard.card.sourceLabel} · Created {new Date(shareCard.createdAt).toLocaleString()}
+                  </Text>
+                  {shareCard.note ? (
+                    <Checkbox.Root checked={includeNote} onCheckedChange={(event) => setIncludeNote(event.checked === true)}>
+                      <Checkbox.HiddenInput />
+                      <Checkbox.Control />
+                      <Checkbox.Label>Include personal note when copying</Checkbox.Label>
+                    </Checkbox.Root>
+                  ) : (
+                    <Text color="ink.500" fontSize="sm">No personal note is attached to this card.</Text>
+                  )}
+                  <Button alignSelf="flex-start" bg="accent.700" color="paper.50" onClick={handleCopy} _hover={{ bg: "accent.600" }}>
+                    <HStack>
+                      <Icon as={FiCopy} />
+                      <Text>Copy share text</Text>
+                    </HStack>
+                  </Button>
+                  {copyMessage ? <Text role="status" color="accent.700">{copyMessage}</Text> : null}
+                </Stack>
+              }
+            />
+          </Stack>
         ) : (
-          <Box bg="white" borderRadius="panel" borderWidth="1px" borderColor="gray.200" p={8} shadow="sm">
-            <Heading as="h1" size="lg" color="gray.900">
-              We could not find that share card
-            </Heading>
-            <Text mt={3} color="gray.600">
-              This link only works on the same browser that created it. Generate a new card and share again.
+          <Box bg="rgba(255, 250, 240, 0.92)" borderRadius="panel" borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)" p={8} shadow="float">
+            <Heading as="h1" size="lg" color="ink.800">We could not find that share card</Heading>
+            <Text mt={3} color="ink.600">
+              Share links only work in the same browser that created them. Draw a fresh card and make a new share link here.
             </Text>
-            <NextLink href="/">
-              <Button mt={5} bg="utility.600" color="white" _hover={{ bg: "utility.500" }}>
-                Generate new advice
-              </Button>
-            </NextLink>
+            <HStack mt={5} gap={3}>
+              <RouteLink href="/">Draw a new card</RouteLink>
+            </HStack>
           </Box>
         )}
       </Stack>

@@ -2,289 +2,188 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { Route } from "next";
-import NextLink from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  Badge,
-  Box,
-  Button,
-  Container,
-  Flex,
-  Heading,
-  HStack,
-  Icon,
-  Input,
-  SimpleGrid,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
-import { FiArrowLeft, FiSearch, FiShare2, FiTrash2 } from "react-icons/fi";
-import type { AdviceIntent, AdviceProvider, AdviceStyle } from "@/features/advice/contracts";
-import {
-  getDetailLabel,
-  getIntentLabel,
-  getSourceLabel,
-  getStyleLabel,
-} from "@/features/advice/presentation";
-import type { SavedAdviceCardVM } from "@/features/workspace/contracts";
-import {
-  createShareCard,
-  getWorkspaceState,
-  removeSavedCard,
-} from "@/features/workspace/storage";
+import { Box, Button, Container, Heading, HStack, Icon, Input, SimpleGrid, Stack, Text, Textarea } from "@chakra-ui/react";
+import { FiSearch, FiShare2, FiTrash2 } from "react-icons/fi";
+import { RouteLink } from "@/components/route-link";
+import { SourceCardView } from "@/components/source-card";
+import type { DrawSource, SourceCardKind } from "@/features/draw/contracts";
+import type { SavedCardVM } from "@/features/library/contracts";
+import { createShareCard, getLibraryState, removeSavedCard, updateSavedCardNote } from "@/features/library/storage";
 
-type IntentFilter = "all" | AdviceIntent;
-type StyleFilter = "all" | AdviceStyle;
-type SourceFilter = "all" | AdviceProvider;
-
-const intentFilters: IntentFilter[] = ["all", "quick", "decision", "communication", "planning", "stress", "general"];
-const styleFilters: StyleFilter[] = ["all", "balanced", "direct", "supportive", "creative"];
-const sourceFilters: SourceFilter[] = ["all", "advice_slip", "zen_quotes", "local_fallback"];
-
-function cardContainsQuery(card: SavedAdviceCardVM, query: string): boolean {
-  const normalized = query.toLowerCase();
-
-  if (card.headline.toLowerCase().includes(normalized)) {
+function matchesQuery(card: SavedCardVM, query: string): boolean {
+  const normalized = query.trim().toLowerCase();
+  if (!normalized) {
     return true;
   }
 
-  if (card.summary.toLowerCase().includes(normalized)) {
-    return true;
-  }
-
-  return card.blocks.some((block) => {
-    if ("text" in block) {
-      return block.text.toLowerCase().includes(normalized);
-    }
-
-    return block.items.some((item) => item.toLowerCase().includes(normalized));
-  });
-}
-
-function firstBlockPreview(card: SavedAdviceCardVM): string {
-  const firstBlock = card.blocks[0];
-  if (!firstBlock) {
-    return card.summary;
-  }
-
-  if ("text" in firstBlock) {
-    return firstBlock.text;
-  }
-
-  return firstBlock.items.join(" • ");
+  return [card.text, card.author ?? "", card.sourceLabel, card.note ?? ""].some((value) => value.toLowerCase().includes(normalized));
 }
 
 export function SavedLibrary() {
   const router = useRouter();
-  const [savedCards, setSavedCards] = useState<SavedAdviceCardVM[]>([]);
+  const [savedCards, setSavedCards] = useState<SavedCardVM[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [intentFilter, setIntentFilter] = useState<IntentFilter>("all");
-  const [styleFilter, setStyleFilter] = useState<StyleFilter>("all");
-  const [sourceFilter, setSourceFilter] = useState<SourceFilter>("all");
+  const [kindFilter, setKindFilter] = useState<"all" | SourceCardKind>("all");
+  const [sourceFilter, setSourceFilter] = useState<"all" | DrawSource>("all");
 
   useEffect(() => {
-    const state = getWorkspaceState();
-    setSavedCards(state.savedCards);
+    setSavedCards(getLibraryState().savedCards);
   }, []);
 
-  const filteredCards = useMemo(() => {
-    return savedCards.filter((card) => {
-      if (intentFilter !== "all" && card.intent !== intentFilter) {
-        return false;
-      }
-
-      if (styleFilter !== "all" && card.style !== styleFilter) {
-        return false;
-      }
-
-      if (sourceFilter !== "all" && card.source !== sourceFilter) {
-        return false;
-      }
-
-      if (!searchQuery.trim()) {
-        return true;
-      }
-
-      return cardContainsQuery(card, searchQuery.trim());
-    });
-  }, [savedCards, intentFilter, searchQuery, sourceFilter, styleFilter]);
+  const filteredCards = useMemo(
+    () =>
+      savedCards
+        .filter((card) => (kindFilter === "all" ? true : card.kind === kindFilter))
+        .filter((card) => (sourceFilter === "all" ? true : card.source === sourceFilter))
+        .filter((card) => matchesQuery(card, searchQuery)),
+    [savedCards, kindFilter, searchQuery, sourceFilter],
+  );
 
   function handleRemove(cardId: string) {
     const nextState = removeSavedCard(cardId);
     setSavedCards(nextState.savedCards);
   }
 
-  function handleShare(card: SavedAdviceCardVM) {
-    const shareCard = createShareCard(card);
+  function handleShare(card: SavedCardVM) {
+    const shareCard = createShareCard(card, card.note);
     router.push(`/share/${shareCard.id}` as Route);
+  }
+
+  function handleNoteChange(cardId: string, note: string) {
+    const nextState = updateSavedCardNote(cardId, note);
+    setSavedCards(nextState.savedCards);
   }
 
   return (
     <Container maxW="7xl" py={{ base: 6, md: 10 }}>
       <Stack gap={8}>
-        <NextLink href="/">
-          <Button alignSelf="flex-start" variant="ghost" color="gray.800" _hover={{ bg: "gray.100" }}>
-            <HStack>
-              <Icon as={FiArrowLeft} />
-              <Text>Back to studio</Text>
-            </HStack>
-          </Button>
-        </NextLink>
+        <HStack wrap="wrap" gap={3}>
+          <RouteLink href="/">Back to draw deck</RouteLink>
+          <RouteLink href="/history">History</RouteLink>
+          <RouteLink href="/sources">Sources</RouteLink>
+        </HStack>
 
-        <Stack gap={2}>
-          <Heading as="h1" fontSize={{ base: "3xl", md: "5xl" }} color="gray.900">
-            Saved advice
+        <Stack gap={3} maxW="3xl">
+          <Heading as="h1" fontSize={{ base: "4xl", md: "6xl" }} color="ink.800" lineHeight="0.96">
+            Saved cards
           </Heading>
-          <Text color="gray.600" maxW="2xl">
-            Keep your best guidance in one place. Search it fast when life gets noisy.
+          <Text color="ink.600" fontSize={{ base: "md", md: "lg" }}>
+            Keep the cards worth revisiting, add a personal note, and search by text, author, or your own memory cue.
           </Text>
         </Stack>
 
-        <Stack gap={4} bg="white" p={5} borderRadius="panel" borderWidth="1px" borderColor="gray.200" shadow="sm">
-          <HStack gap={3} align="center">
-            <Icon as={FiSearch} color="gray.500" />
+        <SimpleGrid columns={{ base: 1, lg: 2 }} gap={4}>
+          <HStack bg="rgba(255, 250, 240, 0.92)" p={4} borderRadius="panel" borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)" shadow="float">
+            <Icon as={FiSearch} color="ink.500" />
             <Input
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.currentTarget.value)}
-              placeholder="Search saved advice"
-              aria-label="Search saved advice"
-              bg="gray.50"
-              borderColor="gray.300"
+              placeholder="Search saved cards or notes"
+              aria-label="Search saved cards"
+              bg="rgba(255,255,255,0.7)"
+              borderColor="rgba(54, 46, 34, 0.14)"
             />
           </HStack>
 
-          <SimpleGrid columns={{ base: 1, md: 3 }} gap={3}>
-            <Box>
-              <Text fontSize="sm" color="gray.600" mb={1}>
-                Advice type
-              </Text>
-              <select
-                aria-label="Filter by advice type"
-                value={intentFilter}
-                onChange={(event) => setIntentFilter(event.target.value as IntentFilter)}
-                style={{
-                  width: "100%",
-                  borderRadius: "0.75rem",
-                  border: "1px solid #d1d5db",
-                  background: "#f9fafb",
-                  color: "#111827",
-                  padding: "0.6rem 0.75rem",
-                }}
-              >
-                {intentFilters.map((filter) => (
-                  <option key={filter} value={filter}>
-                    {filter === "all" ? "All types" : getIntentLabel(filter)}
-                  </option>
+          <SimpleGrid columns={2} gap={3}>
+            <Box bg="rgba(255, 250, 240, 0.92)" p={4} borderRadius="panel" borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)" shadow="float">
+              <Text fontSize="sm" textTransform="uppercase" letterSpacing="0.12em" color="ink.500" mb={2}>Kind</Text>
+              <HStack gap={2} wrap="wrap">
+                {(["all", "advice", "quote"] as const).map((filter) => (
+                  <Button
+                    key={filter}
+                    size="sm"
+                    variant={kindFilter === filter ? "solid" : "outline"}
+                    bg={kindFilter === filter ? "accent.700" : "rgba(255,255,255,0.7)"}
+                    color={kindFilter === filter ? "paper.50" : "ink.700"}
+                    borderColor="rgba(54, 46, 34, 0.14)"
+                    onClick={() => setKindFilter(filter)}
+                  >
+                    {filter === "all" ? "All" : filter[0].toUpperCase() + filter.slice(1)}
+                  </Button>
                 ))}
-              </select>
+              </HStack>
             </Box>
-
-            <Box>
-              <Text fontSize="sm" color="gray.600" mb={1}>
-                Tone
-              </Text>
-              <select
-                aria-label="Filter by tone"
-                value={styleFilter}
-                onChange={(event) => setStyleFilter(event.target.value as StyleFilter)}
-                style={{
-                  width: "100%",
-                  borderRadius: "0.75rem",
-                  border: "1px solid #d1d5db",
-                  background: "#f9fafb",
-                  color: "#111827",
-                  padding: "0.6rem 0.75rem",
-                }}
-              >
-                {styleFilters.map((filter) => (
-                  <option key={filter} value={filter}>
-                    {filter === "all" ? "All tones" : getStyleLabel(filter)}
-                  </option>
+            <Box bg="rgba(255, 250, 240, 0.92)" p={4} borderRadius="panel" borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)" shadow="float">
+              <Text fontSize="sm" textTransform="uppercase" letterSpacing="0.12em" color="ink.500" mb={2}>Source</Text>
+              <HStack gap={2} wrap="wrap">
+                {(["all", "advice_slip", "zen_quotes", "local_collection"] as const).map((filter) => (
+                  <Button
+                    key={filter}
+                    size="sm"
+                    variant={sourceFilter === filter ? "solid" : "outline"}
+                    bg={sourceFilter === filter ? "accent.700" : "rgba(255,255,255,0.7)"}
+                    color={sourceFilter === filter ? "paper.50" : "ink.700"}
+                    borderColor="rgba(54, 46, 34, 0.14)"
+                    onClick={() => setSourceFilter(filter)}
+                  >
+                    {filter === "all"
+                      ? "All"
+                      : filter === "advice_slip"
+                        ? "AdviceSlip"
+                        : filter === "zen_quotes"
+                          ? "ZenQuotes"
+                          : "Collection"}
+                  </Button>
                 ))}
-              </select>
-            </Box>
-
-            <Box>
-              <Text fontSize="sm" color="gray.600" mb={1}>
-                Source
-              </Text>
-              <select
-                aria-label="Filter by source"
-                value={sourceFilter}
-                onChange={(event) => setSourceFilter(event.target.value as SourceFilter)}
-                style={{
-                  width: "100%",
-                  borderRadius: "0.75rem",
-                  border: "1px solid #d1d5db",
-                  background: "#f9fafb",
-                  color: "#111827",
-                  padding: "0.6rem 0.75rem",
-                }}
-              >
-                {sourceFilters.map((filter) => (
-                  <option key={filter} value={filter}>
-                    {filter === "all" ? "All sources" : getSourceLabel(filter)}
-                  </option>
-                ))}
-              </select>
+              </HStack>
             </Box>
           </SimpleGrid>
-        </Stack>
+        </SimpleGrid>
 
         {filteredCards.length === 0 ? (
-          <Box bg="white" borderRadius="panel" borderWidth="1px" borderColor="gray.200" p={8} shadow="sm">
-            <Heading as="h2" size="md" color="gray.900">
-              No saved cards match this view
-            </Heading>
-            <Text mt={2} color="gray.600">
-              Try clearing a filter or generate new advice from the studio.
-            </Text>
+          <Box bg="rgba(255, 250, 240, 0.92)" borderRadius="panel" borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)" p={8} shadow="float">
+            <Heading as="h2" size="lg" color="ink.800">No saved cards in this view</Heading>
+            <Text mt={2} color="ink.600">Clear a filter or save a new card from the draw deck.</Text>
           </Box>
         ) : null}
 
-        <SimpleGrid columns={{ base: 1, md: 2 }} gap={4}>
+        <Stack gap={5}>
           {filteredCards.map((card) => (
-            <Box key={card.id} bg="white" borderRadius="panel" borderWidth="1px" borderColor="gray.200" p={5} shadow="sm">
-              <Flex justify="space-between" align="flex-start" gap={3}>
-                <Stack gap={2}>
-                  <HStack wrap="wrap" gap={2}>
-                    <Badge bg="utility.600" color="white">{getIntentLabel(card.intent)}</Badge>
-                    <Badge bg="gray.100" color="gray.700">{getStyleLabel(card.style)}</Badge>
+            <SourceCardView
+              key={card.id}
+              card={card}
+              note={card.note}
+              compact
+              footer={
+                <Stack gap={4}>
+                  <Text color="ink.500" fontSize="sm">
+                    Saved {new Date(card.savedAt).toLocaleString()} · {card.sourceLabel}
+                  </Text>
+                  <Box>
+                    <Text fontSize="sm" textTransform="uppercase" letterSpacing="0.12em" color="ink.500" mb={2}>
+                      Edit local note
+                    </Text>
+                    <Textarea
+                      value={card.note ?? ""}
+                      onChange={(event) => handleNoteChange(card.id, event.currentTarget.value.slice(0, 320))}
+                      placeholder="Why this card matters to you"
+                      minH="6.5rem"
+                      bg="rgba(255,255,255,0.72)"
+                      borderColor="rgba(54, 46, 34, 0.14)"
+                      aria-label={`Edit note for ${card.text}`}
+                    />
+                  </Box>
+                  <HStack wrap="wrap" gap={3}>
+                    <Button size="sm" bg="accent.700" color="paper.50" onClick={() => handleShare(card)}>
+                      <HStack>
+                        <Icon as={FiShare2} />
+                        <Text>Share</Text>
+                      </HStack>
+                    </Button>
+                    <Button size="sm" variant="outline" borderColor="rgba(54, 46, 34, 0.18)" onClick={() => handleRemove(card.id)}>
+                      <HStack>
+                        <Icon as={FiTrash2} />
+                        <Text>Remove</Text>
+                      </HStack>
+                    </Button>
                   </HStack>
-                  <Heading as="h2" size="md" color="gray.900">
-                    {card.headline}
-                  </Heading>
                 </Stack>
-              </Flex>
-
-              <Text mt={3} color="gray.700">{card.summary}</Text>
-              <Text mt={3} color="gray.600" fontSize="sm">{firstBlockPreview(card)}</Text>
-
-              <HStack mt={4} wrap="wrap" gap={2}>
-                <Badge bg="gray.100" color="gray.700">{getDetailLabel(card.detail)}</Badge>
-                <Badge bg="gray.100" color="gray.700">{getSourceLabel(card.source)}</Badge>
-                <Text fontSize="xs" color="gray.500">
-                  Saved {new Date(card.savedAt).toLocaleString()}
-                </Text>
-              </HStack>
-
-              <HStack mt={4} gap={2}>
-                <Button size="sm" variant="outline" borderColor="gray.300" onClick={() => handleShare(card)}>
-                  <HStack>
-                    <Icon as={FiShare2} />
-                    <Text>Share</Text>
-                  </HStack>
-                </Button>
-                <Button size="sm" variant="outline" borderColor="gray.300" onClick={() => handleRemove(card.id)}>
-                  <HStack>
-                    <Icon as={FiTrash2} />
-                    <Text>Remove</Text>
-                  </HStack>
-                </Button>
-              </HStack>
-            </Box>
+              }
+            />
           ))}
-        </SimpleGrid>
+        </Stack>
       </Stack>
     </Container>
   );

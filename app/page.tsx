@@ -1,9 +1,9 @@
-import { AdviceStudio } from "@/components/advice/advice-studio";
+import { DrawStudio } from "@/components/draw/draw-studio";
 
 export default function HomePage() {
   return (
     <main id="main-content">
-      <AdviceStudio />
+      <DrawStudio />
     </main>
   );
 }

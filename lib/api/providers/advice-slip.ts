@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { AdviceProviderError, mapStatusToErrorState } from "@/lib/api/provider-error";
 import type { ProviderCandidate } from "@/lib/api/types";
+import { normalizeCardText } from "@/features/draw/text";
 
 const adviceSlipSchema = z.object({
   slip: z.object({
@@ -34,12 +35,10 @@ export async function requestAdviceSlip(url: string, timeoutMs: number): Promise
     }
 
     return {
-      text: payload.data.slip.advice,
+      kind: "advice",
+      text: normalizeCardText(payload.data.slip.advice),
       source: "advice_slip",
-      sourceAttribution: "AdviceSlip API",
-      confidence: 0.82,
-      fallbackUsed: false,
-      errorState: null,
+      sourceLabel: "AdviceSlip",
     };
   } catch (error) {
     if (error instanceof AdviceProviderError) {

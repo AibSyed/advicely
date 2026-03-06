@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { AdviceProviderError, mapStatusToErrorState } from "@/lib/api/provider-error";
 import type { ProviderCandidate } from "@/lib/api/types";
+import { normalizeCardText } from "@/features/draw/text";
 
 const zenQuoteSchema = z
   .array(
@@ -39,12 +40,11 @@ export async function requestZenQuote(url: string, timeoutMs: number): Promise<P
     const quote = payload.data[0];
 
     return {
-      text: quote.q,
+      kind: "quote",
+      text: normalizeCardText(quote.q),
+      author: normalizeCardText(quote.a),
       source: "zen_quotes",
-      sourceAttribution: `ZenQuotes API (${quote.a})`,
-      confidence: 0.76,
-      fallbackUsed: false,
-      errorState: null,
+      sourceLabel: "ZenQuotes",
     };
   } catch (error) {
     if (error instanceof AdviceProviderError) {

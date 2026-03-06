@@ -1,33 +1,33 @@
 import type { Metadata } from "next";
-import { Manrope, Sora } from "next/font/google";
+import { DM_Sans, Fraunces } from "next/font/google";
 import { Providers } from "@/components/providers";
 import "./globals.css";
 
-const displayFont = Sora({
+const displayFont = Fraunces({
   subsets: ["latin"],
   variable: "--font-display",
   weight: ["500", "600", "700"],
 });
 
-const bodyFont = Manrope({
+const bodyFont = DM_Sans({
   subsets: ["latin"],
   variable: "--font-body",
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "Advicely | Practical Advice Studio",
-  description: "Generate useful advice quickly, save what helps, and find it later.",
+  title: "Advicely | Random Advice and Quotes",
+  description: "Draw random advice or quotes, keep personal notes locally, and save what is worth revisiting.",
   metadataBase: new URL("https://advicely.vercel.app"),
   openGraph: {
-    title: "Advicely | Practical Advice Studio",
-    description: "Instant practical advice with saved and history workflows.",
+    title: "Advicely | Random Advice and Quotes",
+    description: "An honesty-first deck for random advice, quotes, and local note-taking.",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Advicely | Practical Advice Studio",
-    description: "Useful advice fast, with clean save and share flows.",
+    title: "Advicely | Random Advice and Quotes",
+    description: "Random advice and quotes, clearly sourced and easy to save.",
   },
 };
 
