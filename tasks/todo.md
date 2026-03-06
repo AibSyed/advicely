@@ -147,3 +147,28 @@
   - nav now renders as a horizontal rail instead of a two-row grid
   - draw mode now renders as a compact single-choice control with a short helper line
   - no console warnings or errors
+
+## 2026-03-05 CSP Eval Cleanup
+- [x] Reproduce the reported production CSP `eval` issue against the shipped chunk path
+- [x] Trace the client-side import path that still bundled Zod JIT code
+- [x] Remove Zod from the browser storage/contracts path without weakening CSP
+- [x] Rebuild and verify that the app route chunks no longer contain the offending path
+
+### CSP Eval Cleanup Verification Log
+- Production investigation:
+  - confirmed live CSP header on `https://advicely.vercel.app` does not allow `'unsafe-eval'`
+  - confirmed DevTools report referenced an older shipped chunk `932-2ece2dd6ed9d039d.js`
+  - confirmed that chunk contained Zod JIT code with `Function("")`
+- Fix:
+  - replaced browser-side `features/library/contracts.ts` Zod contracts with plain TypeScript interfaces
+  - replaced `libraryStateVMSchema.safeParse(...)` in `features/library/storage.ts` with manual guards/sanitizers
+- Verification:
+  - `pnpm run lint` (pass)
+  - `pnpm run typecheck` (pass)
+  - `pnpm run test` (pass)
+  - `pnpm run build` (pass)
+  - `pnpm run test:e2e` (pass)
+  - rebuilt client route chunks checked clean:
+    - `.next/static/chunks/app/page-*.js` has no `zod`, `Function(`, or `unsafe-eval`
+    - `.next/static/chunks/app/saved/page-*.js` has no `zod`, `Function(`, or `unsafe-eval`
+    - `.next/static/chunks/app/history/page-*.js` has no `zod`, `Function(`, or `unsafe-eval`
