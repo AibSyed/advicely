@@ -1,9 +1,10 @@
 "use client";
 
+import NextLink from "next/link";
 import { useEffect, useState } from "react";
-import { Box, Button, Checkbox, Container, Heading, HStack, Icon, Stack, Text } from "@chakra-ui/react";
+import { Badge, Box, Button, Checkbox, Container, Heading, HStack, Icon, Stack, Text } from "@chakra-ui/react";
 import { FiCopy } from "react-icons/fi";
-import { RouteLink } from "@/components/route-link";
+import { AppNav } from "@/components/app-nav";
 import { SourceCardView } from "@/components/source-card";
 import type { ShareCardVM } from "@/features/library/contracts";
 import { getShareCardById } from "@/features/library/storage";
@@ -22,12 +23,12 @@ function buildCopyText(card: ShareCardVM, includeNote: boolean): string {
   lines.push("");
   lines.push(`Source: ${card.card.sourceLabel}`);
   if (card.card.provenance === "fallback") {
-    lines.push("Provenance: Advicely collection fallback");
+    lines.push("Provenance: Advicely Reserve");
   }
 
   if (includeNote && card.note) {
     lines.push("");
-    lines.push(`Personal note: ${card.note}`);
+    lines.push(`Private note: ${card.note}`);
   }
 
   return lines.join("\n").trim();
@@ -60,59 +61,63 @@ export function ShareExperience({ shareId }: ShareExperienceProps) {
   return (
     <Container maxW="5xl" py={{ base: 6, md: 10 }}>
       <Stack gap={8}>
-        <HStack wrap="wrap" gap={3}>
-          <RouteLink href="/">Back to draw deck</RouteLink>
-          <RouteLink href="/saved">Saved cards</RouteLink>
-        </HStack>
+        <Stack gap={3} maxW="3xl">
+          <Badge alignSelf="flex-start" bg="ink.800" color="paper.50" px={3} py={1} borderRadius="full">
+            Share
+          </Badge>
+          <Heading as="h1" fontSize={{ base: "4xl", md: "6xl" }} color="ink.800" lineHeight="0.96">
+            Share card
+          </Heading>
+          <Text color="ink.600" fontSize={{ base: "md", md: "lg" }}>
+            Source text stays intact, attribution stays visible, and your private note stays hidden unless you opt into copying it.
+          </Text>
+        </Stack>
+
+        <AppNav />
 
         {shareCard ? (
-          <Stack gap={5}>
-            <Stack gap={3} maxW="3xl">
-              <Heading as="h1" fontSize={{ base: "4xl", md: "6xl" }} color="ink.800" lineHeight="0.96">
-                Share card
-              </Heading>
-              <Text color="ink.600" fontSize={{ base: "md", md: "lg" }}>
-                This card keeps the original text and source attribution. Personal notes stay hidden unless you choose to include them when copying.
-              </Text>
-            </Stack>
-
-            <SourceCardView
-              card={shareCard.card}
-              note={includeNote ? shareCard.note : undefined}
-              footer={
-                <Stack gap={4}>
+          <SourceCardView
+            card={shareCard.card}
+            note={includeNote ? shareCard.note : undefined}
+            footer={
+              <Stack gap={4}>
+                <Text color="ink.500" fontSize="sm">
+                  Source: {shareCard.card.sourceLabel} · Created {new Date(shareCard.createdAt).toLocaleString()}
+                </Text>
+                {shareCard.note ? (
+                  <Checkbox.Root checked={includeNote} onCheckedChange={(event) => setIncludeNote(event.checked === true)}>
+                    <Checkbox.HiddenInput />
+                    <Checkbox.Control />
+                    <Checkbox.Label>Include private note when copying</Checkbox.Label>
+                  </Checkbox.Root>
+                ) : (
                   <Text color="ink.500" fontSize="sm">
-                    Source: {shareCard.card.sourceLabel} · Created {new Date(shareCard.createdAt).toLocaleString()}
+                    No private note is attached to this card.
                   </Text>
-                  {shareCard.note ? (
-                    <Checkbox.Root checked={includeNote} onCheckedChange={(event) => setIncludeNote(event.checked === true)}>
-                      <Checkbox.HiddenInput />
-                      <Checkbox.Control />
-                      <Checkbox.Label>Include personal note when copying</Checkbox.Label>
-                    </Checkbox.Root>
-                  ) : (
-                    <Text color="ink.500" fontSize="sm">No personal note is attached to this card.</Text>
-                  )}
-                  <Button alignSelf="flex-start" bg="accent.700" color="paper.50" onClick={handleCopy} _hover={{ bg: "accent.600" }}>
-                    <HStack>
-                      <Icon as={FiCopy} />
-                      <Text>Copy share text</Text>
-                    </HStack>
-                  </Button>
-                  {copyMessage ? <Text role="status" color="accent.700">{copyMessage}</Text> : null}
-                </Stack>
-              }
-            />
-          </Stack>
+                )}
+                <Button alignSelf="flex-start" bg="accent.700" color="paper.50" onClick={handleCopy} _hover={{ bg: "accent.600" }}>
+                  <HStack>
+                    <Icon as={FiCopy} />
+                    <Text>Copy share text</Text>
+                  </HStack>
+                </Button>
+                {copyMessage ? <Text role="status" color="accent.700">{copyMessage}</Text> : null}
+              </Stack>
+            }
+          />
         ) : (
           <Box bg="rgba(255, 250, 240, 0.92)" borderRadius="panel" borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)" p={8} shadow="float">
-            <Heading as="h1" size="lg" color="ink.800">We could not find that share card</Heading>
+            <Heading as="h1" size="lg" color="ink.800">
+              We could not find that share card
+            </Heading>
             <Text mt={3} color="ink.600">
               Share links only work in the same browser that created them. Draw a fresh card and make a new share link here.
             </Text>
-            <HStack mt={5} gap={3}>
-              <RouteLink href="/">Draw a new card</RouteLink>
-            </HStack>
+            <Text mt={4}>
+              <NextLink href="/" style={{ color: "inherit", textDecoration: "underline", textUnderlineOffset: "0.18em" }}>
+                Draw a new card
+              </NextLink>
+            </Text>
           </Box>
         )}
       </Stack>

@@ -3,9 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
-import { Box, Button, Container, Heading, HStack, Icon, Input, SimpleGrid, Stack, Text, Textarea } from "@chakra-ui/react";
+import { Badge, Box, Button, Container, Heading, HStack, Icon, Input, SimpleGrid, Stack, Text, Textarea } from "@chakra-ui/react";
 import { FiSearch, FiShare2, FiTrash2 } from "react-icons/fi";
-import { RouteLink } from "@/components/route-link";
+import { AppNav } from "@/components/app-nav";
 import { SourceCardView } from "@/components/source-card";
 import type { DrawSource, SourceCardKind } from "@/features/draw/contracts";
 import type { SavedCardVM } from "@/features/library/contracts";
@@ -58,20 +58,19 @@ export function SavedLibrary() {
   return (
     <Container maxW="7xl" py={{ base: 6, md: 10 }}>
       <Stack gap={8}>
-        <HStack wrap="wrap" gap={3}>
-          <RouteLink href="/">Back to draw deck</RouteLink>
-          <RouteLink href="/history">History</RouteLink>
-          <RouteLink href="/sources">Sources</RouteLink>
-        </HStack>
-
         <Stack gap={3} maxW="3xl">
+          <Badge alignSelf="flex-start" bg="ink.800" color="paper.50" px={3} py={1} borderRadius="full">
+            Library
+          </Badge>
           <Heading as="h1" fontSize={{ base: "4xl", md: "6xl" }} color="ink.800" lineHeight="0.96">
-            Saved cards
+            Your library
           </Heading>
           <Text color="ink.600" fontSize={{ base: "md", md: "lg" }}>
-            Keep the cards worth revisiting, add a personal note, and search by text, author, or your own memory cue.
+            Keep the cards that earn a second look, annotate them with private notes, and pull them back into focus whenever you need them.
           </Text>
         </Stack>
+
+        <AppNav />
 
         <SimpleGrid columns={{ base: 1, lg: 2 }} gap={4}>
           <HStack bg="rgba(255, 250, 240, 0.92)" p={4} borderRadius="panel" borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)" shadow="float">
@@ -79,16 +78,18 @@ export function SavedLibrary() {
             <Input
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.currentTarget.value)}
-              placeholder="Search saved cards or notes"
-              aria-label="Search saved cards"
+              placeholder="Search cards, authors, or notes"
+              aria-label="Search library"
               bg="rgba(255,255,255,0.7)"
               borderColor="rgba(54, 46, 34, 0.14)"
             />
           </HStack>
 
-          <SimpleGrid columns={2} gap={3}>
+          <SimpleGrid columns={{ base: 1, sm: 2 }} gap={3}>
             <Box bg="rgba(255, 250, 240, 0.92)" p={4} borderRadius="panel" borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)" shadow="float">
-              <Text fontSize="sm" textTransform="uppercase" letterSpacing="0.12em" color="ink.500" mb={2}>Kind</Text>
+              <Text fontSize="sm" textTransform="uppercase" letterSpacing="0.12em" color="ink.500" mb={2}>
+                Card type
+              </Text>
               <HStack gap={2} wrap="wrap">
                 {(["all", "advice", "quote"] as const).map((filter) => (
                   <Button
@@ -106,7 +107,9 @@ export function SavedLibrary() {
               </HStack>
             </Box>
             <Box bg="rgba(255, 250, 240, 0.92)" p={4} borderRadius="panel" borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)" shadow="float">
-              <Text fontSize="sm" textTransform="uppercase" letterSpacing="0.12em" color="ink.500" mb={2}>Source</Text>
+              <Text fontSize="sm" textTransform="uppercase" letterSpacing="0.12em" color="ink.500" mb={2}>
+                Source
+              </Text>
               <HStack gap={2} wrap="wrap">
                 {(["all", "advice_slip", "zen_quotes", "local_collection"] as const).map((filter) => (
                   <Button
@@ -124,7 +127,7 @@ export function SavedLibrary() {
                         ? "AdviceSlip"
                         : filter === "zen_quotes"
                           ? "ZenQuotes"
-                          : "Collection"}
+                          : "Reserve"}
                   </Button>
                 ))}
               </HStack>
@@ -134,8 +137,12 @@ export function SavedLibrary() {
 
         {filteredCards.length === 0 ? (
           <Box bg="rgba(255, 250, 240, 0.92)" borderRadius="panel" borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)" p={8} shadow="float">
-            <Heading as="h2" size="lg" color="ink.800">No saved cards in this view</Heading>
-            <Text mt={2} color="ink.600">Clear a filter or save a new card from the draw deck.</Text>
+            <Heading as="h2" size="lg" color="ink.800">
+              No cards match this view
+            </Heading>
+            <Text mt={2} color="ink.600">
+              Clear a filter or save a new card from the deck.
+            </Text>
           </Box>
         ) : null}
 
@@ -153,7 +160,7 @@ export function SavedLibrary() {
                   </Text>
                   <Box>
                     <Text fontSize="sm" textTransform="uppercase" letterSpacing="0.12em" color="ink.500" mb={2}>
-                      Edit local note
+                      Edit private note
                     </Text>
                     <Textarea
                       value={card.note ?? ""}

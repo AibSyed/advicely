@@ -1,27 +1,23 @@
 import { Badge, Box, Container, Heading, HStack, Stack, Text } from "@chakra-ui/react";
-import { RouteLink } from "@/components/route-link";
+import { AppNav } from "@/components/app-nav";
 
 export function SourceGuide() {
   return (
     <Container maxW="6xl" py={{ base: 8, md: 12 }}>
       <Stack gap={8}>
-        <HStack wrap="wrap" gap={3}>
-          <RouteLink href="/">Back to draw deck</RouteLink>
-          <RouteLink href="/saved">Saved cards</RouteLink>
-          <RouteLink href="/history">History</RouteLink>
-        </HStack>
-
         <Stack gap={3} maxW="3xl">
           <Badge alignSelf="flex-start" bg="ink.800" color="paper.50" px={3} py={1} borderRadius="full">
-            Sources and limits
+            Source notes
           </Badge>
           <Heading as="h1" fontSize={{ base: "4xl", md: "6xl" }} color="ink.800" lineHeight="0.96">
-            What Advicely is, and what it is not.
+            Where the deck comes from.
           </Heading>
           <Text color="ink.600" fontSize={{ base: "md", md: "lg" }}>
-            Advicely is an honest draw deck for random advice and quotes. It does not tailor live source content to your situation, and it does not present itself as professional guidance.
+            Advicely is a transparent draw deck for random advice and quotes. It does not tailor live source content to your situation, and it does not present itself as professional guidance.
           </Text>
         </Stack>
+
+        <AppNav />
 
         <Stack gap={5}>
           <Box bg="rgba(255, 250, 240, 0.92)" borderRadius="panel" borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)" p={6} shadow="float">
@@ -31,7 +27,7 @@ export function SourceGuide() {
             </HStack>
             <Heading as="h2" size="lg" color="ink.800">AdviceSlip</Heading>
             <Text mt={3} color="ink.600">
-              Advicely calls the AdviceSlip random advice endpoint and displays the returned advice text with light normalization only.
+              Advice mode pulls one random advice slip from AdviceSlip and presents it as a source card, not a personalized recommendation.
             </Text>
             <Text mt={3} color="ink.600">
               Official site: <a href="https://api.adviceslip.com/" target="_blank" rel="noreferrer">api.adviceslip.com</a>
@@ -45,7 +41,7 @@ export function SourceGuide() {
             </HStack>
             <Heading as="h2" size="lg" color="ink.800">ZenQuotes</Heading>
             <Text mt={3} color="ink.600">
-              Advicely calls the ZenQuotes random endpoint and displays the quote with the author when it is present.
+              Quote mode pulls one random quote from ZenQuotes and preserves the author when it is provided.
             </Text>
             <Text mt={3} color="ink.600">
               Official docs: <a href="https://docs.zenquotes.io/zenquotes-documentation/" target="_blank" rel="noreferrer">docs.zenquotes.io</a>
@@ -54,23 +50,23 @@ export function SourceGuide() {
 
           <Box bg="rgba(255, 250, 240, 0.92)" borderRadius="panel" borderWidth="1px" borderColor="rgba(54, 46, 34, 0.12)" p={6} shadow="float">
             <HStack wrap="wrap" gap={2} mb={3}>
-              <Badge bg="paper.200" color="ink.800">Fallback</Badge>
-              <Badge bg="ink.100" color="ink.700">Advicely collection</Badge>
+              <Badge bg="paper.200" color="ink.800">Reserve</Badge>
+              <Badge bg="ink.100" color="ink.700">Advicely Reserve</Badge>
             </HStack>
-            <Heading as="h2" size="lg" color="ink.800">Advicely collection</Heading>
+            <Heading as="h2" size="lg" color="ink.800">Advicely Reserve</Heading>
             <Text mt={3} color="ink.600">
-              When a live source fails, repeats a recent draw, or returns unusable data, Advicely uses a small internal collection. Those cards are labeled as collection cards so users can tell the difference immediately.
+              When a live pull fails, repeats, or returns unusable data, Advicely uses its own reserve deck instead of pretending the result is still live.
             </Text>
             <Text mt={3} color="ink.600">
-              Personal notes stay in browser storage under `advicely:v6:library` and are never sent to these sources.
+              Private notes stay in browser storage under `advicely:v6:library` and are never sent to AdviceSlip or ZenQuotes.
             </Text>
           </Box>
         </Stack>
 
         <Box bg="ink.800" color="paper.50" borderRadius="panel" p={6} shadow="float">
-          <Heading as="h2" size="lg">Not professional advice</Heading>
+          <Heading as="h2" size="lg">Use judgment</Heading>
           <Text mt={3} color="paper.100">
-            This app is for reflection, curation, and lightweight sharing. It is not medical, legal, financial, crisis, or otherwise professional advice.
+            Advicely is for reflection, curation, and lightweight sharing. It is not medical, legal, financial, crisis, or otherwise professional advice.
           </Text>
         </Box>
       </Stack>

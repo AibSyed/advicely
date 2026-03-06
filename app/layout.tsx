@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans, Fraunces } from "next/font/google";
 import { Providers } from "@/components/providers";
+import { SiteFooter } from "@/components/site-footer";
 import "./globals.css";
 
 const displayFont = Fraunces({
@@ -38,7 +39,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <a className="skip-link" href="#main-content">
           Skip to main content
         </a>
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <SiteFooter />
+        </Providers>
       </body>
     </html>
   );

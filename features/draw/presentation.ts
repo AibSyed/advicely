@@ -1,9 +1,9 @@
 import type { DrawMode, FallbackReason, SourceCardVM } from "@/features/draw/contracts";
 
 const modeLabels: Record<DrawMode, string> = {
-  advice: "Advice",
-  quote: "Quote",
-  mixed: "Mixed",
+  advice: "Advice deck",
+  quote: "Quote deck",
+  mixed: "Mixed deck",
 };
 
 export function getModeLabel(mode: DrawMode): string {
@@ -12,26 +12,26 @@ export function getModeLabel(mode: DrawMode): string {
 
 export function getModeDescription(mode: DrawMode): string {
   if (mode === "advice") {
-    return "Short random advice from AdviceSlip, with local fallback if needed.";
+    return "Random advice from AdviceSlip.";
   }
 
   if (mode === "quote") {
-    return "Random quotes from ZenQuotes, with local fallback if needed.";
+    return "Random quotes from ZenQuotes.";
   }
 
-  return "A shuffled mix of live advice and quotes.";
+  return "Let the deck alternate between both live sources.";
 }
 
 export function getCardEyebrow(card: SourceCardVM): string {
   if (card.source === "advice_slip") {
-    return "Random advice from AdviceSlip";
+    return "Live AdviceSlip advice";
   }
 
   if (card.source === "zen_quotes") {
-    return "Random quote from ZenQuotes";
+    return "Live ZenQuotes quote";
   }
 
-  return "From the Advicely collection";
+  return "From the Advicely Reserve";
 }
 
 export function getFallbackMessage(reason?: FallbackReason): string | null {
@@ -40,18 +40,18 @@ export function getFallbackMessage(reason?: FallbackReason): string | null {
   }
 
   if (reason === "provider_unavailable") {
-    return "Live sources did not respond, so this card came from the Advicely collection.";
+    return "Live sources were quiet, so this draw came from the Advicely Reserve.";
   }
 
   if (reason === "invalid_payload") {
-    return "A live source returned unusable data, so this card came from the Advicely collection.";
+    return "A live source returned unusable text, so this draw came from the Advicely Reserve.";
   }
 
   if (reason === "filtered") {
-    return "A live result was too weak to keep, so this card came from the Advicely collection.";
+    return "The live result was too thin to keep, so this draw came from the Advicely Reserve.";
   }
 
-  return "Recent draws were duplicates, so this card came from the Advicely collection.";
+  return "A recent draw repeated, so this draw came from the Advicely Reserve.";
 }
 
 export function getCardKindLabel(card: SourceCardVM): string {

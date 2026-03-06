@@ -45,19 +45,19 @@ test("honesty-first draw flow works without console errors", async ({ page }) =>
 
   await page.goto("/");
 
-  await expect(page.getByRole("heading", { name: /random advice and quotes, clearly sourced/i })).toBeVisible();
-  await page.getByRole("button", { name: /quote random quotes from zenquotes/i }).click();
-  await page.getByRole("button", { name: /draw card/i }).click();
+  await expect(page.getByRole("heading", { name: /premium draw deck for random advice and quotes/i })).toBeVisible();
+  await page.getByRole("button", { name: /quote deck/i }).click();
+  await page.getByRole("button", { name: /draw a card/i }).click();
 
   await expect(page.getByRole("heading", { name: /life is like playing the violin/i })).toBeVisible();
-  await expect(page.getByText(/random quote from zenquotes/i)).toBeVisible();
+  await expect(page.getByText(/live zenquotes quote/i)).toBeVisible();
   await expect(page.getByText(/samuel butler/i)).toBeVisible();
 
   await page.getByLabel(/optional personal note/i).fill("Keep this around for bad meetings.");
   await page.getByRole("button", { name: /save to library/i }).click();
-  await page.getByRole("link", { name: /saved/i }).click();
+  await page.getByRole("link", { name: /library/i }).click();
 
-  await expect(page.getByRole("heading", { name: /saved cards/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /your library/i })).toBeVisible();
   await expect(page.getByRole("textbox", { name: /edit note for life is like playing the violin/i })).toHaveValue(
     /keep this around for bad meetings/i,
   );

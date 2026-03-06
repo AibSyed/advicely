@@ -16,7 +16,7 @@ flowchart TD
   DECIDE --> ZQ["ZenQuotes adapter"]
   DRAW --> FILTER["Duplicate and junk filter"]
   FILTER --> LIVE["Live source card"]
-  FILTER --> FALLBACK["Advicely collection fallback"]
+  FILTER --> FALLBACK["Advicely Reserve fallback"]
   UI --> STORE["Local Storage: advicely:v6:library"]
 ```
 
@@ -82,16 +82,16 @@ interface LibraryStateVM {
 
 - Provider content is displayed as normalized source text, not rewritten guidance.
 - Personal notes are local-only and never sent upstream.
-- Fallback cards are labeled as collection cards in the UI.
+- Fallback cards are labeled as reserve cards in the UI.
 - The app uses webpack for both `dev` and `build` to avoid the Chakra/Emotion hydration issue seen in Turbopack builds.
 - Share output excludes personal notes unless the user explicitly opts in on the share screen.
 
 ## Failure Modes
 
-- AdviceSlip unavailable: fall back to local advice or mixed collection.
-- ZenQuotes unavailable: fall back to local quote or mixed collection.
-- Duplicate recent draw: fall back to a non-duplicate local collection card.
-- Invalid upstream payload: local collection card with explicit fallback provenance.
+- AdviceSlip unavailable: fall back to the Advicely Reserve.
+- ZenQuotes unavailable: fall back to the Advicely Reserve.
+- Duplicate recent draw: fall back to a non-duplicate reserve card.
+- Invalid upstream payload: reserve card with explicit fallback provenance.
 
 ## Verification Targets
 

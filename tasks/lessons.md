@@ -29,3 +29,13 @@
 - What went wrong: The product was framed as tailored practical advice even though the live providers only return random advice and quotes.
 - Root cause: The rewrite treated local shaping as product value and let UI copy overstate what the source data could honestly support.
 - Prevention rule: For source-driven products, verify live upstream payloads first, lock truthful provenance copy in the primary UI and README, and forbid fabricated semantic sections unless they are explicitly labeled as app-authored.
+
+## 2026-03-05
+- What went wrong: The live v6 UI still shipped placeholder badge copy, weak fallback naming, and a flat mobile nav that did not feel portfolio-grade.
+- Root cause: The honesty-first rewrite fixed product truth first, but the final shell polish was not treated as its own required pass across copy, navigation, and footer behavior.
+- Prevention rule: After a structural rewrite, run a separate deployed-shell polish pass for badge copy, fallback naming, mobile navigation, and footer quality before calling the UI finished.
+
+## 2026-03-05
+- What went wrong: The shell polish changed visible copy, but Playwright still asserted the previous eyebrow text and failed late in verification.
+- Root cause: UI copy changes were finalized before the e2e expectations were reconciled against the shipped wording.
+- Prevention rule: When surface copy changes, update the browser specs in the same patch and rerun the affected flow before moving on to broader verification.
