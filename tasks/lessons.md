@@ -49,3 +49,8 @@
 - What went wrong: The homepage and supporting copy started explaining internal product constraints instead of leading with user value.
 - Root cause: Internal alignment language from the honesty-first rewrite leaked into hero and footer copy without a separate plain-language value pass.
 - Prevention rule: For any marketing-facing surface, keep the headline and subhead focused on what the user gets in one sentence, then push trust or implementation details into secondary copy.
+
+## 2026-03-05
+- What went wrong: The page metadata kept older internal-facing product wording after the visible homepage copy had already been simplified.
+- Root cause: Metadata was treated as technical setup instead of part of the same user-facing copy surface as the hero and social preview text.
+- Prevention rule: Whenever headline copy changes, update `Metadata`, Open Graph, and Twitter text in the same patch and verify the rendered title on production.

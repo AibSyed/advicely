@@ -17,18 +17,18 @@ const bodyFont = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Advicely | Random Advice and Quotes",
-  description: "Draw random advice or quotes, keep personal notes locally, and save what is worth revisiting.",
+  title: "Advicely | Find a Line Worth Keeping",
+  description: "Draw a piece of advice or a quote, save the ones that stick, and keep a private note when you want to remember why.",
   metadataBase: new URL("https://advicely.vercel.app"),
   openGraph: {
-    title: "Advicely | Random Advice and Quotes",
-    description: "An honesty-first deck for random advice, quotes, and local note-taking.",
+    title: "Advicely | Find a Line Worth Keeping",
+    description: "Draw a piece of advice or a quote, save what resonates, and keep a private note for later.",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Advicely | Random Advice and Quotes",
-    description: "Random advice and quotes, clearly sourced and easy to save.",
+    title: "Advicely | Find a Line Worth Keeping",
+    description: "Draw a piece of advice or a quote, save what resonates, and keep a private note for later.",
   },
 };
 
