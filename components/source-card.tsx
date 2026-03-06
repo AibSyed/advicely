@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
-import { Badge, Box, Heading, HStack, Stack, Text } from "@chakra-ui/react";
 import type { SourceCardVM } from "@/features/draw/contracts";
 import { getCardEyebrow, getCardKindLabel, getFallbackMessage } from "@/features/draw/presentation";
+import { Panel, Pill } from "@/components/ui/primitives";
+import { cn } from "@/lib/utils/cn";
 
 interface SourceCardProps {
   card: SourceCardVM;
@@ -14,69 +15,28 @@ export function SourceCardView({ card, note, footer, compact = false }: SourceCa
   const fallbackMessage = getFallbackMessage(card.fallbackReason);
 
   return (
-    <Box
-      bg="rgba(255, 250, 240, 0.94)"
-      borderRadius="panel"
-      borderWidth="1px"
-      borderColor="rgba(54, 46, 34, 0.12)"
-      p={{ base: compact ? 5 : 6, md: compact ? 5 : 7 }}
-      shadow="float"
-      position="relative"
-      overflow="hidden"
-    >
-      <Box position="absolute" inset="0" bg="linear-gradient(180deg, rgba(255,255,255,0.18), transparent 35%)" pointerEvents="none" />
-      <Stack gap={compact ? 3 : 4} position="relative">
-        <HStack wrap="wrap" gap={2}>
-          <Badge bg="paper.200" color="ink.800" px={3} py={1} borderRadius="full">
-            {getCardKindLabel(card)}
-          </Badge>
-          <Badge
-            bg={card.provenance === "live" ? "accent.100" : "ink.100"}
-            color={card.provenance === "live" ? "accent.800" : "ink.700"}
-            px={3}
-            py={1}
-            borderRadius="full"
-          >
-            {card.provenance === "live" ? "Live pull" : "Reserve draw"}
-          </Badge>
-        </HStack>
+    <Panel className={cn("source-card", compact && "source-card--compact")}>
+      <div className="source-card__glow" aria-hidden="true" />
+      <div className="source-card__stack">
+        <div className="source-card__pills">
+          <Pill>{getCardKindLabel(card)}</Pill>
+          <Pill tone={card.provenance === "live" ? "accent" : "muted"}>{card.provenance === "live" ? "Live pull" : "Reserve draw"}</Pill>
+        </div>
 
-        <Text fontSize="sm" textTransform="uppercase" letterSpacing="0.12em" color="ink.500">
-          {getCardEyebrow(card)}
-        </Text>
-
-        <Heading
-          as="h2"
-          fontSize={compact ? { base: "2xl", md: "3xl" } : { base: "3xl", md: "5xl" }}
-          lineHeight="1.02"
-          color="ink.800"
-        >
-          {card.text}
-        </Heading>
-
-        {card.author ? (
-          <Text color="ink.600" fontSize={compact ? "md" : "lg"}>
-            — {card.author}
-          </Text>
-        ) : null}
-
-        {fallbackMessage ? (
-          <Text color="ember.700" fontSize="sm">
-            {fallbackMessage}
-          </Text>
-        ) : null}
+        <p className="source-card__eyebrow">{getCardEyebrow(card)}</p>
+        <h2 className="source-card__title">{card.text}</h2>
+        {card.author ? <p className="source-card__author">- {card.author}</p> : null}
+        {fallbackMessage ? <p className="source-card__fallback">{fallbackMessage}</p> : null}
 
         {note ? (
-          <Box borderWidth="1px" borderColor="rgba(54, 46, 34, 0.1)" bg="rgba(255,255,255,0.52)" borderRadius="1rem" p={4}>
-            <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.12em" color="ink.500" mb={2}>
-              Private note
-            </Text>
-            <Text color="ink.700">{note}</Text>
-          </Box>
+          <div className="note-card">
+            <p className="note-card__eyebrow">Private note</p>
+            <p className="note-card__body">{note}</p>
+          </div>
         ) : null}
 
-        {footer ? <Box>{footer}</Box> : null}
-      </Stack>
-    </Box>
+        {footer ? <div>{footer}</div> : null}
+      </div>
+    </Panel>
   );
 }

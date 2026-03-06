@@ -1,77 +1,133 @@
 "use client";
 
-import {
-  Box,
-  HStack,
-  Icon,
-  Portal,
-  Stack,
-  Text,
-  ToastCloseTrigger,
-  ToastDescription,
-  ToastIndicator,
-  ToastRoot,
-  ToastTitle,
-  Toaster,
-  createToaster,
-} from "@chakra-ui/react";
-import { FiArrowUpRight } from "react-icons/fi";
+import { useEffect, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
+import { FiAlertCircle, FiCheckCircle, FiInfo, FiX } from "react-icons/fi";
+import { cn } from "@/lib/utils/cn";
 
-export const toaster = createToaster({
-  placement: "top-end",
-  max: 3,
-  pauseOnPageIdle: true,
-  offsets: { top: "1.25rem", right: "1.25rem", left: "1rem", bottom: "1rem" },
-});
+type ToastTone = "success" | "error" | "info";
+
+interface ToastInput {
+  title: string;
+  description?: string;
+  tone: ToastTone;
+}
+
+interface ToastRecord extends ToastInput {
+  id: string;
+}
+
+type Listener = () => void;
+
+const listeners = new Set<Listener>();
+let toastState: ToastRecord[] = [];
+
+function emitChange() {
+  listeners.forEach((listener) => listener());
+}
+
+function subscribe(listener: Listener) {
+  listeners.add(listener);
+
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
+function getSnapshot() {
+  return toastState;
+}
+
+function dismissToast(id: string) {
+  toastState = toastState.filter((toast) => toast.id !== id);
+  emitChange();
+}
+
+function pushToast(input: ToastInput) {
+  const toast: ToastRecord = {
+    ...input,
+    id: crypto.randomUUID(),
+  };
+
+  toastState = [toast, ...toastState].slice(0, 3);
+  emitChange();
+
+  window.setTimeout(() => {
+    dismissToast(toast.id);
+  }, 3600);
+}
+
+export const toaster = {
+  success(input: Omit<ToastInput, "tone">) {
+    pushToast({ ...input, tone: "success" });
+  },
+  error(input: Omit<ToastInput, "tone">) {
+    pushToast({ ...input, tone: "error" });
+  },
+  info(input: Omit<ToastInput, "tone">) {
+    pushToast({ ...input, tone: "info" });
+  },
+  dismiss: dismissToast,
+};
+
+function ToastIcon({ tone }: { tone: ToastTone }) {
+  if (tone === "success") {
+    return <FiCheckCircle aria-hidden="true" />;
+  }
+
+  if (tone === "error") {
+    return <FiAlertCircle aria-hidden="true" />;
+  }
+
+  return <FiInfo aria-hidden="true" />;
+}
+
+function ToastItem({ toast }: { toast: ToastRecord }) {
+  useEffect(() => {
+    return () => {
+      dismissToast(toast.id);
+    };
+  }, [toast.id]);
+
+  return (
+    <div className={cn("toast-card", `toast-card--${toast.tone}`)} role="status" aria-live="polite">
+      <div className="toast-card__icon" aria-hidden="true">
+        <ToastIcon tone={toast.tone} />
+      </div>
+      <div className="toast-card__content">
+        <p className="toast-card__title">{toast.title}</p>
+        {toast.description ? <p className="toast-card__description">{toast.description}</p> : null}
+      </div>
+      <button
+        type="button"
+        className="toast-card__close"
+        onClick={() => dismissToast(toast.id)}
+        aria-label="Dismiss notification"
+      >
+        <FiX aria-hidden="true" />
+      </button>
+    </div>
+  );
+}
 
 export function AppToaster() {
-  return (
-    <Portal>
-      <Toaster toaster={toaster} insetInline={{ base: "1rem", md: "1.5rem" }}>
-        {(toast) => (
-          <ToastRoot
-            width={{ base: "calc(100vw - 2rem)", sm: "24rem" }}
-            borderRadius="1.25rem"
-            borderWidth="1px"
-            borderColor="rgba(54, 46, 34, 0.12)"
-            bg="rgba(255, 250, 240, 0.96)"
-            color="ink.800"
-            shadow="float"
-            backdropFilter="blur(18px)"
-          >
-            <HStack align="flex-start" gap={3} p={4}>
-              <Box
-                borderRadius="999px"
-                bg={toast.type === "error" ? "ember.100" : toast.type === "success" ? "accent.100" : "paper.200"}
-                color={toast.type === "error" ? "ember.700" : toast.type === "success" ? "accent.700" : "ink.700"}
-                p={2}
-                flexShrink={0}
-              >
-                {toast.type === "info" ? <Icon as={FiArrowUpRight} boxSize={4} /> : <ToastIndicator />}
-              </Box>
+  const toasts = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+  const [mounted, setMounted] = useState(false);
 
-              <Stack gap={1} flex="1">
-                {toast.title ? (
-                  <ToastTitle>
-                    <Text fontWeight="700" color="ink.800">
-                      {toast.title}
-                    </Text>
-                  </ToastTitle>
-                ) : null}
-                {toast.description ? (
-                  <ToastDescription>
-                    <Text color="ink.600" fontSize="sm">
-                      {toast.description}
-                    </Text>
-                  </ToastDescription>
-                ) : null}
-              </Stack>
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-              <ToastCloseTrigger color="ink.500" mt={0.5} />
-            </HStack>
-          </ToastRoot>
-        )}
-      </Toaster>
-    </Portal>
+  if (!mounted) {
+    return null;
+  }
+
+  return createPortal(
+    <div className="toast-layer" aria-live="polite" aria-atomic="true">
+      {toasts.map((toast) => (
+        <ToastItem key={toast.id} toast={toast} />
+      ))}
+    </div>,
+    document.body,
   );
 }

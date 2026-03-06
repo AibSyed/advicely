@@ -1,7 +1,6 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { Box } from "@chakra-ui/react";
 import { usePathname } from "next/navigation";
 
 interface RouteFrameProps {
@@ -12,8 +11,8 @@ export function RouteFrame({ children }: RouteFrameProps) {
   const pathname = usePathname();
 
   return (
-    <Box key={pathname} className="route-frame-enter" data-route-frame={pathname} minH="100%">
+    <div key={pathname} className="route-frame-enter route-frame" data-route-frame={pathname}>
       {children}
-    </Box>
+    </div>
   );
 }

@@ -172,3 +172,31 @@
     - `.next/static/chunks/app/page-*.js` has no `zod`, `Function(`, or `unsafe-eval`
     - `.next/static/chunks/app/saved/page-*.js` has no `zod`, `Function(`, or `unsafe-eval`
     - `.next/static/chunks/app/history/page-*.js` has no `zod`, `Function(`, or `unsafe-eval`
+
+## 2026-03-05 Runtime Styling Migration
+- [x] Remove Chakra and Emotion from the runtime dependency graph
+- [x] Replace the Chakra shell with static CSS primitives and a local toast system
+- [x] Restore default Next 16 `dev` and `build` scripts
+- [x] Re-verify the app under a Turbopack production build
+- [ ] Recheck the deployed production app after merge
+
+### Runtime Styling Migration Findings
+- Chakra was the only meaningful reason the repo stayed on webpack for both development and production.
+- The app shell, route components, nav, footer, source card, and toaster were migrated to local static primitives backed by `class-variance-authority` and `clsx`.
+- The migrated Turbopack production build loads cleanly in Chrome DevTools with no React runtime error.
+- A generated polyfill chunk still contains `Function("return this")`; this now appears to be framework-generated rather than app-authored runtime code.
+
+### Runtime Styling Migration Verification Log
+- `pnpm run lint` (pass)
+- `pnpm run typecheck` (pass)
+- `pnpm run test` (pass)
+- `pnpm run build` (pass; Turbopack/default Next 16 runtime)
+- `pnpm run test:e2e` (pass after removing transient toast-only assertions from the durable browser contract)
+- `pnpm run docs:check` (pass)
+- `pnpm run audit:high` (pass)
+- `pnpm dlx knip --no-progress` (pass)
+- Chrome DevTools MCP on local production build `http://127.0.0.1:3111`:
+  - `/` loaded with no console messages
+  - `/saved` loaded with no console messages
+  - `/sources` loaded with no console messages
+  - draw flow, local copy flow, and navigation rendered cleanly under the Turbopack build

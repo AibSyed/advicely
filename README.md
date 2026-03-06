@@ -107,8 +107,8 @@ Full verification ladder:
 
 ## Development Notes
 
-- This Chakra UI + Next.js stack is pinned to webpack for both development and production builds.
-- Use `pnpm dev` and `pnpm build`; both are already configured with `--webpack` in `package.json`.
+- The UI uses static CSS, `clsx`, and `class-variance-authority` instead of a runtime styling system.
+- Next.js 16 runs on the default Turbopack-first toolchain in both development and production.
 - Copy views are local-only because saved cards and notes live in browser storage.
 
 ## What This App Is Not

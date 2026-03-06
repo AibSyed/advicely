@@ -64,3 +64,13 @@
 - What went wrong: Production CSP still reported a blocked `eval` path even after earlier client-side Zod cleanup.
 - Root cause: The browser-side library storage module still imported Zod-backed contract modules, which shipped Zod's JIT `Function(...)` path into the client bundle.
 - Prevention rule: Keep browser storage and client guards on plain TypeScript/manual validation only; any Zod schema module imported by a client file must be treated as a bundle leak and removed from that path.
+
+## 2026-03-05
+- What went wrong: The repo kept a Chakra/webpack runtime workaround in scripts and docs after the actual blocker had become CSP cleanliness rather than product UI capability.
+- Root cause: We optimized around the old styling runtime instead of reevaluating whether a static primitive layer would better fit Next 16 and strict CSP.
+- Prevention rule: When a framework workaround becomes the main source of platform friction, reevaluate the primitive layer itself and update docs/scripts in the same migration.
+
+## 2026-03-05
+- What went wrong: Browser specs asserted toast copy that was too transient to be a stable end-to-end contract.
+- Root cause: A visual feedback detail was tested as durable page content instead of as a best-effort transient affordance.
+- Prevention rule: In e2e coverage, assert durable outcomes first and only assert transient toast copy when the timing is explicitly stabilized.

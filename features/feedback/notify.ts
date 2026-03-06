@@ -8,22 +8,13 @@ interface NotifyOptions {
 }
 
 export function notifySuccess(options: NotifyOptions) {
-  toaster.success({
-    ...options,
-    meta: { closable: true },
-  });
+  toaster.success(options);
 }
 
 export function notifyError(options: NotifyOptions) {
-  toaster.error({
-    ...options,
-    meta: { closable: true },
-  });
+  toaster.error(options);
 }
 
 export function notifyInfo(options: NotifyOptions) {
-  toaster.info({
-    ...options,
-    meta: { closable: true },
-  });
+  toaster.info(options);
 }
