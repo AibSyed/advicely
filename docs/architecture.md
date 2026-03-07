@@ -78,6 +78,13 @@ interface LibraryStateVM {
 }
 ```
 
+## Metadata and Share Surfaces
+
+- Root metadata in `app/layout.tsx` includes canonical URL and Open Graph/Twitter configuration.
+- `app/opengraph-image.tsx` is the canonical dynamic social image route.
+- `app/twitter-image.tsx` reuses the same image implementation to keep share visuals consistent.
+- `public/social/advicely-card.svg` is the static brand card for docs and portfolio placements.
+
 ## Guardrails
 
 - Provider content is displayed as normalized source text, not rewritten guidance.

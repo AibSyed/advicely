@@ -18,18 +18,52 @@ const bodyFont = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Advicely | Find a Line Worth Keeping",
-  description: "Draw a piece of advice or a quote, save the ones that stick, and keep a private note when you want to remember why.",
+  title: {
+    default: "Advicely | Draw Advice and Quotes",
+    template: "%s | Advicely",
+  },
+  description:
+    "Draw advice and quote cards from live sources, save what resonates, and keep optional notes private in your browser.",
   metadataBase: new URL("https://advicely.vercel.app"),
+  alternates: {
+    canonical: "/",
+  },
+  icons: {
+    icon: "/icon",
+    apple: "/apple-icon",
+  },
   openGraph: {
-    title: "Advicely | Find a Line Worth Keeping",
-    description: "Draw a piece of advice or a quote, save what resonates, and keep a private note for later.",
+    title: "Advicely | Draw Advice and Quotes",
+    description:
+      "Draw advice and quote cards from live sources, save what resonates, and keep optional notes private in your browser.",
+    url: "/",
+    siteName: "Advicely",
+    locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Advicely social preview card showing Draw advice and quotes with a calm neutral visual style",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Advicely | Find a Line Worth Keeping",
-    description: "Draw a piece of advice or a quote, save what resonates, and keep a private note for later.",
+    title: "Advicely | Draw Advice and Quotes",
+    description:
+      "Draw advice and quote cards from live sources, save what resonates, and keep optional notes private in your browser.",
+    images: [
+      {
+        url: "/twitter-image",
+        alt: "Advicely social preview card showing Draw advice and quotes with source aware framing",
+      },
+    ],
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
