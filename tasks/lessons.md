@@ -79,3 +79,8 @@
 - What went wrong: Homepage signal icons and footer information cards shipped with inconsistent visual alignment and low-contrast badge treatment in dark surfaces.
 - Root cause: Shared flex utility composition and panel spacing assumptions leaked into specialized sections without a dedicated contrast/layout QA pass.
 - Prevention rule: For every homepage/footer change, run a targeted UI audit for icon baseline alignment, explicit container layout (`display` + `gap`), and WCAG AA contrast thresholds before final verification.
+
+## 2026-03-06
+- What went wrong: Social media assets were prepared from manual viewport screenshots, which introduced framing artifacts and inconsistent crop quality.
+- Root cause: We treated portfolio image export as a visual task only instead of using metadata-native Open Graph assets as the canonical source.
+- Prevention rule: For share previews, always update and verify `app/opengraph-image.tsx` plus metadata image tags first, then generate any portfolio exports from those OG endpoints.

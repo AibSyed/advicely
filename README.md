@@ -54,6 +54,15 @@ Request body:
 }
 ```
 
+## Social Metadata and Brand Assets
+
+- Metadata is defined in [`app/layout.tsx`](./app/layout.tsx) with canonical URL, Open Graph, and Twitter cards.
+- Dynamic social image routes:
+  - `/opengraph-image` (`1200x630` PNG)
+  - `/twitter-image` (`1200x630` PNG)
+- Branded static card source (for portfolio/docs):
+  - [`public/social/advicely-card.svg`](./public/social/advicely-card.svg)
+
 Response body:
 
 ```json

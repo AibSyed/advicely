@@ -1,0 +1,26 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Advicely social card">
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8F4E9"/>
+      <stop offset="1" stop-color="#EFE8D7"/>
+    </linearGradient>
+    <radialGradient id="aura" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(104 84) rotate(36) scale(300 200)">
+      <stop stop-color="#5C8A69" stop-opacity="0.24"/>
+      <stop offset="1" stop-color="#5C8A69" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#base)"/>
+  <rect width="1200" height="630" fill="url(#aura)"/>
+  <rect x="64" y="62" width="146" height="44" rx="22" fill="#18120D"/>
+  <text x="95" y="90" fill="#F4EEDF" font-size="22" font-family="Arial, sans-serif">Advicely</text>
+  <text x="64" y="270" fill="#16110D" font-size="96" font-weight="700" font-family="Georgia, serif">Find a line worth</text>
+  <text x="64" y="360" fill="#16110D" font-size="96" font-weight="700" font-family="Georgia, serif">keeping.</text>
+  <text x="64" y="430" fill="#3B3228" font-size="36" font-family="Arial, sans-serif">Advice and quote cards with clear source attribution.</text>
+  <rect x="64" y="488" width="182" height="48" rx="24" fill="#E8E0CF" stroke="#CBBFA9"/>
+  <rect x="262" y="488" width="164" height="48" rx="24" fill="#E8E0CF" stroke="#CBBFA9"/>
+  <rect x="442" y="488" width="170" height="48" rx="24" fill="#E8E0CF" stroke="#CBBFA9"/>
+  <text x="95" y="519" fill="#2F2922" font-size="24" font-family="Arial, sans-serif">Source aware</text>
+  <text x="293" y="519" fill="#2F2922" font-size="24" font-family="Arial, sans-serif">Local notes</text>
+  <text x="474" y="519" fill="#2F2922" font-size="24" font-family="Arial, sans-serif">Quick draw</text>
+  <line x1="64" y1="560.5" x2="1136" y2="560.5" stroke="#CFC3AE"/>
+</svg>
