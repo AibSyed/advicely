@@ -84,3 +84,8 @@
 - What went wrong: Social media assets were prepared from manual viewport screenshots, which introduced framing artifacts and inconsistent crop quality.
 - Root cause: We treated portfolio image export as a visual task only instead of using metadata-native Open Graph assets as the canonical source.
 - Prevention rule: For share previews, always update and verify `app/opengraph-image.tsx` plus metadata image tags first, then generate any portfolio exports from those OG endpoints.
+
+## 2026-03-16
+- What went wrong: I trialed `eslint@10` during a dependency cleanup and broke lint immediately across the repo.
+- Root cause: I trusted broad Next peer ranges before verifying the actual `eslint-plugin-react` and sibling plugin compatibility under the current Next lint stack.
+- Prevention rule: For Next-based repos, treat any ESLint major bump as blocked until a real lint run passes with the full plugin tree, even if top-level peer ranges look permissive.

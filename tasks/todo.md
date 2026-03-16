@@ -74,6 +74,17 @@
   - live draw verified with no console errors
   - screenshots captured: `tasks/qa-home-mobile.png`, `tasks/qa-saved-mobile.png`
 
+## 2026-03-16 Dependency Audit
+- [x] Refresh routine dependency drift within the current supported stack.
+- [x] Verify whether `eslint@10` is actually compatible before upgrading.
+- [x] Re-run `check` and `audit:high` after dependency changes.
+
+### Dependency Audit Verification Log
+- `pnpm outdated` -> only `eslint` remained outdated after the refresh; `jsdom` moved to `29.0.0`
+- `pnpm run check` (pass)
+- `pnpm run audit:high` (pass)
+- `eslint@10.0.3` trialed and reverted after reproducing `eslint-plugin-react` runtime failure during lint
+
 ## 2026-03-05 Full Cleanliness Scan
 - [x] Re-run the verification ladder from a clean `master` checkout
 - [x] Audit for dead code, unused dependencies, and avoidable duplication
