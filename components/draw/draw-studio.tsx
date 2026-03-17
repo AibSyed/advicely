@@ -8,7 +8,7 @@ import { AppNav } from "@/components/app-nav";
 import { SourceCardView } from "@/components/source-card";
 import { Button, FilterChip, PageIntro, Panel, Pill, Spinner } from "@/components/ui/primitives";
 import { notifyError, notifyInfo, notifySuccess } from "@/features/feedback/notify";
-import { type DrawMode, type DrawRequestVM, type DrawResponseVM } from "@/features/draw/contracts";
+import type { DrawMode, DrawRequestVM, DrawResponseVM } from "@/features/draw/contracts";
 import { parseClientDrawResponse } from "@/features/draw/client-guard";
 import { getModeDescription, getModeLabel } from "@/features/draw/presentation";
 import {
