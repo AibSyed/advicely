@@ -23,7 +23,9 @@ const listeners = new Set<Listener>();
 let toastState: ToastRecord[] = [];
 
 function emitChange() {
-  listeners.forEach((listener) => listener());
+  listeners.forEach((listener) => {
+    listener();
+  });
 }
 
 function subscribe(listener: Listener) {
