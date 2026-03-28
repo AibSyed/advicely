@@ -4,8 +4,31 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 10
+      day: "monday"
+      time: "09:00"
+      timezone: "America/Chicago"
+    open-pull-requests-limit: 3
+    groups:
+      production-dependencies:
+        applies-to: "version-updates"
+        dependency-type: "production"
+        patterns:
+          - "*"
+      development-dependencies:
+        applies-to: "version-updates"
+        dependency-type: "development"
+        patterns:
+          - "*"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/Chicago"
+    open-pull-requests-limit: 3
+    groups:
+      github-actions:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
